@@ -1,0 +1,882 @@
+Kapitel 8: kurze Coding-Aufgaben. "//@@" wird durch den Abschnitt "gemeinsam" ersetzt.
+
+=== LEKTION
+id: w_vokale
+kapitel: 8 · Übungs-Workout
+titel: Vokale zählen
+--- erklaerung
+Im Workout-Kapitel trainierst du kurze Aufgaben, wie sie in Interviews vorkommen.
+
+> **So übst du richtig:** Löse jede Aufgabe **zuerst auf Papier**. Tippe sie danach ab und starte sie. Papier zwingt dich, die Syntax selbst abzurufen, ohne automatische Hilfe.
+
+Tipp für diese Aufgabe: Mit `"aeiou".indexOf(c) >= 0` prüfst du, ob ein Zeichen ein Vokal ist.
+| Baustein | Was er bedeutet |
+|---|---|
+| `"aeiou"` | Ein Text mit allen Vokalen, hier als Nachschlage-Liste benutzt. |
+| `.indexOf(c)` | Sucht das Zeichen `c` darin und liefert seine Position, oder `-1`, wenn es nicht vorkommt. |
+| `>= 0` | Position 0 oder größer heißt: gefunden, also ein Vokal. |
+| `char c = text.charAt(i);` | `char` ist der Typ für **ein einzelnes Zeichen**. Zeichen stehen in einfachen Anführungszeichen: `'a'`. |
+
+--- aufgabe
+Zähle die Vokale in einem Text. Groß- und Kleinschreibung spielen keine Rolle.
+
+```java
+5
+2
+0
+5
+```
+--- tipps
+Wandle den Text mit `toLowerCase()` um.
+Geh mit einer Schleife und `charAt(i)` durch alle Zeichen.
+Erhöhe den Zähler, wenn `"aeiou".indexOf(c) >= 0` gilt.
+--- notizen
+Löse die Aufgabe zuerst auf Papier und notiere ihre Laufzeit.
+--- code
+public class Main {
+    static int zaehleVokale(String text) {
+        return 0; // TODO
+    }
+//@@
+}
+--- loesung
+public class Main {
+    static int zaehleVokale(String text) {
+        int anzahl = 0;
+        for (char c : text.toLowerCase().toCharArray()) {
+            if ("aeiou".indexOf(c) >= 0) {
+                anzahl++;
+            }
+        }
+        return anzahl;
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(zaehleVokale("Programmieren"));
+        System.out.println(zaehleVokale("Java"));
+        System.out.println(zaehleVokale("xyz"));
+        System.out.println(zaehleVokale("AEIOU"));
+    }
+--- erwartet
+5
+2
+0
+5
+
+=== LEKTION
+id: w_ziffern
+kapitel: 8 · Übungs-Workout
+titel: Quersumme
+--- erklaerung
+Mit `% 10` holst du die letzte Ziffer einer Zahl. Mit `/ 10` schneidest du sie ab. Das Muster kommt in vielen Aufgaben vor.
+
+```run
+int n = 1234;
+System.out.println(n % 10);   // 4
+System.out.println(n / 10);   // 123
+```
+--- aufgabe
+Berechne die Quersumme einer Zahl. Wandle die Zahl dabei **nicht** in einen String um.
+
+```java
+10
+9
+0
+1
+```
+--- tipps
+Die Schleife läuft mit `while (n > 0)`.
+Addiere `n % 10` zur Summe.
+Kürze danach mit `n = n / 10`.
+--- notizen
+Spiele den Algorithmus für 1234 mit einer Variablen-Tabelle auf Papier durch.
+--- code
+public class Main {
+    static int quersumme(int n) {
+        return 0; // TODO
+    }
+//@@
+}
+--- loesung
+public class Main {
+    static int quersumme(int n) {
+        int summe = 0;
+        while (n > 0) {
+            summe += n % 10;
+            n = n / 10;
+        }
+        return summe;
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(quersumme(1234));
+        System.out.println(quersumme(9));
+        System.out.println(quersumme(0));
+        System.out.println(quersumme(1000));
+    }
+--- erwartet
+10
+9
+0
+1
+--- muss
+% 10
+
+=== LEKTION
+id: w_umdrehen
+kapitel: 8 · Übungs-Workout
+titel: Array umdrehen
+--- erklaerung
+**In-place** bedeutet: Du änderst das vorhandene Array und legst kein neues an. Dafür tauschst du von außen nach innen, wieder mit zwei Zeigern.
+--- aufgabe
+Drehe das Array direkt um, ohne ein zweites Array.
+
+```java
+[5, 4, 3, 2, 1]
+[8, 7]
+[]
+```
+--- tipps
+Starte mit `links = 0` und `rechts = a.length - 1`.
+Tausche mit einer Hilfsvariable, solange `links < rechts` gilt.
+Bewege nach jedem Tausch beide Zeiger nach innen.
+--- notizen
+Schreib das Zwei-Zeiger-Muster aus dem Kopf auf und notiere Laufzeit und Speicher.
+--- code
+import java.util.Arrays;
+
+public class Main {
+    static void umdrehen(int[] a) {
+        // TODO
+    }
+//@@
+}
+--- loesung
+import java.util.Arrays;
+
+public class Main {
+    static void umdrehen(int[] a) {
+        int links = 0;
+        int rechts = a.length - 1;
+        while (links < rechts) {
+            int temp = a[links];
+            a[links] = a[rechts];
+            a[rechts] = temp;
+            links++;
+            rechts--;
+        }
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        int[][] tests = {{1, 2, 3, 4, 5}, {7, 8}, {}};
+        for (int[] t : tests) {
+            umdrehen(t);
+            System.out.println(Arrays.toString(t));
+        }
+    }
+--- erwartet
+[5, 4, 3, 2, 1]
+[8, 7]
+[]
+
+=== LEKTION
+id: w_zweitgroesste
+kapitel: 8 · Übungs-Workout
+titel: Zweitgrößte Zahl
+--- erklaerung
+Sortieren wäre einfach, kostet aber O(n log n). Mit einem einzigen Durchlauf und zwei Variablen schaffst du es in **O(n)**. `Integer.MIN_VALUE` eignet sich als Startwert.
+--- aufgabe
+Finde die zweitgrößte **verschiedene** Zahl, ohne zu sortieren.
+
+```java
+7
+3
+1
+```
+--- tipps
+Merke dir `groesste` und `zweite`.
+Ist `z > groesste`, wird die alte größte Zahl zur zweiten.
+Sonst gilt: Wenn `z > zweite` und `z != groesste`, wird `z` zur zweiten.
+--- notizen
+Spiele `{5, 5, 3}` auf Papier durch und prüfe den Randfall gleicher Zahlen.
+--- code
+public class Main {
+    static int zweitgroesste(int[] a) {
+        return 0; // TODO
+    }
+//@@
+}
+--- loesung
+public class Main {
+    static int zweitgroesste(int[] a) {
+        int groesste = Integer.MIN_VALUE;
+        int zweite = Integer.MIN_VALUE;
+        for (int z : a) {
+            if (z > groesste) {
+                zweite = groesste;
+                groesste = z;
+            } else if (z > zweite && z != groesste) {
+                zweite = z;
+            }
+        }
+        return zweite;
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(zweitgroesste(new int[]{4, 9, 1, 7}));
+        System.out.println(zweitgroesste(new int[]{5, 5, 3}));
+        System.out.println(zweitgroesste(new int[]{1, 2}));
+    }
+--- erwartet
+7
+3
+1
+
+=== LEKTION
+id: w_zweisumme
+kapitel: 8 · Übungs-Workout
+titel: Two Sum
+--- erklaerung
+**Two Sum** gehört zu den bekanntesten Interview-Aufgaben: Finde zwei Zahlen, die zusammen einen Zielwert ergeben.
+
+- **Einfach:** zwei Schleifen, O(n²)
+- **Besser:** eine `HashMap` merkt sich bereits gesehene Zahlen und ihren Index, O(n)
+
+Für jede Zahl fragst du: Habe ich `ziel - zahl` schon gesehen?
+| Baustein | Was er bedeutet |
+|---|---|
+| `Map<Integer, Integer> gesehen` | Schlüssel = Zahl, Wert = an welchem Index sie stand. |
+| `gesehen.containsKey(ziel - a[i])` | Habe ich den passenden Partner schon gesehen? |
+| `return new int[]{x, y};` | Erzeugt ein Array mit genau diesen zwei Werten und gibt es zurück. `new int[]{...}` brauchst du, wenn das Array nicht direkt bei einer Variable angelegt wird. |
+
+--- aufgabe
+Gib die Indizes der beiden Zahlen zurück. Gibt es keine Lösung, liefere `{-1, -1}`. Nutze eine `HashMap`.
+
+```java
+[0, 1]
+[1, 2]
+[-1, -1]
+```
+--- tipps
+Lege eine `Map<Integer, Integer>` an: Zahl auf Index.
+Prüfe vor dem Einfügen `map.containsKey(ziel - a[i])`.
+Wenn ja: `return new int[]{map.get(ziel - a[i]), i};`
+--- notizen
+Schreib beide Lösungen auf Papier und vergleiche Zeit und Speicher.
+--- code
+import java.util.*;
+
+public class Main {
+    static int[] zweiSumme(int[] a, int ziel) {
+        return new int[]{-1, -1}; // TODO
+    }
+//@@
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    static int[] zweiSumme(int[] a, int ziel) {
+        Map<Integer, Integer> gesehen = new HashMap<>();
+        for (int i = 0; i < a.length; i++) {
+            int gesucht = ziel - a[i];
+            if (gesehen.containsKey(gesucht)) {
+                return new int[]{gesehen.get(gesucht), i};
+            }
+            gesehen.put(a[i], i);
+        }
+        return new int[]{-1, -1};
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(zweiSumme(new int[]{2, 7, 11, 15}, 9)));
+        System.out.println(Arrays.toString(zweiSumme(new int[]{3, 2, 4}, 6)));
+        System.out.println(Arrays.toString(zweiSumme(new int[]{1, 2}, 10)));
+    }
+--- erwartet
+[0, 1]
+[1, 2]
+[-1, -1]
+--- muss
+Map<
+
+=== LEKTION
+id: w_klammern
+kapitel: 8 · Übungs-Workout
+titel: Klammern prüfen
+--- erklaerung
+Eine klassische Aufgabe für einen **Stack**: Öffnende Klammern legst du ab. Bei einer schließenden Klammer muss oben die passende öffnende liegen. Am Ende muss der Stapel leer sein.
+--- aufgabe
+Prüfe, ob alle Klammern `()`, `[]` und `{}` korrekt geschlossen sind. Andere Zeichen ignorierst du.
+
+```java
+true
+false
+false
+true
+```
+--- tipps
+Nutze `Deque<Character> stapel = new ArrayDeque<>();`.
+Bei `(`, `[` oder `{` rufst du `push(c)` auf.
+Bei einer schließenden Klammer: Ist der Stapel leer oder passt `pop()` nicht, gib `false` zurück. Am Ende gib `stapel.isEmpty()` zurück.
+--- notizen
+Zeichne den Stapel für `(a[b])` Schritt für Schritt auf Papier.
+--- code
+import java.util.*;
+
+public class Main {
+    static boolean istGueltig(String text) {
+        return false; // TODO
+    }
+//@@
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    static boolean istGueltig(String text) {
+        Deque<Character> stapel = new ArrayDeque<>();
+        for (char c : text.toCharArray()) {
+            if (c == '(' || c == '[' || c == '{') {
+                stapel.push(c);
+            } else if (c == ')' || c == ']' || c == '}') {
+                if (stapel.isEmpty()) return false;
+                char offen = stapel.pop();
+                boolean passt = (c == ')' && offen == '(')
+                        || (c == ']' && offen == '[')
+                        || (c == '}' && offen == '{');
+                if (!passt) return false;
+            }
+        }
+        return stapel.isEmpty();
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(istGueltig("(a[b]{c})"));
+        System.out.println(istGueltig("(]"));
+        System.out.println(istGueltig("(("));
+        System.out.println(istGueltig(""));
+    }
+--- erwartet
+true
+false
+false
+true
+
+=== LEKTION
+id: w_binaer
+kapitel: 8 · Übungs-Workout
+titel: Binäre Suche
+--- erklaerung
+Die **binäre Suche** funktioniert nur bei **sortierten** Daten. Du schaust in die Mitte und verwirfst dann die Hälfte, in der der Wert nicht liegen kann. Das ergibt **O(log n)**: Bei einer Million Elementen reichen rund 20 Vergleiche.
+--- aufgabe
+Implementiere die binäre Suche mit einer Schleife. Gib den Index zurück oder `-1`, wenn der Wert fehlt.
+
+```java
+3
+0
+-1
+```
+--- tipps
+Starte mit `links = 0` und `rechts = a.length - 1`.
+Die Schleife läuft mit `while (links <= rechts)`, die Mitte ist `(links + rechts) / 2`.
+Ist `a[mitte] < ziel`, gilt `links = mitte + 1`, sonst `rechts = mitte - 1`.
+--- notizen
+Schreib die binäre Suche aus dem Kopf auf und erkläre, warum sie O(log n) ist.
+--- code
+public class Main {
+    static int suche(int[] a, int ziel) {
+        return -1; // TODO
+    }
+//@@
+}
+--- loesung
+public class Main {
+    static int suche(int[] a, int ziel) {
+        int links = 0;
+        int rechts = a.length - 1;
+        while (links <= rechts) {
+            int mitte = (links + rechts) / 2;
+            if (a[mitte] == ziel) {
+                return mitte;
+            } else if (a[mitte] < ziel) {
+                links = mitte + 1;
+            } else {
+                rechts = mitte - 1;
+            }
+        }
+        return -1;
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        int[] sortiert = {1, 3, 5, 7, 9, 11};
+        System.out.println(suche(sortiert, 7));
+        System.out.println(suche(sortiert, 1));
+        System.out.println(suche(sortiert, 4));
+    }
+--- erwartet
+3
+0
+-1
+
+=== LEKTION
+id: w_ggt
+kapitel: 8 · Übungs-Workout
+titel: Größter gemeinsamer Teiler
+--- erklaerung
+Der **euklidische Algorithmus** ist kurz und elegant: Solange `b` nicht 0 ist, ersetzt du `a` durch `b` und `b` durch den Rest `a % b`. Am Ende steht das Ergebnis in `a`.
+--- aufgabe
+Implementiere `ggt`.
+
+```java
+6
+1
+25
+```
+--- tipps
+Die Schleife läuft mit `while (b != 0)`.
+Merke dir `b` in einer Hilfsvariable.
+`b = a % b;`, danach `a = temp;`.
+--- notizen
+Spiele `ggt(12, 18)` auf Papier mit einer Variablen-Tabelle durch.
+--- code
+public class Main {
+    static int ggt(int a, int b) {
+        return 0; // TODO
+    }
+//@@
+}
+--- loesung
+public class Main {
+    static int ggt(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(ggt(12, 18));
+        System.out.println(ggt(7, 13));
+        System.out.println(ggt(100, 75));
+    }
+--- erwartet
+6
+1
+25
+
+=== LEKTION
+id: w_haeufigster
+kapitel: 8 · Übungs-Workout
+titel: Häufigster Buchstabe
+--- erklaerung
+Zählen mit einer Map ist eines der nützlichsten Muster überhaupt. `merge` macht es besonders kurz:
+
+```run
+Map<Character, Integer> zaehler = new HashMap<>();
+zaehler.merge('a', 1, Integer::sum);
+zaehler.merge('a', 1, Integer::sum);
+System.out.println(zaehler);   // {a=2}
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `Map<Character, Integer>` | Zeichen → Anzahl. `Character` ist die Objekt-Version von `char`. |
+| `zaehler.merge(` | „Füge einen Wert ein oder verrechne ihn mit dem vorhandenen.“ |
+| `'a',` | Der Schlüssel. |
+| `1,` | Der Wert, falls der Schlüssel noch fehlt. |
+| `Integer::sum)` | Was passiert, wenn er schon da ist: alter Wert + 1. Kurzform von `(alt, neu) -> alt + neu`. |
+
+Ohne `merge` sähe das so aus: `zaehler.put(c, zaehler.getOrDefault(c, 0) + 1);`
+
+--- aufgabe
+Finde den Buchstaben, der am häufigsten vorkommt.
+
+```java
+l
+a
+b
+```
+--- tipps
+Zähle jeden Buchstaben in einer `Map<Character, Integer>`.
+Geh danach durch `entrySet()`.
+Merke dir den Eintrag mit dem höchsten Wert.
+--- notizen
+Schreib das Zähl-Muster mit `getOrDefault` und mit `merge` von Hand auf.
+--- code
+import java.util.*;
+
+public class Main {
+    static char haeufigster(String text) {
+        return '?'; // TODO
+    }
+//@@
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    static char haeufigster(String text) {
+        Map<Character, Integer> zaehler = new HashMap<>();
+        for (char c : text.toCharArray()) {
+            zaehler.merge(c, 1, Integer::sum);
+        }
+        char bester = '?';
+        int max = 0;
+        for (Map.Entry<Character, Integer> e : zaehler.entrySet()) {
+            if (e.getValue() > max) {
+                max = e.getValue();
+                bester = e.getKey();
+            }
+        }
+        return bester;
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(haeufigster("hello"));
+        System.out.println(haeufigster("banana"));
+        System.out.println(haeufigster("aabbbc"));
+    }
+--- erwartet
+l
+a
+b
+
+=== LEKTION
+id: w_woerter
+kapitel: 8 · Übungs-Workout
+titel: Wörter umdrehen
+--- erklaerung
+Hier drehst du die **Reihenfolge der Wörter** um, nicht die Buchstaben. `split` zerlegt den Satz, und `String.join` setzt eine Liste wieder zusammen.
+| Baustein | Was er bedeutet |
+|---|---|
+| `satz.split(" ")` | Zerlegt den Satz an jedem Leerzeichen und liefert ein `String[]`. |
+| `String.join(" ", liste)` | Das Gegenteil: Klebt alle Teile zusammen, mit `" "` dazwischen. |
+
+--- aufgabe
+Drehe die Reihenfolge der Wörter um.
+
+```java
+Spass macht Java
+eins
+```
+--- tipps
+`satz.split(" ")` liefert ein Array.
+Geh in einer Schleife von hinten nach vorn.
+Baue das Ergebnis mit einem `StringBuilder` oder einer Liste und `String.join` auf.
+--- notizen
+Löse die Aufgabe auf Papier und achte auf das Leerzeichen am Ende.
+--- code
+public class Main {
+    static String umdrehen(String satz) {
+        return satz; // TODO
+    }
+//@@
+}
+--- loesung
+public class Main {
+    static String umdrehen(String satz) {
+        String[] woerter = satz.split(" ");
+        StringBuilder ergebnis = new StringBuilder();
+        for (int i = woerter.length - 1; i >= 0; i--) {
+            ergebnis.append(woerter[i]);
+            if (i > 0) ergebnis.append(" ");
+        }
+        return ergebnis.toString();
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(umdrehen("Java macht Spass"));
+        System.out.println(umdrehen("eins"));
+    }
+--- erwartet
+Spass macht Java
+eins
+
+=== LEKTION
+id: w_fehlend
+kapitel: 8 · Übungs-Workout
+titel: Fehlende Zahl
+--- erklaerung
+Ein Array enthält die Zahlen von 1 bis n, aber eine fehlt. Du musst dafür nicht sortieren. Die Summe von 1 bis n ist `n * (n + 1) / 2`. Ziehst du die tatsächliche Summe ab, bleibt die fehlende Zahl übrig.
+--- aufgabe
+Finde die fehlende Zahl in O(n) und ohne zusätzlichen Speicher. Das Array hat `n - 1` Elemente.
+
+```java
+3
+4
+2
+```
+--- tipps
+`int n = a.length + 1;`
+Die erwartete Summe ist `n * (n + 1) / 2`.
+Ziehe jede Zahl des Arrays davon ab.
+--- notizen
+Schreib die Summenformel auf und rechne ein Beispiel von Hand.
+--- code
+public class Main {
+    static int fehlend(int[] a) {
+        return 0; // TODO
+    }
+//@@
+}
+--- loesung
+public class Main {
+    static int fehlend(int[] a) {
+        int n = a.length + 1;
+        int erwartet = n * (n + 1) / 2;
+        for (int z : a) {
+            erwartet -= z;
+        }
+        return erwartet;
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(fehlend(new int[]{1, 2, 4, 5}));
+        System.out.println(fehlend(new int[]{2, 3, 1, 5}));
+        System.out.println(fehlend(new int[]{1}));
+    }
+--- erwartet
+3
+4
+2
+
+=== LEKTION
+id: w_eindeutig
+kapitel: 8 · Übungs-Workout
+titel: Erstes eindeutiges Zeichen
+--- erklaerung
+Gesucht ist das erste Zeichen, das nur einmal vorkommt. Eine `LinkedHashMap` zählt die Zeichen und behält dabei die Reihenfolge. Das ist hier genau richtig.
+--- aufgabe
+Gib das erste eindeutige Zeichen zurück, oder `-`, wenn es keines gibt.
+
+```java
+w
+c
+-
+```
+--- tipps
+Zähle alle Zeichen in einer `LinkedHashMap`.
+Geh danach durch `entrySet()`.
+Gib den ersten Schlüssel mit dem Wert 1 zurück.
+--- notizen
+Notiere, wann du HashMap und wann du LinkedHashMap nimmst.
+--- code
+import java.util.*;
+
+public class Main {
+    static char erstesEindeutiges(String text) {
+        return '-'; // TODO
+    }
+//@@
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    static char erstesEindeutiges(String text) {
+        Map<Character, Integer> zaehler = new LinkedHashMap<>();
+        for (char c : text.toCharArray()) {
+            zaehler.merge(c, 1, Integer::sum);
+        }
+        for (Map.Entry<Character, Integer> e : zaehler.entrySet()) {
+            if (e.getValue() == 1) {
+                return e.getKey();
+            }
+        }
+        return '-';
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(erstesEindeutiges("swiss"));
+        System.out.println(erstesEindeutiges("aabbc"));
+        System.out.println(erstesEindeutiges("aabb"));
+    }
+--- erwartet
+w
+c
+-
+
+=== LEKTION
+id: w_merge
+kapitel: 8 · Übungs-Workout
+titel: Sortierte Arrays zusammenführen
+--- erklaerung
+Zwei sortierte Arrays kannst du in **O(n)** zusammenführen, statt alles neu zu sortieren. Zwei Zeiger laufen durch die Arrays, und du nimmst immer das kleinere Element. Dieser Schritt ist das Herz von **Merge Sort**.
+--- aufgabe
+Führe zwei sortierte Arrays zu einem sortierten Array zusammen.
+
+```java
+[1, 2, 3, 4, 5, 6]
+[1, 2]
+```
+--- tipps
+Das Ergebnis ist ein Array der Länge `a.length + b.length`.
+Solange beide Arrays noch Elemente haben, nimmst du das kleinere.
+Kopiere danach den Rest des übrigen Arrays.
+--- notizen
+Spiele das Zusammenführen von `[1, 3]` und `[2, 4]` auf Papier durch.
+--- code
+import java.util.Arrays;
+
+public class Main {
+    static int[] zusammenfuehren(int[] a, int[] b) {
+        return new int[0]; // TODO
+    }
+//@@
+}
+--- loesung
+import java.util.Arrays;
+
+public class Main {
+    static int[] zusammenfuehren(int[] a, int[] b) {
+        int[] ergebnis = new int[a.length + b.length];
+        int i = 0, j = 0, k = 0;
+        while (i < a.length && j < b.length) {
+            if (a[i] <= b[j]) {
+                ergebnis[k++] = a[i++];
+            } else {
+                ergebnis[k++] = b[j++];
+            }
+        }
+        while (i < a.length) ergebnis[k++] = a[i++];
+        while (j < b.length) ergebnis[k++] = b[j++];
+        return ergebnis;
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(zusammenfuehren(new int[]{1, 3, 5}, new int[]{2, 4, 6})));
+        System.out.println(Arrays.toString(zusammenfuehren(new int[]{1, 2}, new int[]{})));
+    }
+--- erwartet
+[1, 2, 3, 4, 5, 6]
+[1, 2]
+
+=== LEKTION
+id: w_streams
+kapitel: 8 · Übungs-Workout
+titel: Mitarbeiter auswerten mit Streams
+--- erklaerung
+Daten filtern, gruppieren und zusammenfassen kommt im Java-Alltag ständig vor. `Collectors.groupingBy` gruppiert Elemente, und ein zweiter Collector rechnet pro Gruppe weiter.
+
+```java
+Map<String, Long> proAbteilung = liste.stream()
+        .collect(Collectors.groupingBy(Mitarbeiter::abteilung, TreeMap::new, Collectors.counting()));
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `Collectors.groupingBy(` | Sortiert die Elemente in Gruppen. Das Ergebnis ist eine `Map`. |
+| `Mitarbeiter::abteilung,` | **Wonach** gruppiert wird: Die Abteilung wird der Schlüssel. |
+| `TreeMap::new,` | **Welche** Map entstehen soll. Eine `TreeMap` hält die Schlüssel sortiert. |
+| `Collectors.counting())` | **Was** pro Gruppe ausgerechnet wird: die Anzahl. Deshalb ist der Wert ein `Long`. |
+| `.average()` | Durchschnitt eines Zahlen-Streams. Das Ergebnis ist optional, weil die Liste leer sein könnte. |
+| `.orElse(0)` | Ersatzwert, falls es keinen Durchschnitt gibt. |
+
+--- aufgabe
+Werte die Mitarbeiter mit Streams aus:
+
+```java
+{HR=1, IT=2}
+Lisa
+5000.0
+```
+Zeile 1: Anzahl pro Abteilung, sortiert. Zeile 2: Name mit dem höchsten Gehalt. Zeile 3: Durchschnittsgehalt in der IT.
+--- tipps
+Zeile 1 steht fast fertig in der Erklärung.
+Zeile 2: `.max(Comparator.comparingInt(Mitarbeiter::gehalt))`, dann `.map(Mitarbeiter::name).orElse("-")`.
+Zeile 3: `.filter(...)`, `.mapToInt(Mitarbeiter::gehalt).average().orElse(0)`.
+--- notizen
+Schreib `groupingBy` mit `counting` von Hand auf.
+--- code
+import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Mitarbeiter> liste = List.of(
+                new Mitarbeiter("Lisa", "IT", 6000),
+                new Mitarbeiter("Jan", "IT", 4000),
+                new Mitarbeiter("Eva", "HR", 3500));
+
+        // TODO: drei Auswertungen ausgeben
+    }
+}
+
+record Mitarbeiter(String name, String abteilung, int gehalt) {}
+--- loesung
+import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Mitarbeiter> liste = List.of(
+                new Mitarbeiter("Lisa", "IT", 6000),
+                new Mitarbeiter("Jan", "IT", 4000),
+                new Mitarbeiter("Eva", "HR", 3500));
+
+        Map<String, Long> proAbteilung = liste.stream()
+                .collect(Collectors.groupingBy(Mitarbeiter::abteilung, TreeMap::new, Collectors.counting()));
+        System.out.println(proAbteilung);
+
+        String bester = liste.stream()
+                .max(Comparator.comparingInt(Mitarbeiter::gehalt))
+                .map(Mitarbeiter::name)
+                .orElse("-");
+        System.out.println(bester);
+
+        double schnitt = liste.stream()
+                .filter(m -> m.abteilung().equals("IT"))
+                .mapToInt(Mitarbeiter::gehalt)
+                .average()
+                .orElse(0);
+        System.out.println(schnitt);
+    }
+}
+
+record Mitarbeiter(String name, String abteilung, int gehalt) {}
+--- erwartet
+{HR=1, IT=2}
+Lisa
+5000.0
+--- muss
+stream()

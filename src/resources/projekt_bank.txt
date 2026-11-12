@@ -1,0 +1,879 @@
+Projekt-Kapitel: Banking-App (gleiches Format wie lektionen.txt)
+
+=== LEKTION
+id: bank1
+kapitel: 5 · Projekt: Banking-App
+titel: Bank 1/4 – Kunde & Konto
+--- erklaerung
+## Dein Projekt: eine eigene Banking-App
+In diesem Kapitel baust **du** Schritt für Schritt eine kleine Bank-Anwendung. Am Ende hast du ein Programm mit Menü, in dem man **Konten eröffnen**, **einzahlen**, **auszahlen**, **überweisen** und **Kontoauszüge** ansehen kann – jedes Konto mit **Kundendaten**.
+
+| Schritt | Was du baust | Was du dabei lernst |
+|---|---|---|
+| 1 | `Kunde` und `Konto` | record, Kapselung, Exceptions |
+| 2 | `Bank`: Konten eröffnen, suchen, überweisen | HashMap, Validierung, LocalDate |
+| 3 | Kontoauszug mit Buchungen | List, record, Streams |
+| 4 | Die fertige App mit Menü | Scanner, switch, Fehlerbehandlung |
+
+Ab Schritt 2 ist der vorherige Schritt schon als Grundlage eingebaut, damit du nicht hängen bleibst. Am meisten lernst du aber, wenn du jeden Schritt selbst löst – und erst danach weitergehst.
+
+> **Interview-Tipp:** So ein Projekt ist super, um im Gespräch davon zu erzählen: "Ich habe zur Vorbereitung eine kleine Banking-App gebaut – mit Klassen für Kunde, Konto und Bank, Validierung über Exceptions und einem Kontoauszug mit Streams."
+
+## Kunde als record
+Ein Kunde besteht nur aus Daten, die sich nicht ändern – perfekt für einen `record`. Records dürfen auch eigene Methoden haben:
+
+```java
+record Kunde(String vorname, String nachname, String email, LocalDate geburtsdatum) {
+    String meineMethode() {
+        return "Hallo " + vorname;   // auf die Felder greifst du direkt zu
+    }
+}
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `record Kunde` | Ein record namens `Kunde`: eine Datenklasse, deren Werte sich nach dem Erzeugen nicht ändern. |
+| `( ... )` | Die **Felder**, wie Parameter geschrieben: Typ und Name, durch Komma getrennt. Java erzeugt daraus Konstruktor, Getter, `equals`, `hashCode` und `toString`. |
+| `LocalDate geburtsdatum` | `LocalDate` ist Javas Typ für ein Datum ohne Uhrzeit. |
+| `{ ... }` | Optional: eigene Methoden. Ist er leer, schreibt man `{}`. |
+| `new Kunde("Anna", "Schmidt", "a@mail.de", LocalDate.of(1990, 5, 1))` | So erzeugst du einen Kunden: Die Werte kommen in derselben Reihenfolge wie die Felder. |
+
+Von außen liest man die Felder über gleichnamige Methoden: `kunde.vorname()`, `kunde.email()`.
+
+## Konto – Kapselung in der Praxis
+Der `kontostand` ist `private` und es gibt **keinen Setter**! Geld kommt nur über `einzahlen` und `auszahlen` aufs bzw. vom Konto. So kann niemand den Kontostand "einfach so" verändern.
+
+## Ungültige Eingaben mit Exceptions ablehnen
+- `IllegalArgumentException` – das **Argument** ist ungültig (z. B. negativer Betrag)
+- `IllegalStateException` – das Objekt ist im **falschen Zustand** für diese Aktion (z. B. nicht genug Guthaben)
+
+```java
+if (alter < 0) {
+    throw new IllegalArgumentException("Alter darf nicht negativ sein");
+}
+```
+
+> **Hinweis:** Wir benutzen hier `double`, damit es einfach bleibt. Echte Banksoftware nimmt `BigDecimal`, weil `double` Rundungsfehler hat – das kannst du im Interview erwähnen!
+--- aufgabe
+Baue die Klassen `Kunde` und `Konto` fertig – alle Stellen mit `TODO`:
+- `Kunde.name()` liefert `"Vorname Nachname"`.
+- `Konto` bekommt die **private** Felder `kontonummer`, `inhaber` (ein `Kunde`) und `kontostand`. Der Konstruktor setzt Nummer und Inhaber.
+- `einzahlen`: Betrag kleiner oder gleich 0 → `IllegalArgumentException` mit Text `Betrag muss positiv sein`, sonst Betrag dazurechnen.
+- `auszahlen`: gleiche Prüfung, und wenn mehr abgehoben wird als da ist → `IllegalStateException` mit Text `Nicht genug Guthaben`.
+- `getKontostand()` und `toString()` im Format `Konto DE-0001 | Anna Schmidt | 379,50 €` (nutze die fertige Methode `euro(...)`).
+
+Den Test-Code in `main` nicht verändern. Erwartete Ausgabe:
+```java
+Konto DE-0001 | Anna Schmidt | 379,50 €
+Fehler: Nicht genug Guthaben
+Fehler: Betrag muss positiv sein
+Kontostand: 379,50 €
+```
+--- code
+import java.time.LocalDate;
+
+public class Main {
+    public static void main(String[] args) {
+        // Test-Code: prüft deine Klassen. Bitte nicht verändern.
+        Kunde anna = new Kunde("Anna", "Schmidt", "anna@mail.de", LocalDate.of(1995, 4, 12));
+        Konto konto = new Konto("DE-0001", anna);
+
+        konto.einzahlen(500);
+        konto.auszahlen(120.50);
+        System.out.println(konto);
+
+        try {
+            konto.auszahlen(1000);
+        } catch (IllegalStateException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+        try {
+            konto.einzahlen(-20);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+        System.out.println("Kontostand: " + Konto.euro(konto.getKontostand()));
+    }
+}
+
+// Ein Kunde der Bank. Ein record speichert unveränderliche Daten.
+record Kunde(String vorname, String nachname, String email, LocalDate geburtsdatum) {
+
+    String name() {
+        // TODO: "Vorname Nachname" zurückgeben
+        return "";
+    }
+}
+
+class Konto {
+    // TODO: private Felder: kontonummer (String), inhaber (Kunde), kontostand (double)
+
+    Konto(String kontonummer, Kunde inhaber) {
+        // TODO: Felder setzen
+    }
+
+    void einzahlen(double betrag) {
+        // TODO: betrag <= 0  ->  IllegalArgumentException("Betrag muss positiv sein")
+        //       sonst kontostand erhöhen
+    }
+
+    void auszahlen(double betrag) {
+        // TODO: betrag <= 0         ->  IllegalArgumentException("Betrag muss positiv sein")
+        //       betrag > kontostand ->  IllegalStateException("Nicht genug Guthaben")
+        //       sonst kontostand verringern
+    }
+
+    double getKontostand() {
+        return 0; // TODO
+    }
+
+    // Fertig: formatiert z. B. 1234.5 als "1.234,50 €"
+    static String euro(double betrag) {
+        return String.format("%,.2f €", betrag);
+    }
+
+    @Override
+    public String toString() {
+        // TODO: z. B. "Konto DE-0001 | Anna Schmidt | 379,50 €"
+        return "Konto ???";
+    }
+}
+--- loesung
+import java.time.LocalDate;
+
+public class Main {
+    public static void main(String[] args) {
+        // Test-Code: prüft deine Klassen. Bitte nicht verändern.
+        Kunde anna = new Kunde("Anna", "Schmidt", "anna@mail.de", LocalDate.of(1995, 4, 12));
+        Konto konto = new Konto("DE-0001", anna);
+
+        konto.einzahlen(500);
+        konto.auszahlen(120.50);
+        System.out.println(konto);
+
+        try {
+            konto.auszahlen(1000);
+        } catch (IllegalStateException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+        try {
+            konto.einzahlen(-20);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+        System.out.println("Kontostand: " + Konto.euro(konto.getKontostand()));
+    }
+}
+
+record Kunde(String vorname, String nachname, String email, LocalDate geburtsdatum) {
+
+    String name() {
+        return vorname + " " + nachname;
+    }
+}
+
+class Konto {
+    private final String kontonummer;
+    private final Kunde inhaber;
+    private double kontostand;
+
+    Konto(String kontonummer, Kunde inhaber) {
+        this.kontonummer = kontonummer;
+        this.inhaber = inhaber;
+    }
+
+    void einzahlen(double betrag) {
+        if (betrag <= 0) {
+            throw new IllegalArgumentException("Betrag muss positiv sein");
+        }
+        kontostand += betrag;
+    }
+
+    void auszahlen(double betrag) {
+        if (betrag <= 0) {
+            throw new IllegalArgumentException("Betrag muss positiv sein");
+        }
+        if (betrag > kontostand) {
+            throw new IllegalStateException("Nicht genug Guthaben");
+        }
+        kontostand -= betrag;
+    }
+
+    double getKontostand() {
+        return kontostand;
+    }
+
+    static String euro(double betrag) {
+        return String.format("%,.2f €", betrag);
+    }
+
+    @Override
+    public String toString() {
+        return "Konto " + kontonummer + " | " + inhaber.name() + " | " + euro(kontostand);
+    }
+}
+--- erwartet
+Konto DE-0001 | Anna Schmidt | 379,50 €
+Fehler: Nicht genug Guthaben
+Fehler: Betrag muss positiv sein
+Kontostand: 379,50 €
+--- muss
+private
+IllegalArgumentException(
+IllegalStateException(
+
+=== LEKTION
+id: bank2
+kapitel: 5 · Projekt: Banking-App
+titel: Bank 2/4 – Konten eröffnen & überweisen
+--- erklaerung
+Jetzt kommt die Klasse `Bank`. Sie verwaltet alle Konten und vergibt die Kontonummern.
+
+## Konten in einer Map speichern
+Konten sucht man über ihre Nummer – dafür ist eine `Map<String, Konto>` ideal (Kontonummer → Konto). Mit einer `LinkedHashMap` bleibt die Reihenfolge der Eröffnung erhalten.
+
+```java
+Map<String, Konto> konten = new LinkedHashMap<>();
+konten.put("DE-0001", konto);
+Konto k = konten.get("DE-0001");   // null, wenn es die Nummer nicht gibt
+```
+
+## Fortlaufende Nummern
+```run
+int naechsteNummer = 1;
+for (int i = 0; i < 3; i++) {
+    String nummer = String.format("DE-%04d", naechsteNummer++);   // %04d = 4 Stellen, vorne Nullen
+    System.out.println(nummer);
+}
+```
+
+| Baustein | Was er bedeutet |
+|---|---|
+| `String.format(...)` | Baut einen Text nach einer Vorlage, gibt ihn aber nicht aus. |
+| `"DE-%04d"` | `DE-` steht fest im Text. `%d` ist der Platzhalter für eine Ganzzahl, `4` heißt „mindestens 4 Stellen breit“, die `0` davor „mit Nullen auffüllen“. Aus 7 wird `DE-0007`. |
+| `naechsteNummer++` | Liefert den **aktuellen** Wert für den Platzhalter und erhöht die Variable **danach** um 1. So bekommt jedes Konto eine neue Nummer. |
+
+## Alter berechnen mit LocalDate
+```run
+java.time.LocalDate geburt = java.time.LocalDate.of(1995, 4, 12);
+int alter = java.time.Period.between(geburt, java.time.LocalDate.now()).getYears();
+System.out.println("Alter: " + alter);
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `LocalDate.of(1995, 4, 12)` | Erzeugt ein Datum: Jahr, Monat, Tag. |
+| `LocalDate.now()` | Das heutige Datum. |
+| `Period.between(a, b)` | Der Zeitraum zwischen zwei Daten, in Jahren, Monaten und Tagen. |
+| `.getYears()` | Davon nur die vollen Jahre, also das Alter. |
+| `java.time.` | Das Paket, in dem diese Klassen liegen. Mit `import java.time.*;` oben in der Datei kann man es weglassen. |
+
+(Im Projekt sind `LocalDate` und `Period` schon importiert.)
+
+## Achtung bei Überweisungen!
+Eine Überweisung besteht aus zwei Buchungen: abbuchen und gutschreiben. Wenn du zuerst abbuchst und **danach** merkst, dass das Zielkonto gar nicht existiert, ist das Geld weg! Darum: **erst alles prüfen, dann buchen.** In echten Systemen löst man das mit **Datenbank-Transaktionen** (alles oder nichts) – ein gutes Stichwort fürs Interview.
+--- aufgabe
+1. Ergänze in `Kunde` die Methode `alter()` (mit `Period.between`).
+2. Baue die Klasse `Bank` fertig (alle `TODO`s):
+- `kontoEroeffnen(kunde)`: unter 18 → `IllegalArgumentException("Kunde muss mindestens 18 Jahre alt sein")`. Sonst Nummer erzeugen (`DE-0001`, `DE-0002` ...), Konto anlegen, in der Map speichern, `Neues Konto DE-0001 für Anna Schmidt` ausgeben und das Konto zurückgeben.
+- `finde(nummer)`: Konto aus der Map holen; fehlt es → `IllegalArgumentException("Konto nicht gefunden: " + nummer)`.
+- `ueberweisen(von, nach, betrag)`: erst beide Konten finden, dann buchen.
+- `uebersicht()`: Bankname, alle Konten und die Summe aller Kontostände.
+
+```java
+Neues Konto DE-0001 für Anna Schmidt
+Neues Konto DE-0002 für Ben Meyer
+Fehler: Kunde muss mindestens 18 Jahre alt sein
+Fehler: Konto nicht gefunden: DE-9999
+=== Java Sparkasse ===
+Konto DE-0001 | Anna Schmidt | 750,00 €
+Konto DE-0002 | Ben Meyer | 250,00 €
+Summe aller Einlagen: 1.000,00 €
+```
+--- code
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Test-Code: bitte nicht verändern.
+        Bank bank = new Bank("Java Sparkasse");
+
+        Konto anna = bank.kontoEroeffnen(new Kunde("Anna", "Schmidt", "anna@mail.de", LocalDate.of(1995, 4, 12)));
+        Konto ben = bank.kontoEroeffnen(new Kunde("Ben", "Meyer", "ben@mail.de", LocalDate.of(1988, 11, 3)));
+        try {
+            bank.kontoEroeffnen(new Kunde("Tim", "Klein", "tim@mail.de", LocalDate.now().minusYears(16)));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+
+        anna.einzahlen(1000);
+        bank.ueberweisen("DE-0001", "DE-0002", 250);
+        try {
+            bank.ueberweisen("DE-0001", "DE-9999", 100);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+
+        bank.uebersicht();
+    }
+}
+
+class Bank {
+    private final String name;
+    // TODO: Map<String, Konto> konten  (LinkedHashMap, damit die Reihenfolge bleibt)
+    // TODO: int-Zähler für die nächste Kontonummer
+
+    Bank(String name) {
+        this.name = name;
+    }
+
+    Konto kontoEroeffnen(Kunde kunde) {
+        // TODO: 1. unter 18 -> IllegalArgumentException("Kunde muss mindestens 18 Jahre alt sein")
+        //       2. Nummer erzeugen: String.format("DE-%04d", zaehler)
+        //       3. Konto anlegen und in der Map speichern
+        //       4. ausgeben: "Neues Konto DE-0001 für Anna Schmidt"
+        return null;
+    }
+
+    Konto finde(String kontonummer) {
+        // TODO: nicht gefunden -> IllegalArgumentException("Konto nicht gefunden: " + kontonummer)
+        return null;
+    }
+
+    void ueberweisen(String von, String nach, double betrag) {
+        // TODO: erst BEIDE Konten finden, dann abbuchen und gutschreiben
+    }
+
+    void uebersicht() {
+        // TODO: "=== Java Sparkasse ===", jedes Konto, "Summe aller Einlagen: 1.000,00 €"
+    }
+}
+
+// ---------- aus Schritt 1 ----------
+
+record Kunde(String vorname, String nachname, String email, LocalDate geburtsdatum) {
+
+    String name() {
+        return vorname + " " + nachname;
+    }
+
+    int alter() {
+        return 0; // TODO: Period.between(...) benutzen
+    }
+}
+
+class Konto {
+    private final String kontonummer;
+    private final Kunde inhaber;
+    private double kontostand;
+
+    Konto(String kontonummer, Kunde inhaber) {
+        this.kontonummer = kontonummer;
+        this.inhaber = inhaber;
+    }
+
+    void einzahlen(double betrag) {
+        if (betrag <= 0) throw new IllegalArgumentException("Betrag muss positiv sein");
+        kontostand += betrag;
+    }
+
+    void auszahlen(double betrag) {
+        if (betrag <= 0) throw new IllegalArgumentException("Betrag muss positiv sein");
+        if (betrag > kontostand) throw new IllegalStateException("Nicht genug Guthaben");
+        kontostand -= betrag;
+    }
+
+    String getKontonummer() { return kontonummer; }
+    Kunde getInhaber() { return inhaber; }
+    double getKontostand() { return kontostand; }
+
+    static String euro(double betrag) {
+        return String.format("%,.2f €", betrag);
+    }
+
+    @Override
+    public String toString() {
+        return "Konto " + kontonummer + " | " + inhaber.name() + " | " + euro(kontostand);
+    }
+}
+--- loesung
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Test-Code: bitte nicht verändern.
+        Bank bank = new Bank("Java Sparkasse");
+
+        Konto anna = bank.kontoEroeffnen(new Kunde("Anna", "Schmidt", "anna@mail.de", LocalDate.of(1995, 4, 12)));
+        Konto ben = bank.kontoEroeffnen(new Kunde("Ben", "Meyer", "ben@mail.de", LocalDate.of(1988, 11, 3)));
+        try {
+            bank.kontoEroeffnen(new Kunde("Tim", "Klein", "tim@mail.de", LocalDate.now().minusYears(16)));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+
+        anna.einzahlen(1000);
+        bank.ueberweisen("DE-0001", "DE-0002", 250);
+        try {
+            bank.ueberweisen("DE-0001", "DE-9999", 100);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+
+        bank.uebersicht();
+    }
+}
+
+class Bank {
+    private final String name;
+    private final Map<String, Konto> konten = new LinkedHashMap<>();
+    private int naechsteNummer = 1;
+
+    Bank(String name) {
+        this.name = name;
+    }
+
+    Konto kontoEroeffnen(Kunde kunde) {
+        if (kunde.alter() < 18) {
+            throw new IllegalArgumentException("Kunde muss mindestens 18 Jahre alt sein");
+        }
+        String nummer = String.format("DE-%04d", naechsteNummer++);
+        Konto konto = new Konto(nummer, kunde);
+        konten.put(nummer, konto);
+        System.out.println("Neues Konto " + nummer + " für " + kunde.name());
+        return konto;
+    }
+
+    Konto finde(String kontonummer) {
+        Konto konto = konten.get(kontonummer);
+        if (konto == null) {
+            throw new IllegalArgumentException("Konto nicht gefunden: " + kontonummer);
+        }
+        return konto;
+    }
+
+    void ueberweisen(String von, String nach, double betrag) {
+        Konto quelle = finde(von);   // erst beide prüfen ...
+        Konto ziel = finde(nach);
+        quelle.auszahlen(betrag);    // ... dann buchen
+        ziel.einzahlen(betrag);
+    }
+
+    void uebersicht() {
+        System.out.println("=== " + name + " ===");
+        double summe = 0;
+        for (Konto k : konten.values()) {
+            System.out.println(k);
+            summe += k.getKontostand();
+        }
+        System.out.println("Summe aller Einlagen: " + Konto.euro(summe));
+    }
+}
+
+record Kunde(String vorname, String nachname, String email, LocalDate geburtsdatum) {
+
+    String name() {
+        return vorname + " " + nachname;
+    }
+
+    int alter() {
+        return Period.between(geburtsdatum, LocalDate.now()).getYears();
+    }
+}
+
+class Konto {
+    private final String kontonummer;
+    private final Kunde inhaber;
+    private double kontostand;
+
+    Konto(String kontonummer, Kunde inhaber) {
+        this.kontonummer = kontonummer;
+        this.inhaber = inhaber;
+    }
+
+    void einzahlen(double betrag) {
+        if (betrag <= 0) throw new IllegalArgumentException("Betrag muss positiv sein");
+        kontostand += betrag;
+    }
+
+    void auszahlen(double betrag) {
+        if (betrag <= 0) throw new IllegalArgumentException("Betrag muss positiv sein");
+        if (betrag > kontostand) throw new IllegalStateException("Nicht genug Guthaben");
+        kontostand -= betrag;
+    }
+
+    String getKontonummer() { return kontonummer; }
+    Kunde getInhaber() { return inhaber; }
+    double getKontostand() { return kontostand; }
+
+    static String euro(double betrag) {
+        return String.format("%,.2f €", betrag);
+    }
+
+    @Override
+    public String toString() {
+        return "Konto " + kontonummer + " | " + inhaber.name() + " | " + euro(kontostand);
+    }
+}
+--- erwartet
+Neues Konto DE-0001 für Anna Schmidt
+Neues Konto DE-0002 für Ben Meyer
+Fehler: Kunde muss mindestens 18 Jahre alt sein
+Fehler: Konto nicht gefunden: DE-9999
+=== Java Sparkasse ===
+Konto DE-0001 | Anna Schmidt | 750,00 €
+Konto DE-0002 | Ben Meyer | 250,00 €
+Summe aller Einlagen: 1.000,00 €
+--- muss
+Map<
+
+=== LEKTION
+id: bank3
+kapitel: 5 · Projekt: Banking-App
+titel: Bank 3/4 – Kontoauszug
+--- erklaerung
+Jede Bank zeigt, **welche Buchungen** es gab. Dafür speichert jedes Konto eine Liste von Buchungen (Transaktionen).
+
+## Eine Buchung als record
+```java
+record Transaktion(String text, double betrag) {}   // betrag: + Eingang, - Ausgang
+```
+Eine Liste davon im Konto und einen Eintrag hinzufügen:
+```java
+private final List<Transaktion> verlauf = new ArrayList<>();
+verlauf.add(new Transaktion("Einzahlung", 100));
+```
+
+## Überladene Methoden
+Damit jede Buchung einen sinnvollen Text bekommt, gibt es zwei Versionen von `einzahlen` (**Overloading**). Die kurze ruft die lange mit einem Standardtext auf – so funktioniert alter Code weiter:
+```java
+void einzahlen(double betrag) {
+    einzahlen(betrag, "Einzahlung");
+}
+```
+
+## Summen mit Streams
+```run
+List<Double> betraege = List.of(100.0, -30.0, 50.0, -20.0);
+double rein = betraege.stream().filter(b -> b > 0).mapToDouble(b -> b).sum();
+double raus = betraege.stream().filter(b -> b < 0).mapToDouble(b -> -b).sum();
+System.out.println(rein + " rein, " + raus + " raus");
+```
+
+| Baustein | Was er bedeutet |
+|---|---|
+| `betraege.stream()` | Die Beträge nacheinander durch eine Kette schicken. |
+| `.filter(b -> b > 0)` | Nur positive Beträge (Eingänge) durchlassen. |
+| `.mapToDouble(b -> b)` | In einen Zahlen-Stream umwandeln, der rechnen kann. Bei den Ausgängen macht `-b` die Beträge positiv. |
+| `.sum()` | Alles zusammenzählen. |
+
+## Rechtsbündige Ausgabe
+`String.format("%12s", text)` füllt links mit Leerzeichen auf 12 Zeichen auf – so stehen die Beträge schön untereinander wie auf einem echten Kontoauszug.
+--- aufgabe
+1. In `Konto`: Speichere bei jeder Buchung eine `Transaktion` im `verlauf` – Einzahlungen mit positivem, Auszahlungen mit **negativem** Betrag.
+2. Baue `kontoauszug()`:
+- Kopfzeile `--- Kontoauszug DE-0001 (Anna Schmidt) ---`
+- jede Buchung als `String.format("%12s  %s", euro(t.betrag()), t.text())`
+- `Eingänge: ... | Ausgänge: ...` – berechnet mit **Streams** (Ausgänge als positive Zahl)
+- `Kontostand: ...`
+
+```java
+Neues Konto DE-0001 für Anna Schmidt
+Neues Konto DE-0002 für Ben Meyer
+--- Kontoauszug DE-0001 (Anna Schmidt) ---
+  1.000,00 €  Einzahlung
+   -250,00 €  Überweisung an DE-0002
+    -50,00 €  Auszahlung
+Eingänge: 1.000,00 € | Ausgänge: 300,00 €
+Kontostand: 700,00 €
+--- Kontoauszug DE-0002 (Ben Meyer) ---
+    250,00 €  Überweisung von DE-0001
+     80,00 €  Einzahlung
+Eingänge: 330,00 € | Ausgänge: 0,00 €
+Kontostand: 330,00 €
+```
+--- code
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Test-Code: bitte nicht verändern.
+        Bank bank = new Bank("Java Sparkasse");
+        Konto anna = bank.kontoEroeffnen(new Kunde("Anna", "Schmidt", "anna@mail.de", LocalDate.of(1995, 4, 12)));
+        Konto ben = bank.kontoEroeffnen(new Kunde("Ben", "Meyer", "ben@mail.de", LocalDate.of(1988, 11, 3)));
+
+        anna.einzahlen(1000);
+        bank.ueberweisen("DE-0001", "DE-0002", 250);
+        anna.auszahlen(50);
+        ben.einzahlen(80);
+
+        anna.kontoauszug();
+        ben.kontoauszug();
+    }
+}
+
+// Eine Buchung: positiver Betrag = Eingang, negativer Betrag = Ausgang
+record Transaktion(String text, double betrag) {}
+
+class Konto {
+    private final String kontonummer;
+    private final Kunde inhaber;
+    private double kontostand;
+    private final List<Transaktion> verlauf = new ArrayList<>();
+
+    Konto(String kontonummer, Kunde inhaber) {
+        this.kontonummer = kontonummer;
+        this.inhaber = inhaber;
+    }
+
+    void einzahlen(double betrag) {
+        einzahlen(betrag, "Einzahlung");
+    }
+
+    void einzahlen(double betrag, String text) {
+        if (betrag <= 0) throw new IllegalArgumentException("Betrag muss positiv sein");
+        kontostand += betrag;
+        // TODO: Transaktion im verlauf speichern
+    }
+
+    void auszahlen(double betrag) {
+        auszahlen(betrag, "Auszahlung");
+    }
+
+    void auszahlen(double betrag, String text) {
+        if (betrag <= 0) throw new IllegalArgumentException("Betrag muss positiv sein");
+        if (betrag > kontostand) throw new IllegalStateException("Nicht genug Guthaben");
+        kontostand -= betrag;
+        // TODO: Transaktion mit NEGATIVEM Betrag speichern
+    }
+
+    void kontoauszug() {
+        // TODO: Kopfzeile, alle Buchungen, Eingänge/Ausgänge (mit Streams), Kontostand
+    }
+
+    String getKontonummer() { return kontonummer; }
+    Kunde getInhaber() { return inhaber; }
+    double getKontostand() { return kontostand; }
+
+    static String euro(double betrag) {
+        return String.format("%,.2f €", betrag);
+    }
+
+    @Override
+    public String toString() {
+        return "Konto " + kontonummer + " | " + inhaber.name() + " | " + euro(kontostand);
+    }
+}
+
+// ---------- aus Schritt 1 und 2 ----------
+
+class Bank {
+    private final String name;
+    private final Map<String, Konto> konten = new LinkedHashMap<>();
+    private int naechsteNummer = 1;
+
+    Bank(String name) {
+        this.name = name;
+    }
+
+    Konto kontoEroeffnen(Kunde kunde) {
+        if (kunde.alter() < 18) throw new IllegalArgumentException("Kunde muss mindestens 18 Jahre alt sein");
+        String nummer = String.format("DE-%04d", naechsteNummer++);
+        Konto konto = new Konto(nummer, kunde);
+        konten.put(nummer, konto);
+        System.out.println("Neues Konto " + nummer + " für " + kunde.name());
+        return konto;
+    }
+
+    Konto finde(String kontonummer) {
+        Konto konto = konten.get(kontonummer);
+        if (konto == null) throw new IllegalArgumentException("Konto nicht gefunden: " + kontonummer);
+        return konto;
+    }
+
+    void ueberweisen(String von, String nach, double betrag) {
+        Konto quelle = finde(von);
+        Konto ziel = finde(nach);
+        quelle.auszahlen(betrag, "Überweisung an " + nach);
+        ziel.einzahlen(betrag, "Überweisung von " + von);
+    }
+
+    void uebersicht() {
+        System.out.println("=== " + name + " ===");
+        double summe = 0;
+        for (Konto k : konten.values()) {
+            System.out.println(k);
+            summe += k.getKontostand();
+        }
+        System.out.println("Summe aller Einlagen: " + Konto.euro(summe));
+    }
+}
+
+record Kunde(String vorname, String nachname, String email, LocalDate geburtsdatum) {
+    String name() {
+        return vorname + " " + nachname;
+    }
+
+    int alter() {
+        return Period.between(geburtsdatum, LocalDate.now()).getYears();
+    }
+}
+--- loesung
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Test-Code: bitte nicht verändern.
+        Bank bank = new Bank("Java Sparkasse");
+        Konto anna = bank.kontoEroeffnen(new Kunde("Anna", "Schmidt", "anna@mail.de", LocalDate.of(1995, 4, 12)));
+        Konto ben = bank.kontoEroeffnen(new Kunde("Ben", "Meyer", "ben@mail.de", LocalDate.of(1988, 11, 3)));
+
+        anna.einzahlen(1000);
+        bank.ueberweisen("DE-0001", "DE-0002", 250);
+        anna.auszahlen(50);
+        ben.einzahlen(80);
+
+        anna.kontoauszug();
+        ben.kontoauszug();
+    }
+}
+
+record Transaktion(String text, double betrag) {}
+
+class Konto {
+    private final String kontonummer;
+    private final Kunde inhaber;
+    private double kontostand;
+    private final List<Transaktion> verlauf = new ArrayList<>();
+
+    Konto(String kontonummer, Kunde inhaber) {
+        this.kontonummer = kontonummer;
+        this.inhaber = inhaber;
+    }
+
+    void einzahlen(double betrag) {
+        einzahlen(betrag, "Einzahlung");
+    }
+
+    void einzahlen(double betrag, String text) {
+        if (betrag <= 0) throw new IllegalArgumentException("Betrag muss positiv sein");
+        kontostand += betrag;
+        verlauf.add(new Transaktion(text, betrag));
+    }
+
+    void auszahlen(double betrag) {
+        auszahlen(betrag, "Auszahlung");
+    }
+
+    void auszahlen(double betrag, String text) {
+        if (betrag <= 0) throw new IllegalArgumentException("Betrag muss positiv sein");
+        if (betrag > kontostand) throw new IllegalStateException("Nicht genug Guthaben");
+        kontostand -= betrag;
+        verlauf.add(new Transaktion(text, -betrag));
+    }
+
+    void kontoauszug() {
+        System.out.println("--- Kontoauszug " + kontonummer + " (" + inhaber.name() + ") ---");
+        for (Transaktion t : verlauf) {
+            System.out.println(String.format("%12s  %s", euro(t.betrag()), t.text()));
+        }
+        double eingaenge = verlauf.stream()
+                .filter(t -> t.betrag() > 0)
+                .mapToDouble(Transaktion::betrag)
+                .sum();
+        double ausgaenge = verlauf.stream()
+                .filter(t -> t.betrag() < 0)
+                .mapToDouble(t -> -t.betrag())
+                .sum();
+        System.out.println("Eingänge: " + euro(eingaenge) + " | Ausgänge: " + euro(ausgaenge));
+        System.out.println("Kontostand: " + euro(kontostand));
+    }
+
+    String getKontonummer() { return kontonummer; }
+    Kunde getInhaber() { return inhaber; }
+    double getKontostand() { return kontostand; }
+
+    static String euro(double betrag) {
+        return String.format("%,.2f €", betrag);
+    }
+
+    @Override
+    public String toString() {
+        return "Konto " + kontonummer + " | " + inhaber.name() + " | " + euro(kontostand);
+    }
+}
+
+class Bank {
+    private final String name;
+    private final Map<String, Konto> konten = new LinkedHashMap<>();
+    private int naechsteNummer = 1;
+
+    Bank(String name) {
+        this.name = name;
+    }
+
+    Konto kontoEroeffnen(Kunde kunde) {
+        if (kunde.alter() < 18) throw new IllegalArgumentException("Kunde muss mindestens 18 Jahre alt sein");
+        String nummer = String.format("DE-%04d", naechsteNummer++);
+        Konto konto = new Konto(nummer, kunde);
+        konten.put(nummer, konto);
+        System.out.println("Neues Konto " + nummer + " für " + kunde.name());
+        return konto;
+    }
+
+    Konto finde(String kontonummer) {
+        Konto konto = konten.get(kontonummer);
+        if (konto == null) throw new IllegalArgumentException("Konto nicht gefunden: " + kontonummer);
+        return konto;
+    }
+
+    void ueberweisen(String von, String nach, double betrag) {
+        Konto quelle = finde(von);
+        Konto ziel = finde(nach);
+        quelle.auszahlen(betrag, "Überweisung an " + nach);
+        ziel.einzahlen(betrag, "Überweisung von " + von);
+    }
+
+    void uebersicht() {
+        System.out.println("=== " + name + " ===");
+        double summe = 0;
+        for (Konto k : konten.values()) {
+            System.out.println(k);
+            summe += k.getKontostand();
+        }
+        System.out.println("Summe aller Einlagen: " + Konto.euro(summe));
+    }
+}
+
+record Kunde(String vorname, String nachname, String email, LocalDate geburtsdatum) {
+    String name() {
+        return vorname + " " + nachname;
+    }
+
+    int alter() {
+        return Period.between(geburtsdatum, LocalDate.now()).getYears();
+    }
+}
+--- erwartet
+Neues Konto DE-0001 für Anna Schmidt
+Neues Konto DE-0002 für Ben Meyer
+--- Kontoauszug DE-0001 (Anna Schmidt) ---
+  1.000,00 €  Einzahlung
+   -250,00 €  Überweisung an DE-0002
+    -50,00 €  Auszahlung
+Eingänge: 1.000,00 € | Ausgänge: 300,00 €
+Kontostand: 700,00 €
+--- Kontoauszug DE-0002 (Ben Meyer) ---
+    250,00 €  Überweisung von DE-0001
+     80,00 €  Einzahlung
+Eingänge: 330,00 € | Ausgänge: 0,00 €
+Kontostand: 330,00 €
+--- muss
+stream()
+verlauf.add

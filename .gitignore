@@ -1,0 +1,8 @@
+# Build output
+out/
+manifest.txt
+dist/
+*.class
+
+# The built app is committed on purpose (double click start)
+!JavaLernApp.jar

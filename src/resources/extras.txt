@@ -1,0 +1,361 @@
+Tipps (stufenweise) und Handnotizen fuer die Grundlektionen. Jede Zeile ist ein Punkt.
+
+=== EXTRA
+id: start
+--- notizen
+Schreib von Hand: Was passiert von `.java` über `javac` und Bytecode bis zur JVM?
+Schreib das Grundgerüst mit `class` und `main` aus dem Kopf auf.
+
+=== EXTRA
+id: hallo
+--- tipps
+Du brauchst zwei Anweisungen, also zweimal `System.out.println(...)`.
+Text steht in doppelten Anführungszeichen. Jede Anweisung endet mit `;`.
+Vergleiche Satzzeichen und das „ü“ genau mit der erwarteten Ausgabe.
+--- notizen
+Schreib `public static void main(String[] args)` auf und erkläre jedes Wort in einem Satz.
+Notiere den Unterschied zwischen JDK, JRE und JVM.
+Notiere den Unterschied zwischen `print` und `println`.
+
+=== EXTRA
+id: variablen
+--- tipps
+`/` zwischen zwei `int` ergibt eine Ganzzahl. `%` liefert den Rest.
+Für die Kommazahl muss ein Wert vor der Division zu `double` werden.
+`(double) aepfel / kinder` ergibt 3.4.
+--- notizen
+Schreib alle 8 primitiven Datentypen aus dem Kopf auf.
+Notiere, warum `7 / 2` den Wert 3 ergibt und wie du 3.5 bekommst.
+Notiere, warum man für Geld `BigDecimal` statt `double` nimmt.
+
+=== EXTRA
+id: strings
+--- tipps
+Entferne die Leerzeichen zuerst mit `trim()` und speichere das Ergebnis in einer neuen Variable.
+Du brauchst `toUpperCase()`, `length()` und `charAt(0)`.
+Strings sind unveränderlich: `beruf.trim();` allein ändert nichts.
+--- notizen
+Erkläre von Hand den Unterschied zwischen `==` und `equals()` mit einem kleinen Beispiel.
+Schreib 3 Gründe auf, warum `String` immutable ist.
+Notiere 6 String-Methoden aus dem Kopf.
+
+=== EXTRA
+id: scanner
+--- tipps
+Lies das Alter wie den Namen mit `sc.nextLine()`.
+Wandle den Text mit `Integer.parseInt(...)` in eine Zahl um.
+Setze `alter + 10` in Klammern, sonst hängt Java die 10 als Text an.
+--- notizen
+Notiere, wie du Text in eine Zahl umwandelst und umgekehrt.
+Notiere, warum `"42" + 1` den Text `421` ergibt.
+
+=== EXTRA
+id: bedingungen
+--- tipps
+Prüfe die Punkte von oben nach unten: erst `>= 90`, dann `>= 75`, dann `>= 50`.
+Eine Zahl ist gerade, wenn `punkte % 2 == 0` gilt.
+Teste auch die Grenzen: 90, 75, 50 und 49.
+--- notizen
+Notiere, was short-circuit bei `&&` und `||` bedeutet.
+Schreib denselben switch einmal klassisch und einmal mit `->` auf.
+Notiere den Unterschied zwischen `=` und `==`.
+
+=== EXTRA
+id: schleifen
+--- tipps
+Teilbar heißt: `i % 3 == 0`.
+Prüfe zuerst den Fall „durch 3 UND 5 teilbar“.
+Reihenfolge: `i % 15`, dann `i % 3`, dann `i % 5`, sonst die Zahl.
+--- notizen
+Schreib FizzBuzz komplett von Hand auf Papier und spiele es für 1 bis 15 durch.
+Notiere den Unterschied zwischen `while` und `do-while`.
+Notiere den Unterschied zwischen `break` und `continue`.
+
+=== EXTRA
+id: arrays
+--- tipps
+Starte `max` und `min` mit `zahlen[0]`, nicht mit 0.
+Geh in einer for-each-Schleife alle Zahlen durch und vergleiche jede mit `max` und `min`.
+Die Summe wächst bei jedem Durchlauf mit `summe += z;`.
+--- notizen
+Notiere: `arr.length`, `s.length()`, `list.size()`.
+Schreib die Max-Suche von Hand auf und spiele sie mit einer Variablen-Tabelle durch.
+Notiere, warum `i <= arr.length` abstürzt.
+
+=== EXTRA
+id: methoden
+--- tipps
+Zahlen unter 2 sind keine Primzahlen.
+Probiere in einer Schleife Teiler ab 2 durch. Bei `n % i == 0` gib `false` zurück.
+Wird nach der Schleife kein Teiler gefunden, gib `true` zurück.
+--- notizen
+Zeichne auf, was bei `aendern(zahl, arr)` im Speicher passiert, und erkläre pass-by-value.
+Schreib `istPrimzahl` von Hand auf.
+Notiere den Aufbau einer Methode: Sichtbarkeit, Rückgabetyp, Name, Parameter.
+
+=== EXTRA
+id: klassen
+--- tipps
+Im Konstruktor unterscheidet `this.marke` das Feld vom Parameter `marke`.
+Schreib `this.marke = marke;`.
+In `fahren` erhöhst du den Stand mit `kmStand += km;`.
+--- notizen
+Erkläre von Hand: Klasse, Objekt, Feld, Methode, Konstruktor.
+Zeichne Stack und Heap für `Auto a = new Auto("VW");`.
+
+=== EXTRA
+id: kapselung
+--- tipps
+In `einzahlen` buchst du nur, wenn `betrag > 0` gilt.
+In `abheben` gibst du früh `false` zurück, wenn der Betrag ungültig oder zu groß ist.
+Buche erst nach allen Prüfungen ab und gib dann `true` zurück.
+--- notizen
+Schreib die 4 Säulen der OOP mit je einem Beispiel auf.
+Zeichne die Tabelle der Zugriffsmodifizierer aus dem Kopf.
+
+=== EXTRA
+id: vererbung
+--- tipps
+Die Klasse beginnt mit `class Katze extends Tier`.
+Der Konstruktor ruft `super(name);` auf.
+Überschreibe `laut()` mit `@Override` und gib `"Miau"` zurück.
+--- notizen
+Notiere: Was ist „ist-ein“, was ist „hat-ein“? Gib je ein Beispiel.
+Notiere die Regeln zu `extends`, `super` und `@Override`.
+
+=== EXTRA
+id: polymorphie
+--- tipps
+Die Formel lautet Grundseite mal Höhe durch 2.
+Benutze die Felder `grundseite` und `hoehe`.
+`return grundseite * hoehe / 2;`
+--- notizen
+Zeichne die Tabelle Overloading gegen Overriding aus dem Kopf.
+Erkläre Polymorphie mit einem eigenen Beispiel.
+
+=== EXTRA
+id: interfaces
+--- tipps
+`Integer.compare(a, b)` sortiert aufsteigend nach `a`.
+Für absteigend vertauschst du die beiden Werte.
+`return Integer.compare(other.punkte, this.punkte);`
+--- notizen
+Zeichne die Tabelle Interface gegen abstrakte Klasse aus dem Kopf.
+Notiere, was die Rückgabewerte von `compareTo` bedeuten.
+
+=== EXTRA
+id: static
+--- tipps
+Lies die Fehlermeldung: Eine static-Methode greift auf ein Instanzfeld zu.
+Der Zähler muss für alle Tickets gemeinsam sein.
+Schreib `static int zaehler = 0;`.
+--- notizen
+Notiere den Unterschied zwischen static-Feld und Instanzfeld.
+Notiere den Unterschied zwischen `final`, `finally` und `finalize`.
+
+=== EXTRA
+id: equals
+--- tipps
+`toString` setzt den Text aus `x` und `y` zusammen.
+`equals` prüft zuerst den Typ mit `instanceof` und vergleicht dann `x` und `y`.
+`hashCode` kann einfach `Objects.hash(x, y)` zurückgeben.
+--- notizen
+Schreib den equals/hashCode-Vertrag aus dem Kopf auf.
+Schreib eine vollständige `equals`-Methode von Hand.
+Notiere, was ein `record` automatisch erzeugt.
+
+=== EXTRA
+id: arraylist
+--- tipps
+Elemente darf man nicht in einer for-each-Schleife entfernen.
+`namen.removeIf(n -> n.startsWith("A"));` ersetzt die ganze Schleife.
+Danach folgen `namen.add("David");` und `Collections.sort(namen);`.
+--- notizen
+Zeichne die Tabelle ArrayList gegen LinkedList aus dem Kopf.
+Notiere den Unterschied zwischen `remove(int)` und `remove(Object)`.
+Notiere, wann eine ConcurrentModificationException entsteht.
+
+=== EXTRA
+id: hashmap
+--- tipps
+Geh mit einer for-each-Schleife durch `woerter`.
+`getOrDefault(wort, 0)` liefert den bisherigen Zähler oder 0.
+`zaehler.put(wort, zaehler.getOrDefault(wort, 0) + 1);`
+--- notizen
+Zeichne eine HashMap mit Buckets und erkläre `put` und `get`.
+Vergleiche HashMap, LinkedHashMap und TreeMap in einer Tabelle.
+
+=== EXTRA
+id: exceptions
+--- tipps
+Der `try`-Block gehört in die Schleife, damit es danach weitergeht.
+Fange zuerst `NumberFormatException`, dann `IllegalArgumentException`.
+Die Meldung holst du mit `ex.getMessage()`.
+--- notizen
+Zeichne die Exception-Hierarchie aus dem Kopf.
+Erkläre checked gegen unchecked mit je 2 Beispielen.
+Schreib ein try-with-resources von Hand.
+
+=== EXTRA
+id: stringbuilder
+--- tipps
+Die Schleife läuft von `wort.length() - 1` bis 0 rückwärts.
+Hänge jedes Zeichen mit `append(wort.charAt(i))` an.
+Für die Kette: Setze den Bindestrich nur, wenn `i > 1` ist.
+--- notizen
+Vergleiche String, StringBuilder und StringBuffer in einer Tabelle.
+Schreib das Umdrehen eines Strings von Hand auf.
+
+=== EXTRA
+id: generics
+--- tipps
+Lies die Fehlermeldung: `getErstes` und `getZweites` fehlen.
+Die Rückgabetypen sind die Platzhalter `A` und `B`.
+`toString` gibt `"(" + erstes + ", " + zweites + ")"` zurück.
+--- notizen
+Notiere, wofür Generics gut sind und was Type Erasure bedeutet.
+Schreib eine kleine `Box<T>`-Klasse von Hand.
+
+=== EXTRA
+id: streams
+--- tipps
+Starte jede Aufgabe mit `zahlen.stream()`.
+Gerade Zahlen: `.filter(z -> z % 2 == 0).sorted().collect(Collectors.toList())`.
+Summe: `.filter(z -> z > 10).mapToInt(Integer::intValue).sum()`.
+--- notizen
+Notiere 4 Zwischen- und 4 Endoperationen.
+Erkläre, was „lazy“ bei Streams bedeutet.
+Schreib ein Lambda und die passende Methodenreferenz auf.
+
+=== EXTRA
+id: enums
+--- tipps
+Die Form ist `return switch (a) { ... };`.
+Jeder Fall sieht so aus: `case ROT -> "Stehen bleiben";`.
+Vergiss das Semikolon hinter der schließenden Klammer nicht.
+--- notizen
+Notiere, warum ein Enum sicherer ist als String-Konstanten.
+Schreib ein Enum mit Feld und Konstruktor von Hand.
+
+=== EXTRA
+id: palindrom
+--- tipps
+Bereite den Text erst auf: `toLowerCase()` und `replace(" ", "")`.
+Lass einen Index links und einen rechts starten.
+Vergleiche die Zeichen und bewege beide nach innen. Bei einem Unterschied gib `false` zurück.
+--- notizen
+Löse die Aufgabe erst auf Papier und erkläre dabei jeden Schritt laut.
+Notiere die 4 Schritte für Coding-Aufgaben im Interview.
+
+=== EXTRA
+id: fibonacci
+--- tipps
+Du brauchst zwei Variablen: `a = 0` und `b = 1`.
+In jedem Durchlauf: `naechste = a + b`, dann `a = b`, dann `b = naechste`.
+Die Schleife läuft `n`-mal, danach gibst du `a` zurück.
+--- notizen
+Zeichne den Aufrufbaum von `fib(4)` und erkläre, warum die Rekursion so langsam ist.
+Schreib die Big-O-Tabelle aus dem Kopf auf.
+
+=== EXTRA
+id: duplikate
+--- tipps
+`gesehen.add(z)` gibt `false` zurück, wenn `z` schon drin war.
+Dann ist `z` ein Duplikat und kommt in `duplikate`.
+Für „ohne Duplikate“ legst du ein weiteres `LinkedHashSet` an.
+--- notizen
+Schreib beide Lösungen auf: O(n²) und O(n), jeweils mit dem Speicherbedarf.
+
+=== EXTRA
+id: anagramm
+--- tipps
+Unterschiedliche Längen bedeuten sofort `false`.
+Mach beide Wörter klein und wandle sie mit `toCharArray()` um.
+Sortiere beide mit `Arrays.sort` und vergleiche mit `Arrays.equals`.
+--- notizen
+Schreib beide Ansätze mit ihrer Laufzeit auf: Sortieren und Zählen.
+
+=== EXTRA
+id: bank1
+--- tipps
+Felder: `private final String kontonummer; private final Kunde inhaber; private double kontostand;`
+Prüfe am Anfang der Methode und wirf die Exception mit `throw new ...`.
+`toString` nutzt `inhaber.name()` und `euro(kontostand)`.
+--- notizen
+Skizziere die Klassen deiner Bank mit Feldern und Methoden auf Papier.
+Notiere, warum es für den Kontostand keinen Setter gibt.
+
+=== EXTRA
+id: bank2
+--- tipps
+Felder: `private final Map<String, Konto> konten = new LinkedHashMap<>();` und ein `int` als Zähler.
+`Konto ziel = finde(nach);` steht vor der ersten Buchung.
+In `uebersicht` läufst du über `konten.values()` und addierst die Kontostände.
+--- notizen
+Notiere, warum bei einer Überweisung erst geprüft und dann gebucht wird.
+Erkläre den Begriff Transaktion in zwei Sätzen.
+
+=== EXTRA
+id: bank3
+--- tipps
+Einzahlung: `verlauf.add(new Transaktion(text, betrag));`
+Auszahlung: Dasselbe mit `-betrag`.
+Ausgänge: `.filter(t -> t.betrag() < 0).mapToDouble(t -> -t.betrag()).sum()`.
+--- notizen
+Schreib die Stream-Pipeline für die Eingänge von Hand auf.
+Notiere, was Overloading hier bringt.
+
+=== EXTRA
+id: bank4
+--- tipps
+Schau dir die fertige Methode `kontoauszug()` an. Die anderen sind ähnlich aufgebaut.
+Einzahlen: `Konto k = bank.finde(frage("Kontonummer: "));`, dann `k.einzahlen(frageBetrag("Betrag: "));`.
+Konto eröffnen: Erst alle Daten abfragen, dann `bank.kontoEroeffnen(new Kunde(...))`.
+--- notizen
+Schreib 3 Sätze auf, mit denen du dein Bank-Projekt im Gespräch vorstellst.
+Notiere das schwierigste Problem im Projekt und wie du es gelöst hast.
+
+=== EXTRA
+id: bug1
+--- tipps
+Beobachte die Ausgabe: Wird die Zahl kleiner oder größer?
+Die Schleife endet erst, wenn `countdown` nicht mehr größer als 0 ist.
+`countdown++` muss `countdown--` sein.
+--- notizen
+Schreib die 5 Debugging-Schritte aus dem Kopf auf.
+
+=== EXTRA
+id: bug2
+--- tipps
+Welche Note wird in der Schleife nie addiert?
+Der Index muss bei 0 starten.
+Bei `int / int` gehen die Nachkommastellen verloren: `(double) summe / noten.length`.
+--- notizen
+Notiere die beiden Fehlerarten: Off-by-one und Ganzzahl-Division.
+
+=== EXTRA
+id: bug3
+--- tipps
+Ein Element im Array ist `null`. Darauf darf man keine Methode aufrufen.
+Dreh den Vergleich um: `gesucht.equals(nutzer[i])`.
+`name == "admin"` vergleicht Referenzen. Nimm `"admin".equals(name)`.
+--- notizen
+Notiere 3 Wege, um eine NullPointerException zu vermeiden.
+
+=== EXTRA
+id: bug4
+--- tipps
+Wenn `j` den letzten Index erreicht, zeigt `j + 1` ins Leere.
+Die innere Grenze ist `a.length - 1 - i`.
+Tauschen braucht eine Hilfsvariable: `int temp = a[j];`.
+--- notizen
+Schreib Bubble Sort von Hand auf und spiele ihn mit `{3, 1, 2}` durch.
+
+=== EXTRA
+id: bug5
+--- tipps
+Eine HashMap sucht erst über `hashCode()` und vergleicht dann mit `equals()`.
+`KundenId` überschreibt nur eine dieser beiden Methoden.
+Ergänze `hashCode()` und gib `id.hashCode()` zurück.
+--- notizen
+Notiere, warum der Fehler ohne Exception auftritt und wie man ihn findet.

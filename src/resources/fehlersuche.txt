@@ -1,0 +1,318 @@
+Kapitel "Fehler finden" (gleiches Format wie lektionen.txt)
+
+=== LEKTION
+id: bug1
+kapitel: 6 · Fehler finden (Debugging)
+titel: Bug 1 – Der Countdown hört nicht auf
+--- erklaerung
+In vielen Interviews bekommst du **fremden Code mit Fehlern** und sollst sie finden – genau wie im Job bei einem Code-Review oder Bug-Ticket. In diesem Kapitel übst du das.
+
+## So gehst du beim Debuggen vor
+1. **Programm ausführen und genau hinschauen:** Was passiert – und was sollte passieren?
+2. **Fehlermeldung lesen:** Welche Exception, welche Zeile? Die erste Zeile im Stack-Trace mit deiner Datei zeigt, wo es knallt.
+3. **Hypothese aufstellen:** "Ich glaube, die Variable x hat hier den falschen Wert, weil ..."
+4. **Überprüfen:** mit `System.out.println("x = " + x);` Zwischenwerte ausgeben (im Job: Debugger mit Breakpoints).
+5. **Klein reparieren, erneut testen.** Oft gibt es mehr als einen Fehler!
+
+> **Interview-Tipp:** Sprich beim Fehlersuchen laut: "Ich sehe, die Schleife endet nie. Die Bedingung ist countdown > 0, also muss countdown irgendwann 0 werden – aber hier wird hochgezählt ..." Der Weg zählt mehr als das Tempo.
+
+## Dieser Bug
+Ein Countdown von 5 bis 1 soll laufen, dann "Start!" erscheinen. Führe den Code aus und beobachte, was passiert.
+--- aufgabe
+Finde und behebe den Fehler, sodass genau das ausgegeben wird:
+
+```java
+5 4 3 2 1 Start!
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        int countdown = 5;
+        while (countdown > 0) {
+            System.out.print(countdown + " ");
+            countdown++;
+        }
+        System.out.println("Start!");
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        int countdown = 5;
+        while (countdown > 0) {
+            System.out.print(countdown + " ");
+            countdown--;   // runter-, nicht hochzählen
+        }
+        System.out.println("Start!");
+    }
+}
+--- erwartet
+5 4 3 2 1 Start!
+
+=== LEKTION
+id: bug2
+kapitel: 6 · Fehler finden (Debugging)
+titel: Bug 2 – Falscher Notendurchschnitt
+--- erklaerung
+Das Programm soll Summe und Durchschnitt der Noten 2, 3, 4, 4 berechnen. Richtig wäre: Summe 13, Durchschnitt 3.25. Das Programm rechnet aber falsch.
+
+**Achtung:** Hier stecken **zwei** Fehler drin. Typische Kandidaten in solchem Code:
+- Startet die Schleife beim richtigen Index?
+- Welcher Datentyp kommt bei einer Division heraus?
+
+> **Tipp:** Gib Zwischenwerte aus, z. B. `System.out.println("i=" + i + " summe=" + summe);` in der Schleife.
+--- aufgabe
+Behebe beide Fehler, sodass ausgegeben wird:
+
+```java
+Summe: 13
+Durchschnitt: 3.25
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        int[] noten = {2, 3, 4, 4};
+        int summe = 0;
+        for (int i = 1; i < noten.length; i++) {
+            summe += noten[i];
+        }
+        double durchschnitt = summe / noten.length;
+        System.out.println("Summe: " + summe);
+        System.out.println("Durchschnitt: " + durchschnitt);
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        int[] noten = {2, 3, 4, 4};
+        int summe = 0;
+        for (int i = 0; i < noten.length; i++) {                 // Fehler 1: Index startet bei 0
+            summe += noten[i];
+        }
+        double durchschnitt = (double) summe / noten.length;     // Fehler 2: sonst Ganzzahl-Division
+        System.out.println("Summe: " + summe);
+        System.out.println("Durchschnitt: " + durchschnitt);
+    }
+}
+--- erwartet
+Summe: 13
+Durchschnitt: 3.25
+
+=== LEKTION
+id: bug3
+kapitel: 6 · Fehler finden (Debugging)
+titel: Bug 3 – Benutzer wird nicht gefunden
+--- erklaerung
+Das Programm sucht einen Benutzernamen in einem Array und prüft, ob es der Admin ist. Es stürzt aber ab – und selbst wenn es nicht abstürzen würde, wäre ein Ergebnis falsch.
+
+Hinweise:
+- Was passiert, wenn man auf einem `null`-Element eine Methode aufruft?
+- Wie vergleicht man Strings richtig?
+
+> **Profi-Trick:** `"admin".equals(name)` statt `name.equals("admin")` – so herum kann es keine NullPointerException geben. Oder `Objects.equals(a, b)`, das mit null auf beiden Seiten klarkommt.
+--- aufgabe
+Behebe alle Fehler, sodass ausgegeben wird:
+
+```java
+Gefunden an Position: 2
+Ist Admin: true
+```
+--- code
+public class Main {
+    static boolean istAdmin(String name) {
+        return name == "admin";
+    }
+
+    public static void main(String[] args) {
+        String[] nutzer = {"anna", null, "admin", "ben"};
+        String gesucht = new String("admin");   // kommt z. B. aus einer Eingabe
+
+        int gefunden = -1;
+        for (int i = 0; i < nutzer.length; i++) {
+            if (nutzer[i].equals(gesucht)) {
+                gefunden = i;
+            }
+        }
+        System.out.println("Gefunden an Position: " + gefunden);
+        System.out.println("Ist Admin: " + istAdmin(gesucht));
+    }
+}
+--- loesung
+public class Main {
+    static boolean istAdmin(String name) {
+        return "admin".equals(name);            // equals statt ==
+    }
+
+    public static void main(String[] args) {
+        String[] nutzer = {"anna", null, "admin", "ben"};
+        String gesucht = new String("admin");
+
+        int gefunden = -1;
+        for (int i = 0; i < nutzer.length; i++) {
+            if (gesucht.equals(nutzer[i])) {      // null-sicher: gesucht ist nie null
+                gefunden = i;
+            }
+        }
+        System.out.println("Gefunden an Position: " + gefunden);
+        System.out.println("Ist Admin: " + istAdmin(gesucht));
+    }
+}
+--- erwartet
+Gefunden an Position: 2
+Ist Admin: true
+
+=== LEKTION
+id: bug4
+kapitel: 6 · Fehler finden (Debugging)
+titel: Bug 4 – Die Sortierung ist kaputt
+--- erklaerung
+Hier ist ein **Bubble Sort**: Benachbarte Elemente werden verglichen und getauscht, bis alles sortiert ist. Nach jedem Durchlauf "blubbert" das größte Element nach hinten.
+
+Im Code stecken **zwei** Fehler:
+- einer, der zum Absturz führt (lies die Exception und überlege, welcher Index zu groß wird),
+- einer beim Tauschen von zwei Werten.
+
+## Zwei Werte tauschen
+Klassische Interview-Mini-Aufgabe! Man braucht eine **Hilfsvariable**:
+```run
+int a = 1, b = 2;
+int temp = a;
+a = b;
+b = temp;
+System.out.println(a + " " + b);
+```
+
+> **Interview-Wissen:** Bubble Sort hat O(n²) – in der Praxis nimmt man `Arrays.sort` (O(n log n)). Im Interview fragt man ihn trotzdem gern, weil man daran Schleifen und Indizes gut sieht.
+--- aufgabe
+Repariere `sortiere` (ohne `Arrays.sort` zu benutzen), sodass ausgegeben wird:
+
+```java
+[1, 2, 5, 8, 9]
+```
+--- code
+import java.util.Arrays;
+
+public class Main {
+    static void sortiere(int[] a) {
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a.length - i; j++) {
+                if (a[j] > a[j + 1]) {
+                    a[j] = a[j + 1];
+                    a[j + 1] = a[j];
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] zahlen = {5, 1, 9, 2, 8};
+        sortiere(zahlen);
+        System.out.println(Arrays.toString(zahlen));
+    }
+}
+--- loesung
+import java.util.Arrays;
+
+public class Main {
+    static void sortiere(int[] a) {
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a.length - 1 - i; j++) {   // -1, sonst ist j + 1 außerhalb
+                if (a[j] > a[j + 1]) {
+                    int temp = a[j];                         // Hilfsvariable zum Tauschen
+                    a[j] = a[j + 1];
+                    a[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] zahlen = {5, 1, 9, 2, 8};
+        sortiere(zahlen);
+        System.out.println(Arrays.toString(zahlen));
+    }
+}
+--- erwartet
+[1, 2, 5, 8, 9]
+
+=== LEKTION
+id: bug5
+kapitel: 6 · Fehler finden (Debugging)
+titel: Bug 5 – Die HashMap findet den Kunden nicht
+--- erklaerung
+Kunden werden in einer `HashMap` unter ihrer `KundenId` gespeichert. Aber obwohl Kunde `K-100` eingetragen ist, liefert die Suche `null`. Der Code wirft keine Exception – solche "leisen" Bugs sind im Job die gemeinsten.
+
+Hinweis: Denk an den **equals/hashCode-Vertrag** (Lektion "equals, hashCode, toString & Records"). Wie sucht eine HashMap einen Schlüssel?
+--- aufgabe
+Finde den Fehler in `KundenId`, sodass ausgegeben wird:
+
+```java
+Gefunden: Anna
+Anzahl: 2
+```
+--- code
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Map<KundenId, String> kunden = new HashMap<>();
+        kunden.put(new KundenId("K-100"), "Anna");
+        kunden.put(new KundenId("K-200"), "Ben");
+
+        KundenId suche = new KundenId("K-100");
+        System.out.println("Gefunden: " + kunden.get(suche));
+        System.out.println("Anzahl: " + kunden.size());
+    }
+}
+
+class KundenId {
+    private final String id;
+
+    KundenId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof KundenId)) return false;
+        return id.equals(((KundenId) o).id);
+    }
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Map<KundenId, String> kunden = new HashMap<>();
+        kunden.put(new KundenId("K-100"), "Anna");
+        kunden.put(new KundenId("K-200"), "Ben");
+
+        KundenId suche = new KundenId("K-100");
+        System.out.println("Gefunden: " + kunden.get(suche));
+        System.out.println("Anzahl: " + kunden.size());
+    }
+}
+
+class KundenId {
+    private final String id;
+
+    KundenId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof KundenId)) return false;
+        return id.equals(((KundenId) o).id);
+    }
+
+    @Override
+    public int hashCode() {          // fehlte: ohne hashCode sucht die HashMap im falschen "Eimer"
+        return id.hashCode();
+    }
+}
+--- erwartet
+Gefunden: Anna
+Anzahl: 2
+--- muss
+hashCode

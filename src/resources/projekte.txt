@@ -1,0 +1,379 @@
+Kapitel 9: weitere kleine Projekte zum Selberbauen.
+
+=== LEKTION
+id: p_raten
+kapitel: 9 · Kleine Projekte
+titel: Zahlenraten
+--- erklaerung
+Ein kleines Spiel, das Schleifen, Bedingungen und Eingaben verbindet. Das Programm denkt sich eine Zahl aus, du rätst.
+
+```run
+Random zufall = new Random();
+System.out.println(zufall.nextInt(100) + 1);   // Zahl von 1 bis 100
+```
+
+| Baustein | Was er bedeutet |
+|---|---|
+| `Random zufall = new Random();` | Erzeugt einen Zufallsgenerator, nach dem Muster `Typ name = new Typ();`. Braucht `import java.util.Random;`. |
+| `zufall.nextInt(100)` | Eine Zufallszahl von **0 bis 99**. Die 100 selbst ist nicht dabei. |
+| `+ 1` | Verschiebt den Bereich auf 1 bis 100. |
+| `while (sc.hasNextLine())` | `hasNextLine()` fragt: „Kommt noch eine Eingabe?“ Die Schleife läuft, solange das `true` ist. |
+
+Starte das Programm und tippe deine Versuche in das Eingabefeld unter der Ausgabe.
+--- aufgabe
+Baue das Spiel selbst:
+- Lies Zahlen, bis die richtige geraten ist.
+- Gib nach jedem Versuch `Zu klein` oder `Zu groß` aus.
+- Gib am Ende die Anzahl der Versuche aus.
+- Ein Versuch ohne Zahl soll nicht abstürzen: Gib stattdessen `Bitte eine Zahl eingeben` aus.
+
+Hier gibt es keine automatische Prüfung. Teste selbst und markiere die Aufgabe dann als erledigt.
+--- tipps
+Die Schleife läuft mit `while (sc.hasNextLine())`, dann liest du mit `sc.nextLine()`.
+Fange `NumberFormatException` um `Integer.parseInt` ab.
+Bei einem Treffer verlässt du die Schleife mit `break`.
+--- notizen
+Skizziere den Programmablauf als kleines Flussdiagramm auf Papier, bevor du programmierst.
+--- code
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int geheim = new Random().nextInt(100) + 1;
+        int versuche = 0;
+
+        System.out.println("Ich denke an eine Zahl von 1 bis 100.");
+
+        // TODO: das Spiel bauen
+    }
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int geheim = new Random().nextInt(100) + 1;
+        int versuche = 0;
+
+        System.out.println("Ich denke an eine Zahl von 1 bis 100.");
+
+        while (sc.hasNextLine()) {
+            int tipp;
+            try {
+                tipp = Integer.parseInt(sc.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Bitte eine Zahl eingeben");
+                continue;
+            }
+            versuche++;
+            if (tipp < geheim) {
+                System.out.println("Zu klein");
+            } else if (tipp > geheim) {
+                System.out.println("Zu groß");
+            } else {
+                System.out.println("Richtig! Versuche: " + versuche);
+                break;
+            }
+        }
+    }
+}
+--- eingabe
+abc
+50
+
+=== LEKTION
+id: p_warenkorb
+kapitel: 9 · Kleine Projekte
+titel: Warenkorb
+--- erklaerung
+Ein Warenkorb verbindet Klassen, Listen und Rechnen. Jede `Position` besteht aus einem Produkt und einer Menge. Der `Warenkorb` hält die Positionen in einer Liste.
+
+Überlege zuerst: Welche Klasse ist für welche Berechnung zuständig? Der Preis einer Position gehört in die `Position`, die Gesamtsumme in den `Warenkorb`.
+--- aufgabe
+Baue `Position.preis()` und die Methoden des `Warenkorb`:
+- `hinzufuegen`: Menge muss mindestens 1 sein, sonst `IllegalArgumentException("Menge muss mindestens 1 sein")`.
+- `summe`: Summe aller Positionen.
+- `summeMitRabatt`: Ab 100 Euro gibt es 10 % Rabatt.
+
+```java
+Maus x 2 = 50.0
+Tastatur x 1 = 70.0
+Summe: 120.0
+Mit Rabatt: 108.0
+Fehler: Menge muss mindestens 1 sein
+```
+--- tipps
+`preis()` rechnet `produkt.preis() * menge`.
+`summe` lässt sich mit einer Schleife oder `mapToDouble(Position::preis).sum()` lösen.
+Rabatt: `summe >= 100 ? summe * 0.9 : summe`.
+--- notizen
+Skizziere die 3 Klassen mit Feldern und Methoden auf Papier, bevor du tippst.
+--- code
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Warenkorb korb = new Warenkorb();
+        korb.hinzufuegen(new Produkt("Maus", 25), 2);
+        korb.hinzufuegen(new Produkt("Tastatur", 70), 1);
+        korb.anzeigen();
+        System.out.println("Summe: " + korb.summe());
+        System.out.println("Mit Rabatt: " + korb.summeMitRabatt());
+        try {
+            korb.hinzufuegen(new Produkt("Kabel", 5), 0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+    }
+}
+
+record Produkt(String name, double preis) {}
+
+record Position(Produkt produkt, int menge) {
+    double preis() {
+        return 0; // TODO
+    }
+}
+
+class Warenkorb {
+    private final List<Position> positionen = new ArrayList<>();
+
+    void hinzufuegen(Produkt produkt, int menge) {
+        // TODO
+    }
+
+    double summe() {
+        return 0; // TODO
+    }
+
+    double summeMitRabatt() {
+        return 0; // TODO
+    }
+
+    void anzeigen() {
+        for (Position p : positionen) {
+            System.out.println(p.produkt().name() + " x " + p.menge() + " = " + p.preis());
+        }
+    }
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Warenkorb korb = new Warenkorb();
+        korb.hinzufuegen(new Produkt("Maus", 25), 2);
+        korb.hinzufuegen(new Produkt("Tastatur", 70), 1);
+        korb.anzeigen();
+        System.out.println("Summe: " + korb.summe());
+        System.out.println("Mit Rabatt: " + korb.summeMitRabatt());
+        try {
+            korb.hinzufuegen(new Produkt("Kabel", 5), 0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+    }
+}
+
+record Produkt(String name, double preis) {}
+
+record Position(Produkt produkt, int menge) {
+    double preis() {
+        return produkt.preis() * menge;
+    }
+}
+
+class Warenkorb {
+    private final List<Position> positionen = new ArrayList<>();
+
+    void hinzufuegen(Produkt produkt, int menge) {
+        if (menge < 1) {
+            throw new IllegalArgumentException("Menge muss mindestens 1 sein");
+        }
+        positionen.add(new Position(produkt, menge));
+    }
+
+    double summe() {
+        return positionen.stream().mapToDouble(Position::preis).sum();
+    }
+
+    double summeMitRabatt() {
+        double summe = summe();
+        return summe >= 100 ? summe * 0.9 : summe;
+    }
+
+    void anzeigen() {
+        for (Position p : positionen) {
+            System.out.println(p.produkt().name() + " x " + p.menge() + " = " + p.preis());
+        }
+    }
+}
+--- erwartet
+Maus x 2 = 50.0
+Tastatur x 1 = 70.0
+Summe: 120.0
+Mit Rabatt: 108.0
+Fehler: Menge muss mindestens 1 sein
+
+=== LEKTION
+id: p_bibliothek
+kapitel: 9 · Kleine Projekte
+titel: Bibliothek
+--- erklaerung
+Eine Bibliothek verwaltet Bücher, die man ausleihen und zurückgeben kann. Das übt Zustand und Regeln: Ein ausgeliehenes Buch darf niemand zweites ausleihen.
+
+Das Buch merkt sich, ob und an wen es verliehen ist. Die `Bibliothek` findet Bücher über ihre ISBN in einer `Map`.
+--- aufgabe
+Baue `Buch` und `Bibliothek` fertig:
+- `ausleihen`: Unbekannte ISBN ergibt `IllegalArgumentException("Buch nicht gefunden")`. Ein bereits verliehenes Buch ergibt `IllegalStateException("Buch ist verliehen an Anna")`.
+- `zurueckgeben`: Das Buch ist danach wieder verfügbar.
+- `verfuegbar`: Anzahl der freien Bücher.
+
+```java
+Verfügbar: 1
+Fehler: Buch ist verliehen an Anna
+Fehler: Buch nicht gefunden
+Verfügbar: 2
+```
+--- tipps
+Das Feld `ausgeliehenVon` ist `null`, solange das Buch frei ist.
+`ausleihen` holt das Buch aus der Map und prüft zuerst auf `null`.
+`verfuegbar` zählt alle Bücher mit `ausgeliehenVon == null`.
+--- notizen
+Notiere die Regeln der Bibliothek, bevor du programmierst.
+Überlege auf Papier, welche weiteren Randfälle es gibt.
+--- code
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Bibliothek b = new Bibliothek();
+        b.hinzufuegen(new Buch("111", "Clean Code"));
+        b.hinzufuegen(new Buch("222", "Effective Java"));
+
+        b.ausleihen("111", "Anna");
+        System.out.println("Verfügbar: " + b.verfuegbar());
+        try {
+            b.ausleihen("111", "Ben");
+        } catch (IllegalStateException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+        try {
+            b.ausleihen("999", "Ben");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+        b.zurueckgeben("111");
+        System.out.println("Verfügbar: " + b.verfuegbar());
+    }
+}
+
+class Buch {
+    final String isbn;
+    final String titel;
+    String ausgeliehenVon;
+
+    Buch(String isbn, String titel) {
+        this.isbn = isbn;
+        this.titel = titel;
+    }
+}
+
+class Bibliothek {
+    private final Map<String, Buch> buecher = new HashMap<>();
+
+    void hinzufuegen(Buch buch) {
+        buecher.put(buch.isbn, buch);
+    }
+
+    void ausleihen(String isbn, String name) {
+        // TODO
+    }
+
+    void zurueckgeben(String isbn) {
+        // TODO
+    }
+
+    int verfuegbar() {
+        return 0; // TODO
+    }
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Bibliothek b = new Bibliothek();
+        b.hinzufuegen(new Buch("111", "Clean Code"));
+        b.hinzufuegen(new Buch("222", "Effective Java"));
+
+        b.ausleihen("111", "Anna");
+        System.out.println("Verfügbar: " + b.verfuegbar());
+        try {
+            b.ausleihen("111", "Ben");
+        } catch (IllegalStateException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+        try {
+            b.ausleihen("999", "Ben");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+        b.zurueckgeben("111");
+        System.out.println("Verfügbar: " + b.verfuegbar());
+    }
+}
+
+class Buch {
+    final String isbn;
+    final String titel;
+    String ausgeliehenVon;
+
+    Buch(String isbn, String titel) {
+        this.isbn = isbn;
+        this.titel = titel;
+    }
+}
+
+class Bibliothek {
+    private final Map<String, Buch> buecher = new HashMap<>();
+
+    void hinzufuegen(Buch buch) {
+        buecher.put(buch.isbn, buch);
+    }
+
+    private Buch finde(String isbn) {
+        Buch buch = buecher.get(isbn);
+        if (buch == null) {
+            throw new IllegalArgumentException("Buch nicht gefunden");
+        }
+        return buch;
+    }
+
+    void ausleihen(String isbn, String name) {
+        Buch buch = finde(isbn);
+        if (buch.ausgeliehenVon != null) {
+            throw new IllegalStateException("Buch ist verliehen an " + buch.ausgeliehenVon);
+        }
+        buch.ausgeliehenVon = name;
+    }
+
+    void zurueckgeben(String isbn) {
+        finde(isbn).ausgeliehenVon = null;
+    }
+
+    int verfuegbar() {
+        int anzahl = 0;
+        for (Buch buch : buecher.values()) {
+            if (buch.ausgeliehenVon == null) anzahl++;
+        }
+        return anzahl;
+    }
+}
+--- erwartet
+Verfügbar: 1
+Fehler: Buch ist verliehen an Anna
+Fehler: Buch nicht gefunden
+Verfügbar: 2

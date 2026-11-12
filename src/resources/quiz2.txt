@@ -1,0 +1,301 @@
+Weitere Quizfragen im selben Format wie quiz.txt.
+
+=== QUIZ
+id: q25
+kategorie: Strings
+richtig: 2
+--- code
+String s = null;
+System.out.println(s + "x");
+--- optionen
+x
+nullx
+Exception: NullPointerException
+Kompilierfehler
+--- erklaerung
+Bei der Verkettung mit `+` wird `null` zum Text `"null"`. Erst ein Methodenaufruf wie `s.length()` würde eine Exception auslösen.
+
+=== QUIZ
+id: q26
+kategorie: Arrays
+richtig: 3
+--- code
+int[] a = {1, 2, 3};
+int[] b = a;
+b[0] = 99;
+System.out.println(a[0]);
+--- optionen
+1
+0
+99
+Kompilierfehler
+--- erklaerung
+`b = a` kopiert nur die **Referenz**. Beide Variablen zeigen auf dasselbe Array. Eine echte Kopie liefert `a.clone()` oder `Arrays.copyOf(a, a.length)`.
+
+=== QUIZ
+id: q27
+kategorie: Strings
+richtig: 1
+--- code
+System.out.println(1 + 2 + "3" + 4 + 5);
+--- optionen
+3345
+12345
+15
+339
+--- erklaerung
+Von links nach rechts: `1 + 2` ist 3. Ab dem String wird alles verkettet: `"33"`, `"334"`, `"3345"`.
+
+=== QUIZ
+id: q28
+kategorie: Datentypen
+richtig: 4
+--- code
+byte b = (byte) 130;
+System.out.println(b);
+--- optionen
+130
+127
+Kompilierfehler
+-126
+--- erklaerung
+`byte` reicht nur von -128 bis 127. Der Cast schneidet die oberen Bits ab, und 130 wird als -126 gelesen. Das nennt man **Überlauf**.
+
+=== QUIZ
+id: q29
+kategorie: Datentypen
+richtig: 2
+--- code
+long x = Integer.MAX_VALUE + 1;
+System.out.println(x);
+--- optionen
+2147483648
+-2147483648
+Kompilierfehler
+Exception: ArithmeticException
+--- erklaerung
+Rechts steht `int + int`. Der Überlauf passiert also **vor** der Zuweisung an `long`. Richtig wäre `Integer.MAX_VALUE + 1L`.
+
+=== QUIZ
+id: q30
+kategorie: Methoden
+richtig: 2
+--- code
+public class Main {
+    static void f(Object o) { System.out.println("Object"); }
+    static void f(String s) { System.out.println("String"); }
+
+    public static void main(String[] args) {
+        f(null);
+    }
+}
+--- optionen
+Object
+String
+Exception: NullPointerException
+Kompilierfehler
+--- erklaerung
+Beide Methoden passen zu `null`. Java wählt beim Overloading die **speziellste**, und `String` ist spezieller als `Object`.
+
+=== QUIZ
+id: q31
+kategorie: Vererbung
+richtig: 1
+--- code
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(new B().gruss());
+    }
+}
+
+class A {
+    private String name() { return "A"; }
+    String gruss() { return name(); }
+}
+
+class B extends A {
+    String name() { return "B"; }
+}
+--- optionen
+A
+B
+Exception: IllegalAccessError
+Kompilierfehler
+--- erklaerung
+`private`-Methoden werden nicht vererbt und können nicht überschrieben werden. `B.name()` ist eine völlig eigene Methode. `gruss()` ruft deshalb weiter `A.name()` auf.
+
+=== QUIZ
+id: q32
+kategorie: Vererbung
+richtig: 1
+--- code
+public class Main {
+    public static void main(String[] args) {
+        A x = new B();
+        System.out.println(x.name);
+    }
+}
+
+class A { String name = "A"; }
+class B extends A { String name = "B"; }
+--- optionen
+A
+B
+null
+Kompilierfehler
+--- erklaerung
+**Felder** sind nicht polymorph, nur Methoden. Beim Feldzugriff zählt der Typ der Variable, hier `A`.
+
+=== QUIZ
+id: q33
+kategorie: Exceptions
+richtig: 2
+--- code
+public class Main {
+    static int test() {
+        try {
+            return 1;
+        } finally {
+            return 2;
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(test());
+    }
+}
+--- optionen
+1
+2
+12
+Kompilierfehler
+--- erklaerung
+Ein `return` im `finally` ersetzt das `return` aus dem `try`. Das kompiliert, ist aber schlechter Stil: Es kann sogar Exceptions verschlucken.
+
+=== QUIZ
+id: q34
+kategorie: Exceptions
+richtig: 4
+--- code
+public class Main {
+    public static void main(String[] args) {
+        try {
+            System.out.println("A");
+        } catch (Exception e) {
+            System.out.println("B");
+        } catch (RuntimeException e) {
+            System.out.println("C");
+        }
+    }
+}
+--- optionen
+A
+A B
+A C
+Kompilierfehler
+--- erklaerung
+`RuntimeException` ist eine Unterklasse von `Exception`. Der zweite catch-Block wäre nie erreichbar. Speziellere Exceptions müssen zuerst kommen.
+
+=== QUIZ
+id: q35
+kategorie: Arrays
+richtig: 1
+--- code
+int[] a = {1, 2};
+for (int x : a) {
+    x = x * 2;
+}
+System.out.println(Arrays.toString(a));
+--- optionen
+[1, 2]
+[2, 4]
+[1, 4]
+Kompilierfehler
+--- erklaerung
+In der for-each-Schleife ist `x` eine **Kopie** des Werts. Zum Ändern brauchst du den Index: `a[i] = a[i] * 2`.
+
+=== QUIZ
+id: q36
+kategorie: Collections
+richtig: 2
+--- code
+List<Integer> l = new ArrayList<>(List.of(1, 2, 3));
+for (Integer i : l) {
+    if (i == 2) {
+        l.remove(i);
+    }
+}
+System.out.println(l);
+--- optionen
+Exception: ConcurrentModificationException
+[1, 3]
+[1, 2, 3]
+Kompilierfehler
+--- erklaerung
+Eine echte Fangfrage. Normalerweise gäbe es eine Exception. Hier wird aber das **vorletzte** Element entfernt. Danach meldet `hasNext()` schon `false`, und die Prüfung in `next()` läuft nicht mehr.
+
+Verlass dich nie darauf. Nimm `removeIf`.
+
+=== QUIZ
+id: q37
+kategorie: Collections
+richtig: 3
+--- code
+Map<String, Integer> m = new HashMap<>();
+m.put("a", 1);
+m.put("a", 2);
+System.out.println(m.size() + " " + m.get("a"));
+--- optionen
+2 1
+2 2
+1 2
+1 1
+--- erklaerung
+Schlüssel sind eindeutig. Das zweite `put` überschreibt den alten Wert.
+
+=== QUIZ
+id: q38
+kategorie: Strings
+richtig: 2
+--- code
+StringBuilder a = new StringBuilder("x");
+StringBuilder b = new StringBuilder("x");
+System.out.println(a.equals(b) + " " + a.toString().equals(b.toString()));
+--- optionen
+true true
+false true
+false false
+true false
+--- erklaerung
+`StringBuilder` überschreibt `equals` nicht. Es gilt also die Version aus `Object`, die Referenzen vergleicht. Für den Inhalt wandelst du erst mit `toString()` um oder nutzt `compareTo`.
+
+=== QUIZ
+id: q39
+kategorie: Operatoren
+richtig: 3
+--- code
+Object o = true ? 1 : 2.0;
+System.out.println(o);
+--- optionen
+1
+2.0
+1.0
+Kompilierfehler
+--- erklaerung
+Ein ternärer Ausdruck hat einen gemeinsamen Typ. Bei `int` und `double` wird daraus `double`, also wird die 1 zu `1.0`.
+
+=== QUIZ
+id: q40
+kategorie: final
+richtig: 1
+--- code
+final int[] a = {1};
+a[0] = 2;
+System.out.println(a[0]);
+--- optionen
+2
+1
+Exception: IllegalStateException
+Kompilierfehler
+--- erklaerung
+`final` schützt nur die **Referenz**. Der Inhalt des Arrays darf sich ändern. Nur `a = new int[1];` wäre ein Fehler.

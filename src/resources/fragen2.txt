@@ -1,0 +1,184 @@
+Weitere Interview-Fragen im selben Format wie fragen.txt.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Wie baust du eine unveränderliche (immutable) Klasse?
+--- antwort
+- Klasse `final` machen, damit niemand sie überschreibt
+- Alle Felder `private final`
+- Keine Setter
+- Veränderbare Objekte beim Hereinreichen und Herausgeben kopieren
+
+Am einfachsten ist ein `record`. Beachte aber: Enthält er eine Liste, bleibt deren Inhalt veränderbar, wenn du sie nicht kopierst, zum Beispiel mit `List.copyOf(...)`.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Was ist der Unterschied zwischen flacher und tiefer Kopie?
+--- antwort
+- **Flache Kopie (shallow):** Das neue Objekt zeigt auf dieselben inneren Objekte.
+- **Tiefe Kopie (deep):** Auch die inneren Objekte werden kopiert.
+
+Beispiel: `new ArrayList<>(liste)` ist flach. Beide Listen sind getrennt, enthalten aber dieselben Elemente.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Was bedeutet Big-O und warum ist es wichtig?
+--- antwort
+Big-O beschreibt, wie Laufzeit oder Speicher wachsen, wenn die Datenmenge wächst.
+
+| Big-O | Beispiel |
+|---|---|
+| O(1) | `HashMap.get` |
+| O(log n) | binäre Suche |
+| O(n) | eine Schleife |
+| O(n log n) | `Arrays.sort` |
+| O(n²) | zwei verschachtelte Schleifen |
+
+Wichtig wird das bei großen Datenmengen: Bei einer Million Einträgen entscheidet es, ob etwas Millisekunden oder Stunden dauert.
+
+=== FRAGE
+kategorie: OOP
+frage: Was ist Dependency Injection und warum nutzt man sie?
+--- antwort
+Eine Klasse erzeugt ihre Abhängigkeiten nicht selbst, sondern bekommt sie von außen, meist über den Konstruktor.
+
+```java
+class KontoService {
+    private final KontoRepository repository;
+
+    KontoService(KontoRepository repository) {
+        this.repository = repository;
+    }
+}
+```
+**Vorteile:** lockere Kopplung, leicht austauschbar und gut testbar, weil du im Test eine Fake-Version übergeben kannst.
+
+=== FRAGE
+kategorie: Clean Code
+frage: Was verstehst du unter Clean Code?
+--- antwort
+Code, den andere schnell verstehen und sicher ändern können:
+- sprechende Namen
+- kleine Methoden mit einer Aufgabe
+- keine Wiederholungen (DRY)
+- Tests, die das Verhalten absichern
+- Kommentare erklären das Warum, nicht das Was
+
+=== FRAGE
+kategorie: Clean Code
+frage: Was ist Refactoring?
+--- antwort
+Refactoring verbessert die Struktur von Code, **ohne sein Verhalten zu ändern**. Beispiele sind Methoden herausziehen, Variablen umbenennen und Duplikate entfernen. Tests sichern dabei ab, dass nichts kaputtgeht.
+
+=== FRAGE
+kategorie: Datenbank
+frage: Was ist ein Primary Key und was ein Foreign Key?
+--- antwort
+- **Primary Key:** identifiziert eine Zeile eindeutig, zum Beispiel `id`.
+- **Foreign Key:** verweist auf den Primary Key einer anderen Tabelle, zum Beispiel `konto.kunde_id`. Er sichert, dass der Verweis gültig ist.
+
+=== FRAGE
+kategorie: Datenbank
+frage: Welche JOIN-Arten kennst du?
+--- antwort
+- **INNER JOIN:** nur Zeilen mit Treffer in beiden Tabellen
+- **LEFT JOIN:** alle Zeilen der linken Tabelle, rechts `NULL`, wenn es keinen Treffer gibt
+- **RIGHT JOIN:** dasselbe andersherum
+- **FULL JOIN:** alle Zeilen beider Seiten
+
+```java
+SELECT k.name, a.kontostand
+FROM kunde k
+LEFT JOIN konto a ON a.kunde_id = k.id;
+```
+
+=== FRAGE
+kategorie: Datenbank
+frage: Was ist SQL-Injection und wie verhinderst du sie?
+--- antwort
+Ein Angreifer schleust über eine Eingabe eigenen SQL-Code ein, wenn du Texte direkt in die Abfrage klebst.
+
+**Lösung:** `PreparedStatement` mit Platzhaltern:
+```java
+PreparedStatement ps = c.prepareStatement("SELECT * FROM kunde WHERE name = ?");
+ps.setString(1, eingabe);
+```
+Die Eingabe wird dann immer als Wert behandelt, nie als SQL-Code.
+
+=== FRAGE
+kategorie: Datenbank
+frage: Was ist eine Transaktion? Was bedeutet ACID?
+--- antwort
+Eine Transaktion fasst mehrere Schritte zusammen: Entweder gelingen alle oder keiner. Beispiel: eine Überweisung.
+
+- **Atomicity:** ganz oder gar nicht
+- **Consistency:** Regeln bleiben erfüllt
+- **Isolation:** Parallele Transaktionen stören sich nicht
+- **Durability:** Bestätigte Daten bleiben erhalten
+
+=== FRAGE
+kategorie: Web
+frage: Was ist REST? Welche HTTP-Methoden kennst du?
+--- antwort
+REST ist ein Stil für Web-APIs: Daten sind **Ressourcen** mit einer URL, und du bearbeitest sie mit HTTP-Methoden. Die Anfragen sind zustandslos.
+
+- `GET`: lesen
+- `POST`: anlegen
+- `PUT`: ersetzen
+- `PATCH`: teilweise ändern
+- `DELETE`: löschen
+
+Statuscodes: 200 OK, 201 erstellt, 400 ungültig, 401 nicht angemeldet, 403 verboten, 404 nicht gefunden, 500 Serverfehler.
+
+=== FRAGE
+kategorie: Git
+frage: Wie sieht dein Git-Ablauf aus? Merge oder Rebase?
+--- antwort
+Typischer Ablauf: Branch erstellen, committen, pushen, Pull Request, Review, mergen.
+
+- **Merge:** führt Branches zusammen und behält die Historie, oft mit Merge-Commit.
+- **Rebase:** setzt deine Commits auf einen neuen Stand und macht die Historie gerade.
+
+Faustregel: Gemeinsam genutzte Branches nicht rebasen, denn das schreibt die Historie um.
+
+=== FRAGE
+kategorie: Soft Skills
+frage: Erzähl kurz etwas über dich.
+--- antwort
+Bereite 60 bis 90 Sekunden vor und schreib sie **von Hand** auf:
+1. **Heute:** Wer bist du, was machst du gerade?
+2. **Weg:** Wie bist du zu Java gekommen?
+3. **Beweis:** Ein Projekt, das du selbst gebaut hast.
+4. **Ziel:** Warum passt diese Stelle?
+
+Sprich es ein paarmal laut, aber lerne es nicht Wort für Wort auswendig.
+
+=== FRAGE
+kategorie: Soft Skills
+frage: Warum Java und warum dieses Unternehmen?
+--- antwort
+Bleib konkret und ehrlich. Nenne einen Grund, der wirklich auf dich zutrifft, etwa was dir an Java Spaß macht oder welches Projekt dich überzeugt hat.
+
+Für das Unternehmen: Lies vorher die Stellenanzeige und die Webseite und notiere dir **zwei konkrete Punkte**, die dich ansprechen.
+
+=== FRAGE
+kategorie: Soft Skills
+frage: Was tust du, wenn du eine Frage nicht beantworten kannst?
+--- antwort
+Sag es offen und zeig, wie du denkst:
+
+„Das habe ich noch nicht benutzt. Ich würde vermuten, dass ... Prüfen würde ich das in der Dokumentation und mit einem kleinen Test.“
+
+Das wirkt besser als Raten. Du zeigst Ehrlichkeit und Vorgehen. Beides zählt bei Einsteigern viel.
+
+=== FRAGE
+kategorie: Soft Skills
+frage: Erzähl von einem Problem, das du gelöst hast.
+--- antwort
+Nutze die **STAR**-Struktur und schreib dir ein echtes Beispiel auf:
+- **S**ituation: Worum ging es?
+- **T**ask: Was war deine Aufgabe?
+- **A**ction: Was hast du konkret getan?
+- **R**esult: Was kam dabei heraus, und was hast du gelernt?
+
+Dein selbst gebautes Projekt ist dafür ein gutes Beispiel, etwa der Fehler bei der Überweisung.

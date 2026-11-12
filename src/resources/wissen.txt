@@ -1,0 +1,802 @@
+Kapitel 7: weitere wichtige Java-Themen.
+
+=== LEKTION
+id: comparator
+kapitel: 7 · Mehr Java-Wissen
+titel: Comparator – flexibel sortieren
+--- erklaerung
+`Comparable` legt **eine** natürliche Reihenfolge in der Klasse fest. Mit einem `Comparator` beschreibst du von außen **beliebig viele** Sortierregeln.
+
+```run
+List<String> namen = new ArrayList<>(List.of("Clara", "Bo", "Anna"));
+namen.sort(Comparator.naturalOrder());
+System.out.println(namen);                          // alphabetisch
+namen.sort(Comparator.comparing(String::length));
+System.out.println(namen);                          // nach Länge
+namen.sort(Comparator.comparing(String::length).reversed());
+System.out.println(namen);                          // längste zuerst
+```
+
+## Baustein für Baustein: Comparator
+```java
+namen.sort(Comparator.comparing(String::length).reversed());
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `namen.sort(...)` | Sortiert die Liste. In die Klammer kommt die **Sortierregel**. |
+| `Comparator` | Die Klasse für Sortierregeln. |
+| `.comparing(...)` | „Vergleiche nach ...“: baut eine Regel aus einer Eigenschaft. |
+| `String::length` | ... der Länge jedes Strings. Kurzform von `s -> s.length()`. |
+| `.reversed()` | Dreht die Regel um: längste zuerst. |
+| `.thenComparing(...)` | Hängt eine zweite Regel an, die nur bei Gleichstand zählt. |
+| `Comparator.naturalOrder()` | Die normale Reihenfolge: Zahlen aufsteigend, Texte alphabetisch. |
+
+Für Zahlen gibt es `Comparator.comparingInt(Person::alter)`, das ist etwas schneller.
+
+`thenComparing` legt fest, was bei Gleichstand gilt. So sortierst du zum Beispiel erst nach Alter und dann nach Name.
+--- aufgabe
+Sortiere die Personen **zuerst nach Alter aufsteigend** und bei gleichem Alter **nach Name**.
+
+```java
+Ben (25)
+Anna (30)
+Zoe (30)
+Carl (41)
+```
+--- tipps
+`personen.sort(...)` nimmt einen Comparator entgegen.
+Starte mit `Comparator.comparing(Person::alter)`.
+Hänge `.thenComparing(Person::name)` an.
+--- notizen
+Notiere den Unterschied zwischen `Comparable` und `Comparator`.
+Schreib einen Comparator mit `comparing` und `thenComparing` von Hand.
+--- code
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Person> personen = new ArrayList<>(List.of(
+                new Person("Zoe", 30), new Person("Carl", 41),
+                new Person("Anna", 30), new Person("Ben", 25)));
+
+        // TODO: sortieren
+
+        for (Person p : personen) {
+            System.out.println(p.name() + " (" + p.alter() + ")");
+        }
+    }
+}
+
+record Person(String name, int alter) {}
+--- loesung
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Person> personen = new ArrayList<>(List.of(
+                new Person("Zoe", 30), new Person("Carl", 41),
+                new Person("Anna", 30), new Person("Ben", 25)));
+
+        personen.sort(Comparator.comparing(Person::alter).thenComparing(Person::name));
+
+        for (Person p : personen) {
+            System.out.println(p.name() + " (" + p.alter() + ")");
+        }
+    }
+}
+
+record Person(String name, int alter) {}
+--- erwartet
+Ben (25)
+Anna (30)
+Zoe (30)
+Carl (41)
+--- muss
+Comparator
+
+=== LEKTION
+id: deque
+kapitel: 7 · Mehr Java-Wissen
+titel: Queue & Stack mit ArrayDeque
+--- erklaerung
+- **Queue (Warteschlange):** FIFO, wer zuerst kommt, ist zuerst dran.
+- **Stack (Stapel):** LIFO, was zuletzt kam, geht zuerst raus.
+
+`ArrayDeque` kann beides und ist die empfohlene Klasse. Die alte Klasse `Stack` nutzt man heute kaum noch.
+
+```run
+Deque<String> warteschlange = new ArrayDeque<>();
+warteschlange.addLast("Anna");
+warteschlange.addLast("Ben");
+System.out.println(warteschlange.pollFirst());   // Anna
+
+Deque<String> stapel = new ArrayDeque<>();
+stapel.push("erste Seite");
+stapel.push("zweite Seite");
+System.out.println(stapel.pop());                // zweite Seite
+System.out.println(stapel.peek());               // erste Seite
+```
+
+## Baustein für Baustein: eine Deque anlegen
+```java
+Deque<String> stapel = new ArrayDeque<>();
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `Deque` | Das Interface, sprich „Deck“: **D**ouble-**E**nded **Que**ue, eine Schlange mit zwei Enden. Man kann vorne und hinten anfügen und wegnehmen. |
+| `<String>` | Was darin liegt. |
+| `new ArrayDeque<>()` | Die konkrete Klasse, intern ein Array, das mitwächst. |
+
+| Methode | Bedeutung |
+|---|---|
+| `push` / `pop` / `peek` | Stack: oben ablegen, wegnehmen, anschauen |
+| `addLast` / `pollFirst` | Queue: hinten anstellen, vorne abholen |
+| `isEmpty` | Ist die Sammlung leer? |
+--- aufgabe
+Baue die „Zurück“-Funktion eines Browsers. `oeffne` legt die aktuelle Seite auf den Stapel und wechselt zur neuen Seite. `zurueck` holt die letzte Seite vom Stapel. Ist der Stapel leer, bleibt die aktuelle Seite.
+
+```java
+start
+news
+start
+start
+```
+--- tipps
+In `oeffne`: `verlauf.push(aktuell);`, dann `aktuell = url;`.
+In `zurueck`: Prüfe erst `verlauf.isEmpty()`.
+Ist er nicht leer, gilt `aktuell = verlauf.pop();`.
+--- notizen
+Zeichne einen Stack und eine Queue und trage die Reihenfolge von 3 Elementen ein.
+Notiere FIFO und LIFO mit je einem Alltagsbeispiel.
+--- code
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Browser b = new Browser("start");
+        System.out.println(b.aktuell);
+        b.oeffne("shop");
+        b.oeffne("news");
+        System.out.println(b.aktuell);
+        b.zurueck();
+        b.zurueck();
+        System.out.println(b.aktuell);
+        b.zurueck();
+        System.out.println(b.aktuell);
+    }
+}
+
+class Browser {
+    String aktuell;
+    private final Deque<String> verlauf = new ArrayDeque<>();
+
+    Browser(String startseite) {
+        aktuell = startseite;
+    }
+
+    void oeffne(String url) {
+        // TODO
+    }
+
+    void zurueck() {
+        // TODO
+    }
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Browser b = new Browser("start");
+        System.out.println(b.aktuell);
+        b.oeffne("shop");
+        b.oeffne("news");
+        System.out.println(b.aktuell);
+        b.zurueck();
+        b.zurueck();
+        System.out.println(b.aktuell);
+        b.zurueck();
+        System.out.println(b.aktuell);
+    }
+}
+
+class Browser {
+    String aktuell;
+    private final Deque<String> verlauf = new ArrayDeque<>();
+
+    Browser(String startseite) {
+        aktuell = startseite;
+    }
+
+    void oeffne(String url) {
+        verlauf.push(aktuell);
+        aktuell = url;
+    }
+
+    void zurueck() {
+        if (!verlauf.isEmpty()) {
+            aktuell = verlauf.pop();
+        }
+    }
+}
+--- erwartet
+start
+news
+start
+start
+
+=== LEKTION
+id: rekursion
+kapitel: 7 · Mehr Java-Wissen
+titel: Rekursion verstehen
+--- erklaerung
+Eine **rekursive** Methode ruft sich selbst mit einem kleineren Problem auf. Sie braucht immer zwei Teile:
+1. **Basisfall:** Hier endet die Rekursion.
+2. **Rekursiver Fall:** Die Methode ruft sich mit einem kleineren Wert auf.
+
+```run
+public class Main {
+    static int countdown(int n) {
+        if (n == 0) {                 // Basisfall
+            System.out.println("Start!");
+            return 0;
+        }
+        System.out.println(n);
+        return countdown(n - 1);      // rekursiver Fall
+    }
+
+    public static void main(String[] args) {
+        countdown(3);
+    }
+}
+```
+
+> **Probier das aus:** Starte dieses Beispiel mit **Schritt für Schritt** und beobachte, wie die Aufrufe im Stapel wachsen und wieder schrumpfen.
+--- aufgabe
+Löse alle drei Methoden **rekursiv, ohne Schleife**:
+- `fakultaet(5)`: 5 · 4 · 3 · 2 · 1
+- `summe(n)`: 1 + 2 + ... + n
+- `potenz(2, 10)`: 2 hoch 10
+
+```java
+120
+55
+1024
+```
+--- tipps
+`fakultaet(0)` und `fakultaet(1)` sind 1. Sonst gilt `n * fakultaet(n - 1)`.
+`summe(0)` ist 0. Sonst gilt `n + summe(n - 1)`.
+`potenz(b, 0)` ist 1. Sonst gilt `b * potenz(b, e - 1)`.
+--- notizen
+Zeichne den Aufrufstapel von `fakultaet(3)` auf Papier.
+Notiere die zwei Pflichtteile jeder Rekursion und was ohne Basisfall passiert.
+--- code
+public class Main {
+    static int fakultaet(int n) {
+        return 0; // TODO
+    }
+
+    static int summe(int n) {
+        return 0; // TODO
+    }
+
+    static int potenz(int basis, int exponent) {
+        return 0; // TODO
+    }
+//@@
+}
+--- loesung
+public class Main {
+    static int fakultaet(int n) {
+        if (n <= 1) return 1;
+        return n * fakultaet(n - 1);
+    }
+
+    static int summe(int n) {
+        if (n == 0) return 0;
+        return n + summe(n - 1);
+    }
+
+    static int potenz(int basis, int exponent) {
+        if (exponent == 0) return 1;
+        return basis * potenz(basis, exponent - 1);
+    }
+//@@
+}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(fakultaet(5));
+        System.out.println(summe(10));
+        System.out.println(potenz(2, 10));
+    }
+--- erwartet
+120
+55
+1024
+
+=== LEKTION
+id: optional
+kapitel: 7 · Mehr Java-Wissen
+titel: Optional statt null
+--- erklaerung
+Liefert eine Suche manchmal kein Ergebnis, zeigt `Optional<T>` das direkt im Rückgabetyp. So vergisst man die Prüfung seltener als bei `null`.
+
+```run
+Optional<String> voll = Optional.of("Anna");
+Optional<String> leer = Optional.empty();
+
+System.out.println(voll.isPresent());             // true
+System.out.println(leer.orElse("unbekannt"));     // unbekannt
+System.out.println(voll.map(String::length).orElse(0)); // 4
+```
+
+## Baustein für Baustein: Optional
+| Baustein | Was er bedeutet |
+|---|---|
+| `Optional<String>` | Eine **Schachtel**, die entweder einen String enthält oder leer ist. |
+| `Optional.of("Anna")` | Eine Schachtel **mit** Inhalt. |
+| `Optional.empty()` | Eine **leere** Schachtel. |
+| `.isPresent()` | Ist etwas drin? |
+| `.orElse("unbekannt")` | Gib den Inhalt heraus, oder diesen Ersatzwert, wenn die Schachtel leer ist. |
+| `.map(String::length)` | Wandle den Inhalt um, **falls** einer da ist. Eine leere Schachtel bleibt leer. |
+
+Streams liefern oft ein Optional, zum Beispiel `findFirst()` oder `max(...)`.
+--- aufgabe
+Implementiere `findeEmail`: Sie sucht einen Kunden nach Name und liefert seine E-Mail als `Optional`.
+
+```java
+anna@mail.de
+keine E-Mail gefunden
+```
+--- tipps
+Starte mit `kunden.stream().filter(k -> k.name().equals(name))`.
+`.findFirst()` liefert ein `Optional<Kunde>`.
+`.map(Kunde::email)` macht daraus ein `Optional<String>`.
+--- notizen
+Notiere 4 Optional-Methoden und wann du Optional nicht benutzen solltest.
+--- code
+import java.util.*;
+
+public class Main {
+    static final List<Kunde> kunden = List.of(new Kunde("Anna", "anna@mail.de"), new Kunde("Ben", "ben@mail.de"));
+
+    static Optional<String> findeEmail(String name) {
+        return Optional.empty(); // TODO
+    }
+//@@
+}
+
+record Kunde(String name, String email) {}
+--- loesung
+import java.util.*;
+
+public class Main {
+    static final List<Kunde> kunden = List.of(new Kunde("Anna", "anna@mail.de"), new Kunde("Ben", "ben@mail.de"));
+
+    static Optional<String> findeEmail(String name) {
+        return kunden.stream()
+                .filter(k -> k.name().equals(name))
+                .findFirst()
+                .map(Kunde::email);
+    }
+//@@
+}
+
+record Kunde(String name, String email) {}
+--- gemeinsam
+
+    public static void main(String[] args) {
+        System.out.println(findeEmail("Anna").orElse("keine E-Mail gefunden"));
+        System.out.println(findeEmail("Xaver").orElse("keine E-Mail gefunden"));
+    }
+--- erwartet
+anna@mail.de
+keine E-Mail gefunden
+
+=== LEKTION
+id: lesen
+kapitel: 7 · Mehr Java-Wissen
+titel: Text zeilenweise lesen
+--- erklaerung
+Dateien liest man meist Zeile für Zeile. In der Sandbox sind echte Dateien gesperrt, deshalb nutzen wir einen `StringReader`. Das Muster bleibt bei einer Datei genau gleich.
+
+```java
+try (BufferedReader r = new BufferedReader(new FileReader("daten.txt"))) {
+    String zeile;
+    while ((zeile = r.readLine()) != null) {
+        System.out.println(zeile);
+    }
+} catch (IOException e) {
+    System.out.println("Fehler: " + e.getMessage());
+}
+```
+
+## Baustein für Baustein: Zeilen lesen
+| Baustein | Was er bedeutet |
+|---|---|
+| `try ( ... )` | **try-with-resources**: Was in dieser runden Klammer erzeugt wird, schließt Java am Ende automatisch, auch bei einem Fehler. |
+| `new BufferedReader(new FileReader("daten.txt"))` | Von innen nach außen: `FileReader` öffnet die Datei, `BufferedReader` legt einen Puffer darum und bietet `readLine()`. |
+| `String zeile;` | Eine Variable ohne Startwert, sie wird in der Schleife gefüllt. |
+| `zeile = r.readLine()` | Liest die nächste Zeile. Am Dateiende liefert `readLine()` `null`. |
+| `( ... ) != null` | Der Wert der Zuweisung wird direkt geprüft: Weiter, solange eine Zeile gelesen wurde. |
+| `while ((zeile = r.readLine()) != null)` | Zusammen: „Lies eine Zeile, und solange es eine gab, führe den Block aus.“ Die doppelte Klammer ist nötig, damit erst zugewiesen und dann verglichen wird. |
+
+`try (...)` schließt den Reader automatisch. `IOException` ist eine **checked Exception**, du musst sie also behandeln.
+
+Modern und kurz geht es mit `Files.readAllLines(Path.of("daten.txt"))`.
+--- aufgabe
+Lies die CSV-Zeilen aus `DATEN`. Zähle die Zeilen und addiere die Beträge in der zweiten Spalte. Ein Beispiel für eine Zeile ist `Miete;800`.
+
+```java
+Zeilen: 3
+Summe: 1000
+```
+--- tipps
+Lies in einer `while`-Schleife mit `readLine()` bis `null`.
+`zeile.split(";")` trennt die Spalten.
+`Integer.parseInt(teile[1])` macht aus dem Betrag eine Zahl.
+--- notizen
+Schreib das BufferedReader-Muster mit try-with-resources aus dem Kopf.
+--- code
+import java.io.*;
+
+public class Main {
+    static final String DATEN = "Miete;800\nEssen;150\nInternet;50";
+
+    public static void main(String[] args) {
+        int zeilen = 0;
+        int summe = 0;
+
+        // TODO: mit BufferedReader und StringReader(DATEN) lesen
+
+        System.out.println("Zeilen: " + zeilen);
+        System.out.println("Summe: " + summe);
+    }
+}
+--- loesung
+import java.io.*;
+
+public class Main {
+    static final String DATEN = "Miete;800\nEssen;150\nInternet;50";
+
+    public static void main(String[] args) {
+        int zeilen = 0;
+        int summe = 0;
+
+        try (BufferedReader r = new BufferedReader(new StringReader(DATEN))) {
+            String zeile;
+            while ((zeile = r.readLine()) != null) {
+                String[] teile = zeile.split(";");
+                summe += Integer.parseInt(teile[1]);
+                zeilen++;
+            }
+        } catch (IOException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+
+        System.out.println("Zeilen: " + zeilen);
+        System.out.println("Summe: " + summe);
+    }
+}
+--- erwartet
+Zeilen: 3
+Summe: 1000
+--- muss
+BufferedReader
+try (
+
+=== LEKTION
+id: threads
+kapitel: 7 · Mehr Java-Wissen
+titel: Threads & Race Conditions
+--- erklaerung
+Ein **Thread** ist ein eigener Ausführungsstrang. Mehrere Threads laufen gleichzeitig.
+
+```run
+Thread t = new Thread(() -> System.out.println("Hallo aus dem Thread"));
+t.start();                 // startet parallel
+try {
+    t.join();              // wartet auf das Ende
+} catch (InterruptedException e) {
+    System.out.println("unterbrochen");
+}
+System.out.println("main ist fertig");
+```
+
+## Baustein für Baustein: einen Thread starten
+| Baustein | Was er bedeutet |
+|---|---|
+| `new Thread( ... )` | Erzeugt einen neuen Ausführungsstrang. Er läuft noch nicht. |
+| `() -> System.out.println(...)` | Ein Lambda **ohne Parameter**, daher die leeren Klammern. Das ist die Arbeit, die der Thread erledigen soll. |
+| `t.start()` | Startet den Thread. Ab jetzt läuft er **gleichzeitig** mit `main` weiter. |
+| `t.join()` | `main` wartet an dieser Stelle, bis der Thread fertig ist. |
+| `catch (InterruptedException e)` | `join` kann unterbrochen werden. Das ist eine checked Exception, darum muss sie behandelt werden. |
+
+## Race Condition
+`zaehler++` sieht aus wie ein Schritt, besteht aber aus dreien: lesen, erhöhen, schreiben. Machen zwei Threads das gleichzeitig, gehen Erhöhungen verloren.
+
+Lösungen:
+- `AtomicInteger`: Erhöht den Wert atomar, also ohne Unterbrechung.
+- `synchronized`: Nur ein Thread darf den Block gleichzeitig betreten.
+--- aufgabe
+Führe den Code mehrmals aus. Das Ergebnis ist meist kleiner als 200000. Mach den Zähler mit `AtomicInteger` sicher.
+
+```java
+Zähler: 200000
+```
+--- tipps
+`import java.util.concurrent.atomic.AtomicInteger;`
+`static AtomicInteger zaehler = new AtomicInteger();`
+Erhöhen mit `incrementAndGet()`, lesen mit `get()`.
+--- notizen
+Erkläre von Hand, warum `zaehler++` nicht threadsicher ist.
+Notiere den Unterschied zwischen `synchronized`, `volatile` und `AtomicInteger`.
+--- code
+public class Main {
+    static int zaehler = 0;
+
+    public static void main(String[] args) throws InterruptedException {
+        Runnable arbeit = () -> {
+            for (int i = 0; i < 100000; i++) {
+                zaehler++;
+            }
+        };
+        Thread a = new Thread(arbeit);
+        Thread b = new Thread(arbeit);
+        a.start();
+        b.start();
+        a.join();
+        b.join();
+        System.out.println("Zähler: " + zaehler);
+    }
+}
+--- loesung
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class Main {
+    static AtomicInteger zaehler = new AtomicInteger();
+
+    public static void main(String[] args) throws InterruptedException {
+        Runnable arbeit = () -> {
+            for (int i = 0; i < 100000; i++) {
+                zaehler.incrementAndGet();
+            }
+        };
+        Thread a = new Thread(arbeit);
+        Thread b = new Thread(arbeit);
+        a.start();
+        b.start();
+        a.join();
+        b.join();
+        System.out.println("Zähler: " + zaehler.get());
+    }
+}
+--- erwartet
+Zähler: 200000
+--- muss
+AtomicInteger
+
+=== LEKTION
+id: patterns
+kapitel: 7 · Mehr Java-Wissen
+titel: Design Pattern: Strategy
+--- erklaerung
+**Design Patterns** sind bewährte Lösungen für häufige Probleme. Für den Einstieg reichen diese vier:
+
+| Pattern | Idee |
+|---|---|
+| **Strategy** | Austauschbare Algorithmen hinter einem Interface |
+| **Factory** | Eine Methode entscheidet, welches Objekt erzeugt wird |
+| **Builder** | Objekte mit vielen Optionen lesbar zusammenbauen |
+| **Singleton** | Von einer Klasse gibt es genau ein Objekt |
+
+**Strategy** ersetzt lange `if`-Ketten. Für eine neue Variante schreibst du eine neue Klasse oder ein Lambda und änderst den alten Code nicht. Genau das meint das **Open/Closed-Prinzip**.
+
+```java
+interface Versand {
+    double kosten(double gewicht);
+}
+Versand express = gewicht -> 5 + gewicht * 2;
+```
+## Baustein für Baustein: ein Lambda als Strategie
+| Baustein | Was er bedeutet |
+|---|---|
+| `interface Versand` | Der Vertrag: Jede Versandart muss `kosten` berechnen können. |
+| `double kosten(double gewicht);` | Die **einzige** Methode. Darum darf man das Interface mit einem Lambda ausfüllen. |
+| `Versand express =` | Eine Variable vom Typ des Interfaces. |
+| `gewicht -> 5 + gewicht * 2` | Das Lambda **ist** die Methode `kosten`: Es bekommt das Gewicht und liefert die Kosten. |
+| `express.kosten(3)` | So ruft man die Strategie auf, Ergebnis `11.0`. |
+
+--- aufgabe
+Implementiere im `Shop` die Methode `preis`. Baue dazu die Strategien `keinRabatt`, `zehnProzent` und `fuenfEuro` als Lambdas.
+
+```java
+100.0
+90.0
+95.0
+```
+--- tipps
+`Rabatt` hat genau eine Methode, also passt ein Lambda.
+`zehnProzent` ist `p -> p * 0.9`.
+`preis` ruft nur `rabatt.anwenden(betrag)` auf.
+--- notizen
+Notiere die 4 Patterns mit je einem Beispiel aus dem Alltag.
+Schreib das Strategy-Beispiel von Hand auf und erkläre das Open/Closed-Prinzip.
+--- code
+public class Main {
+    interface Rabatt {
+        double anwenden(double preis);
+    }
+
+    static double preis(double betrag, Rabatt rabatt) {
+        return 0; // TODO
+    }
+
+    public static void main(String[] args) {
+        Rabatt keinRabatt = p -> 0;    // TODO
+        Rabatt zehnProzent = p -> 0;   // TODO
+        Rabatt fuenfEuro = p -> 0;     // TODO
+
+        System.out.println(preis(100, keinRabatt));
+        System.out.println(preis(100, zehnProzent));
+        System.out.println(preis(100, fuenfEuro));
+    }
+}
+--- loesung
+public class Main {
+    interface Rabatt {
+        double anwenden(double preis);
+    }
+
+    static double preis(double betrag, Rabatt rabatt) {
+        return rabatt.anwenden(betrag);
+    }
+
+    public static void main(String[] args) {
+        Rabatt keinRabatt = p -> p;
+        Rabatt zehnProzent = p -> p * 0.9;
+        Rabatt fuenfEuro = p -> p - 5;
+
+        System.out.println(preis(100, keinRabatt));
+        System.out.println(preis(100, zehnProzent));
+        System.out.println(preis(100, fuenfEuro));
+    }
+}
+--- erwartet
+100.0
+90.0
+95.0
+
+=== LEKTION
+id: testen
+kapitel: 7 · Mehr Java-Wissen
+titel: Unit-Tests verstehen
+--- erklaerung
+Ein **Unit-Test** prüft automatisch ein kleines Stück Code. Im Job nutzt man dafür meist **JUnit**:
+
+```java
+@Test
+void schaltjahrDurch400() {
+    assertTrue(Datum.istSchaltjahr(2000));
+}
+```
+
+| Baustein | Was er bedeutet |
+|---|---|
+| `@Test` | Eine **Annotation**: Sie sagt JUnit „Das hier ist ein Test, führ ihn aus.“ |
+| `void schaltjahrDurch400()` | Ein Test ist eine normale Methode ohne Rückgabe. Der Name beschreibt, was geprüft wird. |
+| `assertTrue( ... )` | „Ich behaupte, das ist `true`.“ Ist es `false`, schlägt der Test fehl. Ebenso gibt es `assertEquals(erwartet, tatsaechlich)`. |
+
+Der Aufbau heißt **Arrange, Act, Assert**: vorbereiten, ausführen, prüfen.
+
+Hier baust du eine Mini-Version, denn das Prinzip ist genau gleich. Teste immer auch die **Randfälle**.
+
+> **Regel:** Ein Jahr ist ein Schaltjahr, wenn es durch 4 teilbar ist. Ausnahme: Durch 100 teilbare Jahre sind keines, außer sie sind auch durch 400 teilbar.
+--- aufgabe
+Die Tests decken einen Fehler in `istSchaltjahr` auf. Führe den Code aus, lies die fehlgeschlagenen Tests und repariere die Methode.
+
+```java
+4 von 4 Tests bestanden
+```
+--- tipps
+Welche Testfälle schlagen fehl? 1900 ist der Hinweis.
+Durch 100 teilbare Jahre sind nur mit 400 ein Schaltjahr.
+`j % 4 == 0 && (j % 100 != 0 || j % 400 == 0)`
+--- notizen
+Notiere Arrange, Act, Assert und schreib dazu einen kleinen Test von Hand.
+Schreib 3 Randfälle für eine Methode auf, die den Durchschnitt eines Arrays berechnet.
+--- code
+public class Main {
+    static boolean istSchaltjahr(int j) {
+        return j % 4 == 0;   // hier steckt der Fehler
+    }
+//@@
+}
+--- loesung
+public class Main {
+    static boolean istSchaltjahr(int j) {
+        return j % 4 == 0 && (j % 100 != 0 || j % 400 == 0);
+    }
+//@@
+}
+--- gemeinsam
+
+    static int bestanden = 0;
+
+    static void pruefe(String name, boolean erwartet, boolean ergebnis) {
+        if (erwartet == ergebnis) {
+            bestanden++;
+        } else {
+            System.out.println("FEHLGESCHLAGEN: " + name + " erwartet " + erwartet);
+        }
+    }
+
+    public static void main(String[] args) {
+        pruefe("2024", true, istSchaltjahr(2024));
+        pruefe("2023", false, istSchaltjahr(2023));
+        pruefe("1900", false, istSchaltjahr(1900));
+        pruefe("2000", true, istSchaltjahr(2000));
+        System.out.println(bestanden + " von 4 Tests bestanden");
+    }
+--- erwartet
+4 von 4 Tests bestanden
+
+=== LEKTION
+id: cleancode
+kapitel: 7 · Mehr Java-Wissen
+titel: Clean Code – Code aufräumen
+--- erklaerung
+Code wird viel öfter gelesen als geschrieben. Diese Regeln bringen am meisten:
+- **Sprechende Namen:** `nettoPreis` statt `x`.
+- **Kleine Methoden:** Jede Methode macht genau eine Sache.
+- **Keine Wiederholung (DRY):** Doppelten Code in eine Methode ziehen.
+- **Keine magischen Zahlen:** `MWST_SATZ` statt `0.19`.
+
+Das Umbauen von Code, ohne sein Verhalten zu ändern, heißt **Refactoring**.
+--- aufgabe
+Das Programm funktioniert, ist aber schlecht lesbar. Räume es auf, **ohne die Ausgabe zu ändern**:
+- Führe die Konstante `MWST_SATZ` ein.
+- Ziehe die doppelte Rechnung in eine Methode `berechneBrutto(double netto)`.
+- Benenne die Variablen sinnvoll um.
+
+```java
+119.0
+59.5
+```
+--- tipps
+`static final double MWST_SATZ = 0.19;`
+`static double berechneBrutto(double netto) { ... }`
+Die Methode gibt `netto * (1 + MWST_SATZ)` zurück.
+--- notizen
+Schreib die 4 Clean-Code-Regeln auf und erkläre den Begriff Refactoring.
+--- code
+public class Main {
+    public static void main(String[] args) {
+        double a = 100;
+        double b = a + a * 0.19;
+        System.out.println(b);
+        double c = 50;
+        double d = c + c * 0.19;
+        System.out.println(d);
+    }
+}
+--- loesung
+public class Main {
+    static final double MWST_SATZ = 0.19;
+
+    static double berechneBrutto(double netto) {
+        return netto + netto * MWST_SATZ;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(berechneBrutto(100));
+        System.out.println(berechneBrutto(50));
+    }
+}
+--- erwartet
+119.0
+59.5
+--- muss
+MWST_SATZ
+berechneBrutto

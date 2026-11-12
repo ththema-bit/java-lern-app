@@ -1,0 +1,399 @@
+Interview-Fragen. "=== FRAGE" startet eine Frage, "--- antwort" die Antwort (Mini-Markdown).
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Was ist der Unterschied zwischen JDK, JRE und JVM?
+--- antwort
+- **JVM** (Java Virtual Machine): führt den Bytecode aus. Kümmert sich um Speicherverwaltung (Garbage Collection) und optimiert zur Laufzeit (JIT-Compiler).
+- **JRE** (Java Runtime Environment): JVM + Standardbibliotheken – alles, was man zum **Ausführen** braucht.
+- **JDK** (Java Development Kit): JRE + Entwicklerwerkzeuge wie `javac` (Compiler), `jar`, Debugger – zum **Entwickeln**.
+
+Seit Java 11 gibt es offiziell meist nur noch das JDK.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Warum ist Java plattformunabhängig?
+--- antwort
+Der Compiler erzeugt keinen Maschinencode, sondern **Bytecode** (`.class`-Dateien). Dieser läuft auf jeder **JVM** – und JVMs gibt es für Windows, Linux, macOS usw. Deshalb: *"Write once, run anywhere"*. Plattformabhängig ist also die JVM, nicht dein Programm.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Was ist der Unterschied zwischen == und equals()?
+--- antwort
+- `==` vergleicht bei primitiven Typen die **Werte**, bei Objekten die **Referenzen** (ist es *dasselbe* Objekt im Speicher?).
+- `equals()` vergleicht den **Inhalt** – sofern die Klasse es sinnvoll überschreibt (String, Integer, Records tun das).
+
+```java
+String a = new String("Hi");
+String b = new String("Hi");
+a == b        // false – zwei Objekte
+a.equals(b)   // true  – gleicher Inhalt
+```
+Strings und Objekte also **immer mit equals()** vergleichen.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Warum ist String immutable (unveränderlich)?
+--- antwort
+- **Sicherheit:** Strings werden für Pfade, URLs, Passwörter, Klassennamen benutzt – sie dürfen nicht nachträglich verändert werden.
+- **String-Pool:** Gleiche Literale können sich ein Objekt teilen – das geht nur, wenn niemand es ändern kann.
+- **Thread-Sicherheit:** Unveränderliche Objekte kann man gefahrlos zwischen Threads teilen.
+- **Hashing:** Der `hashCode` kann gecacht werden – ideal als HashMap-Key.
+
+Methoden wie `toUpperCase()` liefern daher immer einen **neuen** String.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: String vs. StringBuilder vs. StringBuffer?
+--- antwort
+| | veränderbar? | thread-safe? | Einsatz |
+|---|---|---|---|
+| `String` | nein | ja (immutable) | Standard für Text |
+| `StringBuilder` | ja | nein | viel Text zusammenbauen, z. B. in Schleifen |
+| `StringBuffer` | ja | ja (synchronized) | veraltet, selten nötig |
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Was ist der Unterschied zwischen primitiven Typen und Wrapper-Klassen? Was ist Autoboxing?
+--- antwort
+- **Primitive Typen** (`int`, `double`, `boolean` ...) speichern direkt den Wert, sind schnell und können nicht `null` sein.
+- **Wrapper-Klassen** (`Integer`, `Double`, `Boolean` ...) sind Objekte. Nötig für Collections (`List<Integer>`) und Generics, können `null` sein.
+- **Autoboxing:** automatische Umwandlung `int` → `Integer`, **Unboxing** umgekehrt.
+
+**Falle:** Unboxing von `null` wirft eine NullPointerException. Und `Integer` mit `==` vergleichen ist gefährlich: Werte von -128 bis 127 sind gecacht, darüber sind es verschiedene Objekte → immer `equals()`.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Ist Java pass-by-value oder pass-by-reference?
+--- antwort
+**Immer pass-by-value.** Beim Methodenaufruf wird eine Kopie des Werts übergeben.
+
+Bei Objekten ist der Wert eine **Referenz** – die Kopie zeigt auf dasselbe Objekt. Daher kann die Methode das Objekt verändern (`liste.add(...)`), aber die Variable des Aufrufers nicht auf ein anderes Objekt umbiegen (`liste = new ArrayList<>()` wirkt nur lokal).
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Was bedeutet static?
+--- antwort
+`static` bedeutet: **gehört zur Klasse, nicht zu einem Objekt.**
+- **static-Feld:** existiert einmal für alle Objekte (z. B. ein Zähler).
+- **static-Methode:** Aufruf über den Klassennamen (`Math.max(a, b)`), kein `this`, kann nicht direkt auf Instanzfelder zugreifen.
+- **static-Block:** läuft einmal beim Laden der Klasse.
+- `main` ist static, damit die JVM sie ohne Objekt aufrufen kann.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: final, finally, finalize – was ist der Unterschied?
+--- antwort
+- `final`: Variable nur einmal zuweisbar, Methode nicht überschreibbar, Klasse nicht vererbbar.
+- `finally`: Block nach `try/catch`, der **immer** ausgeführt wird (z. B. zum Aufräumen). Ausnahme: `System.exit()` oder JVM-Absturz.
+- `finalize()`: alte Methode, die der Garbage Collector vor dem Löschen aufrief. **Deprecated** – nicht benutzen, stattdessen try-with-resources.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Was ist der Unterschied zwischen Stack und Heap?
+--- antwort
+- **Stack:** pro Thread; speichert Methodenaufrufe, lokale Variablen und Referenzen. Schnell, wird automatisch beim Verlassen der Methode freigegeben. Zu tiefe Rekursion → `StackOverflowError`.
+- **Heap:** gemeinsamer Speicher für alle **Objekte** (`new`). Wird vom **Garbage Collector** aufgeräumt. Voll → `OutOfMemoryError`.
+
+=== FRAGE
+kategorie: Grundlagen
+frage: Wie funktioniert der Garbage Collector?
+--- antwort
+Der GC gibt automatisch Speicher von Objekten frei, die **nicht mehr erreichbar** sind (keine Referenz von einer "Wurzel" wie lokalen Variablen oder static-Feldern führt mehr dorthin).
+
+Der Heap ist in **Generationen** eingeteilt: Die meisten Objekte sterben jung ("Young Generation"), langlebige wandern in die "Old Generation". Standard-GC heute ist **G1**. Man kann den GC mit `System.gc()` nur *bitten*, nicht zwingen.
+
+Speicherlecks gibt es trotzdem – wenn man ungewollt Referenzen hält (z. B. in statischen Listen).
+
+=== FRAGE
+kategorie: OOP
+frage: Was sind die 4 Säulen der Objektorientierung?
+--- antwort
+- **Kapselung:** Daten `private`, Zugriff nur über Methoden. Schützt den gültigen Zustand.
+- **Vererbung:** Eine Klasse übernimmt Eigenschaften einer anderen (`extends`) – "ist-ein"-Beziehung, Wiederverwendung.
+- **Polymorphie:** Ein Objekt kann über den Typ seiner Oberklasse/seines Interfaces benutzt werden; welche Methode läuft, entscheidet sich zur Laufzeit.
+- **Abstraktion:** Nur das Wesentliche nach außen zeigen (Interfaces, abstrakte Klassen), Details verbergen.
+
+Tipp: Zu jeder Säule ein kurzes Beispiel parat haben (z. B. Konto, Tier/Hund, Form/Kreis).
+
+=== FRAGE
+kategorie: OOP
+frage: Was ist der Unterschied zwischen Overloading und Overriding?
+--- antwort
+- **Overloading (Überladen):** gleicher Methodenname, **andere Parameter**, in derselben Klasse. Wird beim **Kompilieren** entschieden. Beispiel: `println(int)`, `println(String)`.
+- **Overriding (Überschreiben):** Unterklasse implementiert eine Methode der Oberklasse mit **gleicher Signatur** neu. Wird zur **Laufzeit** entschieden (Polymorphie). Mit `@Override` markieren.
+
+=== FRAGE
+kategorie: OOP
+frage: Interface vs. abstrakte Klasse – wann nimmst du was?
+--- antwort
+| | Interface | abstrakte Klasse |
+|---|---|---|
+| Mehrfach | eine Klasse kann viele implementieren | nur eine Oberklasse |
+| Zustand | keine Instanzfelder (nur Konstanten) | Felder erlaubt |
+| Konstruktor | nein | ja |
+| Methoden | abstrakt, default, static, private | alles |
+
+**Faustregel:** Interface für eine **Fähigkeit/einen Vertrag** ("kann bezahlen", `Comparable`). Abstrakte Klasse, wenn mehrere eng verwandte Klassen **gemeinsamen Code und Zustand** teilen. Im Zweifel Interface – es ist flexibler.
+
+=== FRAGE
+kategorie: OOP
+frage: Was bedeutet "Komposition statt Vererbung"?
+--- antwort
+Statt eine Klasse von einer anderen erben zu lassen ("ist-ein"), hält sie ein Objekt der anderen Klasse als Feld ("hat-ein") und delegiert Aufrufe.
+
+**Vorteile:** lockere Kopplung, Verhalten zur Laufzeit austauschbar, keine fragilen Vererbungshierarchien. Beispiel: Ein `Auto` *hat einen* `Motor` – es *ist kein* Motor.
+
+Vererbung nur bei echter ist-ein-Beziehung verwenden.
+
+=== FRAGE
+kategorie: OOP
+frage: Was ist der equals/hashCode-Vertrag?
+--- antwort
+- Wenn `a.equals(b)` → dann **muss** `a.hashCode() == b.hashCode()` gelten.
+- Gleicher hashCode → nicht zwingend equals (Kollisionen sind erlaubt).
+- equals muss reflexiv, symmetrisch, transitiv und konsistent sein; `x.equals(null)` ist false.
+
+**Darum immer beide zusammen überschreiben!** Sonst findet eine `HashMap`/ein `HashSet` gleiche Objekte nicht wieder, weil zuerst über den hashCode der Bucket gesucht wird. Bequem: `Objects.hash(...)` oder gleich ein `record`.
+
+=== FRAGE
+kategorie: OOP
+frage: Was ist ein Record?
+--- antwort
+Ein `record` (seit Java 16) ist eine kompakte, **unveränderliche Datenklasse**:
+
+```java
+record Person(String name, int alter) {}
+```
+Der Compiler erzeugt automatisch: Konstruktor, private final Felder, Zugriffsmethoden (`name()`, `alter()`), `equals`, `hashCode` und `toString`. Ideal für DTOs und Werte-Objekte.
+
+=== FRAGE
+kategorie: OOP
+frage: Was sind die SOLID-Prinzipien?
+--- antwort
+- **S**ingle Responsibility: Eine Klasse hat genau eine Aufgabe/einen Grund zur Änderung.
+- **O**pen/Closed: Offen für Erweiterung, geschlossen für Änderung (z. B. neue Klasse statt if-Kaskade).
+- **L**iskov Substitution: Unterklassen müssen überall funktionieren, wo die Oberklasse erwartet wird.
+- **I**nterface Segregation: Lieber viele kleine Interfaces als ein riesiges.
+- **D**ependency Inversion: Von Abstraktionen (Interfaces) abhängen, nicht von konkreten Klassen – Grundlage für Dependency Injection (z. B. in Spring).
+
+=== FRAGE
+kategorie: Collections
+frage: Was ist der Unterschied zwischen List, Set und Map?
+--- antwort
+- **List:** geordnet, Zugriff per Index, **Duplikate erlaubt**. (`ArrayList`, `LinkedList`)
+- **Set:** **keine Duplikate**, meist ohne Index. (`HashSet`, `LinkedHashSet`, `TreeSet`)
+- **Map:** **Schlüssel → Wert**, Schlüssel eindeutig. (`HashMap`, `LinkedHashMap`, `TreeMap`). Map erbt nicht von `Collection`.
+
+=== FRAGE
+kategorie: Collections
+frage: ArrayList vs. LinkedList?
+--- antwort
+- **ArrayList:** intern ein Array. `get(i)` in O(1). Einfügen/Löschen in der Mitte O(n), weil Elemente verschoben werden. Speichereffizient, cache-freundlich.
+- **LinkedList:** doppelt verkettete Liste. `get(i)` in O(n). Einfügen/Löschen an bekannter Position O(1). Mehr Speicher pro Element.
+
+In der Praxis ist **ArrayList fast immer schneller** und die Standardwahl.
+
+=== FRAGE
+kategorie: Collections
+frage: Wie funktioniert eine HashMap intern?
+--- antwort
+1. Intern gibt es ein **Array von Buckets**.
+2. `put(key, value)`: aus `key.hashCode()` wird der Bucket-Index berechnet.
+3. Mehrere Keys im selben Bucket (**Kollision**) werden als verkettete Liste gespeichert – ab 8 Einträgen als **Rot-Schwarz-Baum** (seit Java 8).
+4. `get(key)`: Bucket über hashCode finden, dann mit `equals()` den richtigen Eintrag suchen.
+5. Ist die Map zu 75 % gefüllt (**Load Factor 0.75**), wird das Array verdoppelt und alles neu verteilt (**Rehashing**).
+
+Durchschnittlich O(1) für get/put. Erlaubt einen `null`-Key. Nicht thread-safe → `ConcurrentHashMap`.
+
+=== FRAGE
+kategorie: Collections
+frage: HashMap vs. LinkedHashMap vs. TreeMap?
+--- antwort
+- **HashMap:** keine garantierte Reihenfolge, O(1).
+- **LinkedHashMap:** behält die **Einfügereihenfolge** (oder Zugriffsreihenfolge → LRU-Cache), O(1).
+- **TreeMap:** **sortiert** nach Key (Comparable oder Comparator), O(log n), Rot-Schwarz-Baum.
+
+=== FRAGE
+kategorie: Collections
+frage: Was ist eine ConcurrentModificationException und wie vermeidet man sie?
+--- antwort
+Sie entsteht, wenn man eine Collection **verändert, während man mit einem Iterator (for-each) darüber läuft**.
+
+Lösungen:
+- `liste.removeIf(x -> bedingung)`
+- expliziter `Iterator` mit `it.remove()`
+- über eine Kopie iterieren
+- bei mehreren Threads: `CopyOnWriteArrayList` bzw. `ConcurrentHashMap`
+
+=== FRAGE
+kategorie: Collections
+frage: Comparable vs. Comparator?
+--- antwort
+- **Comparable** (`compareTo`): die **natürliche Ordnung**, in der Klasse selbst implementiert. Es gibt nur eine. Beispiel: String alphabetisch.
+- **Comparator** (`compare`): eine **externe** Sortierregel, beliebig viele möglich.
+
+```java
+personen.sort(Comparator.comparing(Person::getAlter)
+                        .thenComparing(Person::getName)
+                        .reversed());
+```
+
+=== FRAGE
+kategorie: Exceptions
+frage: Was ist der Unterschied zwischen checked und unchecked Exceptions?
+--- antwort
+- **Checked** (Unterklassen von `Exception`, aber nicht von `RuntimeException`): Der **Compiler erzwingt** Behandlung mit `try/catch` oder `throws`. Für erwartbare, äußere Probleme: `IOException`, `SQLException`.
+- **Unchecked** (`RuntimeException` und Unterklassen): keine Pflicht. Meist Programmierfehler: `NullPointerException`, `IllegalArgumentException`, `IndexOutOfBoundsException`.
+- **Error** (`OutOfMemoryError`, `StackOverflowError`): schwere JVM-Probleme, sollte man nicht fangen.
+
+=== FRAGE
+kategorie: Exceptions
+frage: Läuft finally immer? Was ist try-with-resources?
+--- antwort
+`finally` läuft immer – auch nach `return` im try-Block oder wenn eine Exception fliegt. Ausnahmen: `System.exit()`, JVM-Absturz, Endlosschleife im try.
+
+**try-with-resources** (seit Java 7) schließt Ressourcen automatisch, die `AutoCloseable` implementieren:
+```java
+try (Connection c = dataSource.getConnection()) {
+    // ...
+}   // c.close() automatisch, auch bei Exception
+```
+Kürzer und sicherer als ein manuelles `finally { close(); }`.
+
+=== FRAGE
+kategorie: Exceptions
+frage: Wie vermeidest du NullPointerExceptions?
+--- antwort
+- Methoden möglichst nie `null` zurückgeben lassen – lieber leere Collections oder `Optional`.
+- `Objects.requireNonNull(param)` am Anfang von Methoden/Konstruktoren.
+- Vergleiche "rückwärts": `"text".equals(eingabe)` statt `eingabe.equals("text")`.
+- `Optional<T>` für "Wert oder nichts" bei Rückgaben.
+- Annotationen wie `@NonNull` + statische Analyse.
+
+Seit Java 14 zeigen **Helpful NullPointerExceptions** genau, welche Variable null war.
+
+=== FRAGE
+kategorie: Java 8+
+frage: Was ist ein Lambda-Ausdruck und ein Functional Interface?
+--- antwort
+Ein **Functional Interface** hat genau **eine abstrakte Methode** (z. B. `Runnable`, `Comparator`, `Predicate<T>`, `Function<T,R>`, `Consumer<T>`, `Supplier<T>`). Optional mit `@FunctionalInterface` markiert.
+
+Ein **Lambda** ist eine kompakte Implementierung davon:
+```java
+Predicate<String> istLang = s -> s.length() > 5;
+Comparator<String> c = (a, b) -> a.compareTo(b);
+```
+**Methodenreferenzen** sind noch kürzer: `String::toUpperCase`, `System.out::println`.
+
+=== FRAGE
+kategorie: Java 8+
+frage: Was ist die Stream-API? Was ist der Unterschied zwischen intermediate und terminal operations?
+--- antwort
+Streams verarbeiten Daten **deklarativ** in einer Pipeline: Quelle → Zwischenoperationen → Endoperation.
+
+- **Intermediate** (`filter`, `map`, `sorted`, `distinct`, `limit`): liefern wieder einen Stream und sind **lazy** – sie laufen erst, wenn eine Endoperation kommt.
+- **Terminal** (`collect`, `forEach`, `count`, `sum`, `reduce`, `findFirst`): starten die Verarbeitung und liefern ein Ergebnis.
+
+Ein Stream ist nur **einmal** benutzbar und verändert die Quelle nicht. `map` = 1:1 umwandeln, `flatMap` = Listen von Listen "flach machen".
+
+=== FRAGE
+kategorie: Java 8+
+frage: Was ist Optional und wofür benutzt man es?
+--- antwort
+`Optional<T>` ist ein Behälter, der **einen Wert oder nichts** enthält. Damit wird im Methoden-Rückgabetyp sichtbar, dass es eventuell kein Ergebnis gibt – statt heimlich `null` zurückzugeben.
+
+```java
+Optional<User> u = repo.findById(42);
+String name = u.map(User::getName).orElse("unbekannt");
+```
+Nicht als Feld- oder Parametertyp benutzen und nicht `get()` ohne Prüfung aufrufen.
+
+=== FRAGE
+kategorie: Nebenläufigkeit
+frage: Wie erzeugt man Threads? Was bedeutet synchronized?
+--- antwort
+- `new Thread(() -> ...).start()` bzw. `Runnable` / `Callable` übergeben.
+- In der Praxis besser ein **ExecutorService** (Thread-Pool): `Executors.newFixedThreadPool(4)`. Seit Java 21 gibt es **virtuelle Threads**.
+
+`synchronized` sorgt dafür, dass immer nur **ein Thread gleichzeitig** einen Block/eine Methode ausführt (Lock auf ein Objekt) – verhindert **Race Conditions**.
+
+`volatile` garantiert, dass alle Threads den aktuellen Wert einer Variable sehen (Sichtbarkeit), aber keine Atomarität. Für Zähler: `AtomicInteger`.
+
+=== FRAGE
+kategorie: Design Patterns
+frage: Welche Design Patterns kennst du?
+--- antwort
+- **Singleton:** genau eine Instanz einer Klasse (z. B. Konfiguration). In Spring sind Beans standardmäßig Singletons.
+- **Factory:** Objekterzeugung kapseln – der Aufrufer kennt nur das Interface.
+- **Builder:** Objekte mit vielen optionalen Parametern lesbar bauen: `Pizza.builder().groesse(30).kaese(true).build()`.
+- **Strategy:** austauschbare Algorithmen hinter einem Interface (z. B. verschiedene Zahlungsarten).
+- **Observer:** Objekte über Änderungen benachrichtigen (Event-Listener).
+- **Dependency Injection:** Abhängigkeiten werden von außen übergeben statt selbst erzeugt – Kern von Spring.
+
+Tipp: Lieber 2–3 Patterns mit echtem Beispiel erklären als 10 aufzählen.
+
+=== FRAGE
+kategorie: Ökosystem
+frage: Was sind Maven bzw. Gradle?
+--- antwort
+**Build-Tools**: Sie verwalten **Abhängigkeiten** (Bibliotheken werden automatisch aus Maven Central geladen), kompilieren, testen und packen das Projekt (z. B. als JAR).
+
+- **Maven:** Konfiguration in `pom.xml`, feste Lebenszyklus-Phasen (`mvn clean install`, `mvn test`, `mvn package`).
+- **Gradle:** Konfiguration in `build.gradle` (Groovy/Kotlin), flexibler und oft schneller (`gradle build`).
+
+=== FRAGE
+kategorie: Ökosystem
+frage: Was ist Spring Boot?
+--- antwort
+**Spring** ist das verbreitetste Java-Framework für Unternehmensanwendungen. Kernidee: **Dependency Injection / Inversion of Control** – der Spring-Container erzeugt Objekte (**Beans**) und verbindet sie.
+
+**Spring Boot** macht den Einstieg einfach: Auto-Konfiguration, eingebetteter Webserver (Tomcat), "Starter"-Abhängigkeiten. Typische Bausteine:
+- `@RestController`, `@GetMapping` → REST-APIs
+- `@Service`, `@Repository`, `@Autowired` / Konstruktor-Injection
+- **Spring Data JPA** → Datenbankzugriff mit Hibernate
+
+Wenn die Stelle Spring erwähnt: Schau dir ein kleines Spring-Boot-REST-Beispiel an!
+
+=== FRAGE
+kategorie: Ökosystem
+frage: Wie testest du Java-Code?
+--- antwort
+- **Unit-Tests** mit **JUnit 5**: `@Test`, `assertEquals(erwartet, tatsaechlich)`, `assertThrows(...)`.
+- **Mockito** zum Simulieren von Abhängigkeiten (`mock()`, `when(...).thenReturn(...)`).
+- **Integrationstests** (z. B. `@SpringBootTest`, Testcontainers für echte Datenbanken).
+- Prinzipien: Tests unabhängig, schnell, ein Verhalten pro Test; Aufbau **Arrange – Act – Assert**. Begriff TDD (Test Driven Development) kennen.
+
+=== FRAGE
+kategorie: Ökosystem
+frage: Was weißt du über Datenbanken mit Java (JDBC, JPA, Hibernate)?
+--- antwort
+- **JDBC:** Low-Level-API, um SQL direkt auszuführen (`Connection`, `PreparedStatement`, `ResultSet`). **PreparedStatement** mit `?`-Parametern schützt vor **SQL-Injection**.
+- **JPA** (Jakarta Persistence API): Standard für **ORM** (Object-Relational Mapping) – Klassen werden mit `@Entity`, `@Id` auf Tabellen abgebildet.
+- **Hibernate:** die verbreitetste JPA-Implementierung.
+- **Spring Data JPA:** Repository-Interfaces, z. B. `findByName(String name)` – die Abfrage wird automatisch erzeugt.
+
+=== FRAGE
+kategorie: Soft Skills
+frage: Wie gehst du an eine Coding-Aufgabe im Interview heran?
+--- antwort
+1. **Aufgabe wiederholen & Fragen stellen:** Eingaben, Randfälle (leer, null, negativ), erwartetes Format.
+2. **Laut denken:** Ansatz erklären, bevor du programmierst. Interviewer bewerten den Denkweg!
+3. **Einfache Lösung zuerst** (auch wenn O(n²)), dann verbessern.
+4. **Sauberen Code** schreiben: sprechende Namen, kleine Methoden.
+5. **Testen:** Beispiel von Hand durchgehen, Randfälle prüfen.
+6. **Komplexität** nennen (Big-O für Zeit und Speicher).
+
+Wenn du nicht weiterkommst: Sag, was du überlegst. "Ich weiß es nicht genau, aber ich würde so vorgehen ..." ist viel besser als Schweigen.
+
+=== FRAGE
+kategorie: Soft Skills
+frage: Welche Fragen solltest du selbst am Ende stellen?
+--- antwort
+Eigene Fragen zeigen Interesse. Beispiele:
+- Wie sieht ein typischer Arbeitstag im Team aus?
+- Welcher Tech-Stack wird eingesetzt (Java-Version, Spring, Datenbank, Cloud)?
+- Wie läuft die Einarbeitung? Gibt es Mentoring / Code-Reviews?
+- Wie wird getestet und deployed (CI/CD)?
+- Wie groß ist das Team, und wie arbeitet ihr (Scrum, Kanban)?
+- Was wären meine ersten Aufgaben?

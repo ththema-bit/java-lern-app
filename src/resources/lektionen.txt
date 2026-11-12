@@ -1,0 +1,3250 @@
+Format: "=== LEKTION" startet eine Lektion, "--- abschnitt" startet einen Abschnitt.
+Abschnitte: erklaerung, aufgabe, code, loesung, erwartet, muss, eingabe.
+In erklaerung/aufgabe gilt Mini-Markdown; ```run-Bloecke bekommen einen "Im Editor ausprobieren"-Link.
+
+=== LEKTION
+id: start
+kapitel: 0 · Start
+titel: Willkommen & freier Spielplatz
+--- erklaerung
+Willkommen in deiner **Java-Lern-Sandbox**! Hier kannst du Java ausprobieren, ohne etwas kaputt zu machen.
+
+## So funktioniert's
+- **Links** wählst du eine Lektion. Oben steht die Aufgabe mit Erklärung, unten links der **Code-Editor**, rechts die **Ausgabe**.
+- **Strg+Enter** kompiliert und startet deinen Code.
+- **Schritt für Schritt** führt dein Programm Zeile für Zeile aus und zeigt dir alle Variablen.
+- Bei Fehlern wird die Zeile **rot markiert** und du bekommst eine **Erklärung auf Deutsch**.
+- Der Knopf **Tipp** hilft dir in Stufen weiter, ohne gleich die Lösung zu verraten.
+- Klicke im Code auf ein Wort wie `static` oder `String`, dann erscheint unten eine Erklärung.
+- Mit **▶ Im Editor ausprobieren** startest du ein Beispiel. Dein eigener Code bleibt dabei erhalten, und **Zurück zu meinem Code** holt ihn wieder.
+- Dein Code wird automatisch gespeichert. **Als .java speichern** nimmt ihn aus der App mit.
+
+## Die Bereiche der App
+| Tab | Wofür |
+|---|---|
+| **Start** | Countdown zum Interview und dein Tagesplan |
+| **Interview-Karten** | Typische Fragen. Schwieriges kommt öfter wieder. |
+| **Code-Quiz** | „Was gibt dieser Code aus?“ |
+| **Probe-Interview** | 25 Minuten unter echten Bedingungen |
+| **Handnotizen** | Was du von Hand aufschreiben solltest |
+| **Nachschlagen** | Suche und Spickzettel |
+
+## Leg Stift und Papier bereit
+Handschrift ist dein bestes Werkzeug zum Merken. Schreib nach jeder Lektion **aus dem Kopf** auf, was du behalten hast: Klicke auf **Erklärung verdecken**, schreib alles auf und vergleiche danach. Am Ende jeder Lektion steht, welche Punkte auf dein Blatt gehören.
+
+## Warum kann ich nichts kaputt machen?
+Dein Code läuft in einem **eigenen, abgeschotteten Java-Prozess**: kein Zugriff auf Dateien, kein Internet, maximal 10 Sekunden Laufzeit und 256 MB Speicher. Endlosschleifen oder Abstürze werden einfach abgebrochen.
+
+> **Lerntipp:** Ändere absichtlich Dinge und schau, was passiert: Lösche ein Semikolon, schreib `string` statt `String`, teile durch 0. Fehlermeldungen lesen zu können ist im Job (und im Interview!) Gold wert.
+
+Dieser Bereich ist dein **freier Spielplatz** – probier hier alles aus, was dir einfällt.
+--- code
+public class Main {
+    public static void main(String[] args) {
+        // Das hier ist dein Spielplatz. Ändere den Code und drücke Strg+Enter!
+        String name = "Java";
+        int jahr = 1995;
+
+        System.out.println("Hallo " + name + "!");
+        System.out.println(name + " gibt es seit " + jahr + ".");
+        System.out.println("Das sind " + (2026 - jahr) + " Jahre.");
+
+        for (int i = 1; i <= 3; i++) {
+            System.out.println("Runde " + i);
+        }
+    }
+}
+
+=== LEKTION
+id: hallo
+kapitel: 1 · Grundlagen
+titel: Hallo Welt – Aufbau eines Programms
+--- erklaerung
+Jedes Java-Programm besteht aus **Klassen**. Das Programm startet in der **main-Methode**.
+
+```java
+public class Main {                          // Klasse "Main"
+    public static void main(String[] args) { // Einstiegspunkt
+        System.out.println("Hallo Welt");     // Ausgabe + Zeilenumbruch
+    }
+}
+```
+
+## Was bedeuten die Wörter?
+| Teil | Bedeutung |
+|---|---|
+| `public class Main` | Eine öffentliche Klasse namens Main. Die Datei muss dann `Main.java` heißen. |
+| `public` | Von überall aufrufbar – die JVM muss main von außen starten können. |
+| `static` | Gehört zur Klasse, nicht zu einem Objekt – die JVM kann main aufrufen, ohne vorher ein Objekt zu erzeugen. |
+| `void` | Die Methode gibt nichts zurück. |
+| `String[] args` | Kommandozeilen-Argumente als Array von Texten. |
+| `System.out.println(...)` | Gibt Text aus und springt danach in eine neue Zeile. `print` ohne Zeilenumbruch. |
+
+## Baustein für Baustein: die Ausgabe-Zeile
+```java
+System.out.println("Hallo Welt");
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `System` | Eine fertige Klasse von Java, die Zugang zum System gibt (Bildschirm, Tastatur, Uhr). |
+| `.` | Der Punkt heißt „davon“ oder „darin“: Von `System` nimm ... |
+| `out` | ... den **Ausgabe-Kanal**, also die Konsole. |
+| `.println` | Die Methode, die etwas ausgibt. Der Name kommt von **print line**: ausgeben und danach in eine neue Zeile springen. |
+| `( ... )` | In die runden Klammern kommt, **was** ausgegeben werden soll. |
+| `"Hallo Welt"` | Ein **Text** (String). Text steht immer in doppelten Anführungszeichen. |
+| `;` | Ende der Anweisung, wie ein Punkt am Satzende. |
+
+Lies die Zeile so: „Vom System nimm die Ausgabe und schreib darauf die Zeile Hallo Welt.“
+
+## Wichtige Regeln
+- Jede Anweisung endet mit einem **Semikolon** `;`.
+- Blöcke stehen in **geschweiften Klammern** `{ }`.
+- Java ist **case-sensitive**: `System` ist nicht `system`.
+- Kommentare: `// eine Zeile` oder `/* mehrere Zeilen */`.
+
+## Wie wird Java ausgeführt?
+Der **Compiler** (`javac`) übersetzt deinen Quellcode in **Bytecode** (`.class`-Dateien). Diesen führt die **JVM** (Java Virtual Machine) aus. Weil es für jedes Betriebssystem eine JVM gibt, läuft derselbe Bytecode überall: *"Write once, run anywhere"*.
+
+```run
+System.out.print("Ohne ");
+System.out.print("Umbruch. ");
+System.out.println("Jetzt mit Umbruch!");
+System.out.println("Neue Zeile");
+```
+
+> **Interview-Tipp:** Die Frage "Was ist der Unterschied zwischen JDK, JRE und JVM?" kommt oft. JVM = führt Bytecode aus. JRE = JVM + Standardbibliotheken (zum Ausführen). JDK = JRE + Entwicklungswerkzeuge wie der Compiler (zum Entwickeln).
+--- aufgabe
+Gib genau diese zwei Zeilen aus:
+
+```java
+Hallo Java!
+Ich bin bereit fürs Interview.
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        // Schreibe hier deinen Code
+        System.out.println("Hallo Welt");
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hallo Java!");
+        System.out.println("Ich bin bereit fürs Interview.");
+    }
+}
+--- erwartet
+Hallo Java!
+Ich bin bereit fürs Interview.
+
+=== LEKTION
+id: variablen
+kapitel: 1 · Grundlagen
+titel: Variablen & Datentypen
+--- erklaerung
+Eine **Variable** ist ein benannter Speicherplatz mit festem **Typ**: `Typ name = wert;`
+
+## Baustein für Baustein: eine Variable anlegen
+```java
+int alter = 30;
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `int` | Der **Typ**: Was darf hinein? Hier eine Ganzzahl. |
+| `alter` | Der **Name**, unter dem du den Wert später wieder ansprichst. Klein beginnen, keine Leerzeichen. |
+| `=` | **Zuweisung**: „Speichere den Wert rechts in der Variable links.“ Kein Vergleich! |
+| `30` | Der **Wert**, der gespeichert wird. |
+| `;` | Ende der Anweisung. |
+
+Später änderst du den Wert ohne Typ davor: `alter = 31;`. Den Typ schreibt man nur beim **ersten** Mal.
+
+## Die 8 primitiven Datentypen
+| Typ | Größe | Beispiel | Wofür |
+|---|---|---|---|
+| `byte` | 8 Bit | `byte b = 100;` | sehr kleine Zahlen |
+| `short` | 16 Bit | `short s = 30000;` | selten benutzt |
+| `int` | 32 Bit | `int alter = 30;` | **Standard für Ganzzahlen** |
+| `long` | 64 Bit | `long big = 10_000_000_000L;` | sehr große Zahlen |
+| `float` | 32 Bit | `float f = 3.14f;` | selten benutzt |
+| `double` | 64 Bit | `double preis = 19.99;` | **Standard für Kommazahlen** |
+| `char` | 16 Bit | `char c = 'A';` | ein Zeichen |
+| `boolean` | – | `boolean ok = true;` | wahr/falsch |
+
+Alles andere (z. B. `String`, Arrays, eigene Klassen) sind **Referenztypen** – die Variable enthält einen Verweis auf ein Objekt.
+
+## Rechnen – Achtung Fallen!
+```run
+int a = 7;
+int b = 2;
+System.out.println(a / b);           // 3   -> Ganzzahl-Division schneidet ab!
+System.out.println(a % b);           // 1   -> Modulo = Rest
+System.out.println((double) a / b);  // 3.5 -> Cast macht daraus double-Division
+System.out.println(0.1 + 0.2);       // 0.30000000000000004 -> double ist ungenau!
+
+int max = Integer.MAX_VALUE;
+System.out.println(max + 1);         // Überlauf: wird negativ!
+
+final double MWST = 0.19;            // final = Konstante, nicht mehr änderbar
+var text = "var leitet den Typ ab";  // seit Java 10
+System.out.println(text);
+```
+
+## Baustein für Baustein: der Cast
+```java
+double ergebnis = (double) a / b;
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `(double)` | Ein **Cast** (Typumwandlung): Der Typ in runden Klammern **vor** einem Wert wandelt ihn um. Aus der `7` wird `7.0`. |
+| `a / b` | Weil jetzt eine Kommazahl beteiligt ist, rechnet Java mit Komma: `7.0 / 2` = `3.5`. |
+| ohne Cast | `a / b` mit zwei `int` schneidet die Nachkommastellen ab: `3`. |
+
+`final double MWST = 0.19;`: `final` heißt „darf nach dem ersten Wert nicht mehr geändert werden“. Konstanten schreibt man GROSS.
+
+`var text = "...";`: `var` lässt Java den Typ selbst erkennen. Es geht nur, wenn rechts direkt ein Wert steht.
+
+## Primitive vs. Wrapper-Klassen
+Zu jedem primitiven Typ gibt es eine **Wrapper-Klasse** (Objekt): `int` → `Integer`, `double` → `Double`, `char` → `Character` ... Collections wie `List` können nur Objekte speichern: `List<Integer>`. Java wandelt automatisch um (**Autoboxing** / **Unboxing**).
+
+> **Interview-Tipp:** Für Geldbeträge nie `double` verwenden, sondern `BigDecimal` – wegen der Rundungsfehler (siehe 0.1 + 0.2). Das zeigt Praxiserfahrung!
+--- aufgabe
+17 Äpfel werden auf 5 Kinder verteilt. Berechne mit den Variablen `aepfel` und `kinder`:
+- wie viele Äpfel jedes Kind bekommt (Ganzzahl-Division `/`),
+- wie viele übrig bleiben (Modulo `%`),
+- den genauen Durchschnitt als Kommazahl (Cast nach `double`).
+
+Erwartete Ausgabe:
+```java
+Jedes Kind: 3
+Rest: 2
+Durchschnitt: 3.4
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        int aepfel = 17;
+        int kinder = 5;
+
+        // TODO: Berechne die Werte und gib sie aus
+        System.out.println("Jedes Kind: " + 0);
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        int aepfel = 17;
+        int kinder = 5;
+
+        int proKind = aepfel / kinder;
+        int rest = aepfel % kinder;
+        double durchschnitt = (double) aepfel / kinder;
+
+        System.out.println("Jedes Kind: " + proKind);
+        System.out.println("Rest: " + rest);
+        System.out.println("Durchschnitt: " + durchschnitt);
+    }
+}
+--- erwartet
+Jedes Kind: 3
+Rest: 2
+Durchschnitt: 3.4
+--- muss
+%
+
+=== LEKTION
+id: strings
+kapitel: 1 · Grundlagen
+titel: Strings – Text verarbeiten
+--- erklaerung
+Ein `String` ist ein **Objekt** (kein primitiver Typ) und **unveränderlich (immutable)**: Methoden wie `toUpperCase()` ändern den String nicht, sondern liefern einen **neuen** String zurück.
+
+## Die wichtigsten Methoden
+```run
+String s = "Hallo Java";
+System.out.println(s.length());          // 10
+System.out.println(s.charAt(0));         // H  (Index beginnt bei 0!)
+System.out.println(s.substring(6));      // Java
+System.out.println(s.substring(0, 5));   // Hallo (Ende exklusiv)
+System.out.println(s.toUpperCase());     // HALLO JAVA
+System.out.println(s.contains("Java"));  // true
+System.out.println(s.indexOf("a"));      // 1
+System.out.println(s.replace("a", "4")); // H4llo J4v4
+System.out.println("  x  ".trim());      // x
+String[] teile = "a,b,c".split(",");
+System.out.println(teile.length);        // 3
+
+s.toUpperCase();          // ändert s NICHT (immutable)!
+System.out.println(s);    // Hallo Java
+```
+
+## Baustein für Baustein: eine Methode am String aufrufen
+```java
+String teil = s.substring(0, 5);
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `s` | Die Variable mit dem Text, mit dem du arbeiten willst. |
+| `.` | „Rufe bei diesem Text eine Methode auf.“ |
+| `substring` | Der Name der Methode: „Teil-Text“. |
+| `(0, 5)` | Die **Argumente**, durch Komma getrennt: von Index `0` bis **vor** Index `5`. |
+| `String teil =` | Das Ergebnis ist ein **neuer** Text, den du dir in einer Variable merkst. `s` selbst bleibt unverändert. |
+
+Alle String-Methoden folgen diesem Muster: `text.methode(argumente)`. Methoden ohne Argumente bekommen leere Klammern: `s.length()`.
+
+`"a,b,c".split(",")` zerlegt den Text an jedem Komma und liefert ein **Array** von Texten: `String[] teile`. Die eckigen Klammern `[]` hinter `String` bedeuten „mehrere Strings“.
+
+## == vs. equals() – DER Interview-Klassiker
+```run
+String a = "Hallo";
+String b = "Hallo";
+String c = new String("Hallo");
+
+System.out.println(a == b);       // true  (beide aus dem String-Pool -> gleiches Objekt)
+System.out.println(a == c);       // false (c ist ein NEUES Objekt)
+System.out.println(a.equals(c));  // true  (gleicher Inhalt)
+System.out.println("hallo".equalsIgnoreCase(a)); // true
+```
+- `==` vergleicht bei Objekten, ob es **dasselbe Objekt** ist (gleiche Referenz).
+- `equals()` vergleicht den **Inhalt**.
+- **Regel:** Strings (und alle Objekte) immer mit `equals()` vergleichen!
+
+## Formatierte Ausgabe
+```run
+String name = "Anna";
+double preis = 4.5;
+System.out.printf("%s zahlt %.2f Euro%n", name, preis);
+String text = String.format("%d Stück", 3);
+System.out.println(text);
+```
+
+## Baustein für Baustein: printf
+```java
+System.out.printf("%s zahlt %.2f Euro%n", name, preis);
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `printf` | **print formatted**: Ausgabe nach einer Vorlage. |
+| `"... "` | Die **Vorlage**. Die Zeichen mit `%` sind Platzhalter. |
+| `%s` | Platzhalter für einen Text (**s**tring). |
+| `%.2f` | Platzhalter für eine Kommazahl (**f**loat) mit **2** Nachkommastellen. |
+| `%d` | Platzhalter für eine Ganzzahl (**d**ezimal). |
+| `%n` | Zeilenumbruch. `printf` springt sonst nicht in eine neue Zeile. |
+| `, name, preis` | Die Werte für die Platzhalter, **in derselben Reihenfolge**: `name` füllt `%s`, `preis` füllt `%.2f`. |
+
+`String.format(...)` funktioniert genauso, gibt aber nichts aus, sondern liefert den fertigen Text zurück.
+
+> **Interview-Tipp:** Warum ist String immutable? Sicherheit (z. B. Passwörter/Pfade können nicht nachträglich geändert werden), Thread-Sicherheit, der String-Pool kann Objekte teilen, und der hashCode kann gecacht werden (gut für HashMap-Keys).
+--- aufgabe
+Die Variable `beruf` enthält `"  java entwickler  "` (mit Leerzeichen am Rand). Entferne die Leerzeichen am Rand und gib aus:
+
+```java
+JAVA ENTWICKLER
+Länge: 15
+Erster Buchstabe: j
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        String beruf = "  java entwickler  ";
+
+        // TODO
+        System.out.println(beruf);
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        String beruf = "  java entwickler  ";
+        String sauber = beruf.trim();
+
+        System.out.println(sauber.toUpperCase());
+        System.out.println("Länge: " + sauber.length());
+        System.out.println("Erster Buchstabe: " + sauber.charAt(0));
+    }
+}
+--- erwartet
+JAVA ENTWICKLER
+Länge: 15
+Erster Buchstabe: j
+
+=== LEKTION
+id: scanner
+kapitel: 1 · Grundlagen
+titel: Eingaben lesen mit Scanner
+--- erklaerung
+Mit `Scanner` liest ein Programm Eingaben von der Tastatur. Hier tippst du sie, **während das Programm läuft**, in das **Eingabefeld unter der Ausgabe** und drückst Enter. Das Programm wartet so lange, bis du etwas eingibst.
+
+Du brauchst dafür **drei Zeilen**. Wir nehmen jede Zeile Baustein für Baustein auseinander.
+
+## Zeile 1: Scanner bekannt machen
+```java
+import java.util.Scanner;
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `import` | „Ich will eine Klasse aus einem anderen Paket benutzen.“ Steht ganz oben in der Datei, noch vor `public class Main`. |
+| `java.util` | Das **Paket**, in dem Scanner liegt. Ein Paket ist wie ein Ordner, die Punkte trennen die Ebenen: Ordner `java`, darin `util`. |
+| `.Scanner` | Die **Klasse**, die du aus diesem Paket holst. Klassen schreibt man groß. |
+| `;` | Ende der Anweisung. |
+
+Ohne diese Zeile kennt Java das Wort `Scanner` nicht und meldet `cannot find symbol`. `String` und `System` brauchen kein `import`, weil sie im Paket `java.lang` liegen, das Java automatisch kennt.
+
+## Zeile 2: Einen Scanner erzeugen
+```java
+Scanner sc = new Scanner(System.in);
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `Scanner` (vorne) | Der **Typ** der Variable. Genau wie `int` in `int x = 5;` sagt er, was in die Variable hineinkommt: ein Scanner. |
+| `sc` | Der **Name** der Variable. Frei wählbar, üblich sind `sc` oder `scanner`. |
+| `=` | „Speichere das, was rechts entsteht, in der Variable links.“ |
+| `new` | „Erzeuge ein **neues Objekt**.“ |
+| `Scanner(...)` | Der **Konstruktor**, er baut den Scanner. In die Klammer kommt, **woher** er lesen soll. |
+| `System.in` | Die Tastatur-Eingabe. Das Gegenstück zu `System.out`, über das du ausgibst: `in` = herein, `out` = hinaus. |
+
+**Muster zum Merken:** `Typ name = new Typ(woher);` So erzeugst du in Java **jedes** Objekt, zum Beispiel auch `ArrayList<String> liste = new ArrayList<>();`.
+
+Den Scanner erzeugst du **einmal** am Anfang und benutzt ihn dann für alle Eingaben.
+
+## Zeile 3: Eine Eingabe lesen
+```java
+String name = sc.nextLine();
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `String name` | Eine neue Variable `name` vom Typ `String` (Text). |
+| `=` | Speichere das Ergebnis von rechts darin. |
+| `sc` | Dein Scanner aus Zeile 2. |
+| `.` | Der Punkt heißt: „Rufe **bei diesem Objekt** eine Methode auf.“ |
+| `nextLine` | Die Methode: „Lies die **nächste Zeile**, also alles bis Enter.“ |
+| `()` | Die Klammern machen daraus einen **Methodenaufruf**. Sie sind leer, weil `nextLine` nichts von dir braucht. |
+
+**Was passiert beim Ausführen:** Das Programm bleibt an dieser Stelle stehen und wartet. Sobald du `Max` tippst und Enter drückst, steht `"Max"` in `name`, und das Programm läuft weiter.
+
+## Die Lese-Methoden im Überblick
+| Aufruf | liest | liefert den Typ |
+|---|---|---|
+| `sc.nextLine()` | die ganze Zeile bis Enter | `String` |
+| `sc.next()` | nur das nächste Wort (bis zum Leerzeichen) | `String` |
+| `sc.nextInt()` | die nächste Ganzzahl | `int` |
+| `sc.nextDouble()` | die nächste Kommazahl | `double` |
+
+## Zahlen einlesen: Text in eine Zahl umwandeln
+`nextLine()` liefert immer **Text**. Auch wenn du `30` tippst, ist das erst einmal der Text `"30"`, mit dem man nicht rechnen kann. So machst du daraus eine Zahl:
+
+```java
+int alter = Integer.parseInt(sc.nextLine().trim());
+```
+Diese Zeile liest man **von innen nach außen**:
+1. `sc.nextLine()` liest deine Eingabe als Text: `"30"`
+2. `.trim()` entfernt versehentliche Leerzeichen am Rand: aus `" 30 "` wird `"30"`
+3. `Integer.parseInt(...)` wandelt den Text in die Zahl `30` um
+4. `int alter = ...` speichert die Zahl in der Variable `alter`
+
+| Baustein | Was er bedeutet |
+|---|---|
+| `Integer` | Die Klasse zum Typ `int`. Sie hat nützliche Hilfsmethoden für Ganzzahlen. |
+| `.parseInt` | „parse“ heißt „auslesen“: Die Methode liest eine Zahl aus einem Text. |
+| `( ... )` | Hier hinein kommt der Text, der umgewandelt werden soll. |
+| `Double.parseDouble(...)` | Dasselbe für Kommazahlen: `"3.5"` wird zu `3.5`. |
+
+```run
+String eingabe = "42";
+int zahl = Integer.parseInt(eingabe);      // "42" -> 42
+double d = Double.parseDouble("3.5");      // "3.5" -> 3.5
+String zurueck = String.valueOf(zahl);     // 42 -> "42"
+System.out.println(zahl + 1);              // 43
+System.out.println(eingabe + 1);           // 421  (Text + Zahl = Text wird angehängt!)
+```
+
+> **Warum nicht einfach nextInt?** Statt `sc.nextInt()` geht es auch so, hat aber eine bekannte Falle: `nextInt()` liest nur die Zahl und lässt das Enter liegen. Ein `nextLine()` direkt danach liefert dann eine **leere** Zeile. Wenn du immer `nextLine()` liest und mit `parseInt` umwandelst, gibt es dieses Problem nicht.
+
+## Alles zusammen
+Starte das Beispiel und tippe die Antworten unten ins Eingabefeld:
+```run
+Scanner sc = new Scanner(System.in);
+System.out.print("Wie heißt du? ");
+String name = sc.nextLine();
+System.out.print("Lieblingszahl? ");
+int zahl = Integer.parseInt(sc.nextLine().trim());
+System.out.println("Hallo " + name + ", deine Zahl mal 2 ist " + (zahl * 2));
+```
+
+> **Tipp:** Probier mal, statt einer Zahl ein Wort einzugeben. Dann bekommst du eine `NumberFormatException`, weil `parseInt` aus „hallo“ keine Zahl machen kann.
+--- aufgabe
+Lies einen **Namen** (erste Eingabe) und ein **Alter** (zweite Eingabe) und gib aus, wie alt die Person in 10 Jahren ist. Starte das Programm und tippe im Eingabefeld unter der Ausgabe `Max` (Enter) und dann `30` (Enter). Es soll herauskommen (ohne zusätzliche Fragetexte wie "Name:"):
+
+```java
+Hallo Max, in 10 Jahren bist du 40.
+```
+--- code
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        String name = sc.nextLine();
+        // TODO: Alter lesen und Satz ausgeben
+
+        System.out.println("Hallo " + name);
+    }
+}
+--- loesung
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        String name = sc.nextLine();
+        int alter = Integer.parseInt(sc.nextLine().trim());
+
+        System.out.println("Hallo " + name + ", in 10 Jahren bist du " + (alter + 10) + ".");
+    }
+}
+--- eingabe
+Max
+30
+--- erwartet
+Hallo Max, in 10 Jahren bist du 40.
+
+=== LEKTION
+id: bedingungen
+kapitel: 1 · Grundlagen
+titel: Bedingungen: if, else, switch
+--- erklaerung
+## Vergleichs- und Logik-Operatoren
+| Operator | Bedeutung |
+|---|---|
+| `==` `!=` | gleich / ungleich (bei primitiven Typen) |
+| `<` `>` `<=` `>=` | kleiner / größer ... |
+| `&&` | UND – beide müssen true sein |
+| `\|\|` | ODER – mindestens eins muss true sein |
+| `!` | NICHT – kehrt um |
+
+`&&` und `||` sind **short-circuit**: Ist das Ergebnis schon klar, wird der Rest nicht mehr ausgewertet. Beispiel: `s != null && s.length() > 0` ist sicher, weil bei `s == null` der zweite Teil nie läuft.
+
+## if / else if / else
+```run
+int temperatur = 22;
+if (temperatur > 30) {
+    System.out.println("Heiß!");
+} else if (temperatur >= 20) {
+    System.out.println("Angenehm");
+} else {
+    System.out.println("Kalt");
+}
+
+// Ternärer Operator: bedingung ? wennTrue : wennFalse
+String jacke = temperatur < 15 ? "Jacke an" : "keine Jacke";
+System.out.println(jacke);
+```
+
+## Baustein für Baustein: if und else
+```java
+if (temperatur > 30) {
+    ...
+} else if (temperatur >= 20) {
+    ...
+} else {
+    ...
+}
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `if` | „Wenn ...“ |
+| `( ... )` | Die **Bedingung** steht immer in runden Klammern. Sie muss `true` oder `false` ergeben. |
+| `{ ... }` | Der **Block**: Dieser Code läuft nur, wenn die Bedingung `true` ist. |
+| `else if (...)` | „Sonst, wenn ...“: wird nur geprüft, wenn alle Bedingungen davor `false` waren. |
+| `else` | „Sonst“: läuft, wenn keine Bedingung zugetroffen hat. Hat **keine** Bedingung. |
+
+Java prüft von oben nach unten und führt **nur den ersten** passenden Block aus.
+
+**Der ternäre Operator** ist ein Mini-if, das einen Wert liefert:
+```java
+String jacke = temperatur < 15 ? "Jacke an" : "keine Jacke";
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `temperatur < 15` | Die Bedingung. |
+| `?` | „Wenn ja, dann ...“ |
+| `"Jacke an"` | Wert, wenn die Bedingung `true` ist. |
+| `:` | „... sonst ...“ |
+| `"keine Jacke"` | Wert, wenn sie `false` ist. |
+
+## switch – klassisch und modern
+```run
+int tag = 3;
+
+// Modern (seit Java 14): switch-Ausdruck mit ->, kein break nötig
+String name = switch (tag) {
+    case 1, 7 -> "Wochenende";
+    case 2, 3, 4, 5, 6 -> "Werktag";
+    default -> "Ungültig";
+};
+System.out.println(name);
+
+// Klassisch: break nicht vergessen, sonst "fall-through"!
+switch (tag) {
+    case 3:
+        System.out.println("Mittwoch");
+        break;
+    default:
+        System.out.println("Anderer Tag");
+}
+```
+## Baustein für Baustein: der moderne switch
+```java
+String name = switch (tag) {
+    case 1, 7 -> "Wochenende";
+    default -> "Werktag";
+};
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `switch (tag)` | „Schau dir den Wert von `tag` an.“ |
+| `{ ... }` | Darin stehen die möglichen Fälle. |
+| `case 1, 7` | „Falls `tag` 1 **oder** 7 ist ...“ Mehrere Werte durch Komma. |
+| `->` | „... dann ist das Ergebnis ...“ |
+| `"Wochenende"` | ... dieser Wert. |
+| `default` | Der Fall „alles andere“. |
+| `String name = ... ;` | Der ganze switch liefert einen Wert, der in `name` gespeichert wird. Darum das `;` nach der schließenden Klammer. |
+
+Beim **klassischen** switch steht `case 3:` mit Doppelpunkt, und jeder Fall muss mit `break;` enden. Ohne `break` läuft Java einfach in den nächsten Fall weiter („fall-through“).
+
+> **Achtung Falle:** `if (x = 5)` ist ein Fehler – `=` ist eine Zuweisung, `==` ein Vergleich.
+--- aufgabe
+Ergänze den Notenrechner für `punkte = 73`:
+- ab 90 → `Sehr gut`, ab 75 → `Gut`, ab 50 → `Bestanden`, sonst `Nicht bestanden`
+- Prüfe zusätzlich mit `%`, ob die Punktzahl gerade oder ungerade ist.
+
+Erwartete Ausgabe:
+```java
+Note: Bestanden
+73 ist ungerade
+```
+Teste danach auch andere Werte (95, 80, 20, 74), indem du `punkte` änderst!
+--- code
+public class Main {
+    public static void main(String[] args) {
+        int punkte = 73;
+        String note = "?";
+
+        // TODO: note mit if / else if / else bestimmen
+
+        System.out.println("Note: " + note);
+        // TODO: gerade oder ungerade ausgeben
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        int punkte = 73;
+        String note;
+
+        if (punkte >= 90) {
+            note = "Sehr gut";
+        } else if (punkte >= 75) {
+            note = "Gut";
+        } else if (punkte >= 50) {
+            note = "Bestanden";
+        } else {
+            note = "Nicht bestanden";
+        }
+        System.out.println("Note: " + note);
+
+        if (punkte % 2 == 0) {
+            System.out.println(punkte + " ist gerade");
+        } else {
+            System.out.println(punkte + " ist ungerade");
+        }
+    }
+}
+--- erwartet
+Note: Bestanden
+73 ist ungerade
+--- muss
+if
+%
+
+=== LEKTION
+id: schleifen
+kapitel: 1 · Grundlagen
+titel: Schleifen & FizzBuzz
+--- erklaerung
+## for-Schleife – wenn du weißt, wie oft
+```run
+for (int i = 1; i <= 5; i++) {   // Start; Bedingung; Schritt
+    System.out.println("i = " + i);
+}
+```
+
+## Baustein für Baustein: die for-Schleife
+```java
+for (int i = 1; i <= 5; i++) {
+    System.out.println(i);
+}
+```
+In der runden Klammer stehen **drei Teile**, getrennt durch Semikolons:
+
+| Baustein | Was er bedeutet | Wann er läuft |
+|---|---|---|
+| `for` | „Wiederhole ...“ | |
+| `int i = 1` | **Start**: Lege eine Zählvariable `i` an und setze sie auf 1. | einmal, ganz am Anfang |
+| `i <= 5` | **Bedingung**: Solange das `true` ist, geht es weiter. | vor **jedem** Durchlauf |
+| `i++` | **Schritt**: Erhöhe `i` um 1. `i++` ist die Kurzform von `i = i + 1`. | nach **jedem** Durchlauf |
+| `{ ... }` | Der **Rumpf**: Das wird wiederholt. | in jedem Durchlauf |
+
+**Ablauf:** Start → Bedingung prüfen → Rumpf → Schritt → Bedingung prüfen → Rumpf → ... bis die Bedingung `false` ist.
+
+Spiel es mit **Schritt für Schritt** durch und schau, wie sich `i` verändert.
+
+## while und do-while – solange eine Bedingung gilt
+```run
+int n = 1;
+while (n < 100) {     // prüft VOR jedem Durchlauf
+    n = n * 2;
+}
+System.out.println(n);   // 128
+
+int x = 10;
+do {                  // läuft mindestens EINMAL, prüft danach
+    System.out.println("do-while läuft trotzdem einmal");
+} while (x < 5);
+```
+
+## Baustein für Baustein: while und do-while
+| Baustein | Was er bedeutet |
+|---|---|
+| `while (bedingung) { ... }` | „Solange die Bedingung `true` ist, wiederhole den Block.“ Geprüft wird **vorher**: Ist sie gleich am Anfang `false`, läuft der Block nie. |
+| `do { ... } while (bedingung);` | „Mach das, und wiederhole es, solange ...“ Geprüft wird **nachher**, daher läuft der Block mindestens einmal. Achtung: Hier endet die Zeile mit `;`. |
+| `n = n * 2` | Im Block muss sich etwas ändern, das die Bedingung irgendwann `false` macht. Sonst entsteht eine Endlosschleife. |
+
+`break;` beendet die ganze Schleife sofort. `continue;` überspringt nur den Rest des aktuellen Durchlaufs und macht mit dem nächsten weiter.
+
+## break und continue
+```run
+for (int i = 1; i <= 10; i++) {
+    if (i % 2 == 0) continue;  // gerade Zahlen überspringen
+    if (i > 7) break;          // Schleife ganz beenden
+    System.out.print(i + " ");
+}
+System.out.println();
+```
+
+## Verschachtelte Schleifen
+```run
+for (int zeile = 1; zeile <= 3; zeile++) {
+    for (int spalte = 1; spalte <= 3; spalte++) {
+        System.out.print(zeile * spalte + "\t");
+    }
+    System.out.println();
+}
+```
+> **Experiment:** Ändere in einem Beispiel `i++` zu `i--`, dann bekommst du eine Endlosschleife. Keine Sorge: Die Sandbox bricht sie ab. Mit **Schritt für Schritt** siehst du genau, wie sich `i` in jedem Durchlauf ändert.
+--- aufgabe
+**FizzBuzz** – die berühmteste Interview-Aufgabe! Gib die Zahlen von 1 bis 15 aus, aber:
+- durch 3 teilbar → `Fizz`
+- durch 5 teilbar → `Buzz`
+- durch 3 UND 5 teilbar → `FizzBuzz`
+
+Tipp: Überlege, welche Bedingung zuerst geprüft werden muss!
+--- code
+public class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 15; i++) {
+            // TODO: Fizz, Buzz oder FizzBuzz
+            System.out.println(i);
+        }
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 15; i++) {
+            if (i % 15 == 0) {          // zuerst der speziellste Fall!
+                System.out.println("FizzBuzz");
+            } else if (i % 3 == 0) {
+                System.out.println("Fizz");
+            } else if (i % 5 == 0) {
+                System.out.println("Buzz");
+            } else {
+                System.out.println(i);
+            }
+        }
+    }
+}
+--- erwartet
+1
+2
+Fizz
+4
+Buzz
+Fizz
+7
+8
+Fizz
+Buzz
+11
+Fizz
+13
+14
+FizzBuzz
+--- muss
+%
+
+=== LEKTION
+id: arrays
+kapitel: 1 · Grundlagen
+titel: Arrays
+--- erklaerung
+Ein **Array** speichert mehrere Werte desselben Typs. Die Größe ist **fest**, der Index beginnt bei **0**.
+
+```run
+int[] zahlen = {5, 3, 8};          // Array-Literal
+String[] namen = new String[3];    // leeres Array, Größe 3 (Werte: null)
+namen[0] = "Anna";
+
+System.out.println(zahlen[0]);       // 5
+System.out.println(zahlen.length);   // 3  (length OHNE Klammern!)
+System.out.println(namen[1]);        // null
+
+// for-each: jedes Element durchgehen
+for (int z : zahlen) {
+    System.out.print(z + " ");
+}
+System.out.println();
+
+System.out.println(Arrays.toString(zahlen));  // [5, 3, 8]
+Arrays.sort(zahlen);
+System.out.println(Arrays.toString(zahlen));  // [3, 5, 8]
+
+int[][] matrix = {{1, 2}, {3, 4}};            // 2D-Array
+System.out.println(matrix[1][0]);             // 3
+```
+
+## Baustein für Baustein: Arrays
+```java
+int[] zahlen = {5, 3, 8};
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `int` | Was in den Fächern liegt: Ganzzahlen. |
+| `[]` | Die eckigen Klammern machen daraus ein **Array**: viele `int` statt einem. |
+| `zahlen` | Der Name des Arrays. |
+| `{5, 3, 8}` | Die Startwerte. Daraus ergibt sich die Größe 3. |
+
+```java
+String[] namen = new String[3];
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `new String[3]` | Erzeuge ein **leeres** Array mit **3** Fächern. Darin steht erst einmal `null` (bei Zahlen `0`). |
+
+| Zugriff | Was er bedeutet |
+|---|---|
+| `zahlen[0]` | Das Fach mit **Index 0**, also das erste. Der Index beginnt bei 0. |
+| `namen[0] = "Anna";` | Schreibt etwas in Fach 0. |
+| `zahlen.length` | Die Anzahl der Fächer. Ohne Klammern, weil es ein Feld ist, keine Methode. |
+
+**Die for-each-Schleife:**
+```java
+for (int z : zahlen) { ... }
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `int z` | Eine Variable, die nacheinander jeden Wert aus dem Array bekommt. |
+| `:` | Lies den Doppelpunkt als „**aus**“: „für jedes `z` aus `zahlen`“. |
+| `zahlen` | Das Array, das durchlaufen wird. |
+
+`int[][] matrix` ist ein Array von Arrays, also eine Tabelle. `matrix[1][0]` heißt: Zeile 1, Spalte 0.
+
+## Häufiger Fehler
+```run
+int[] a = {1, 2, 3};
+for (int i = 0; i <= a.length; i++) {   // <= statt < !
+    System.out.println(a[i]);
+}
+```
+Das wirft eine `ArrayIndexOutOfBoundsException`, weil es `a[3]` nicht gibt.
+
+> **Interview-Falle:** Länge abfragen: Array `arr.length`, String `s.length()`, Liste `list.size()`. Klingt banal, wird aber gern gefragt.
+--- aufgabe
+Finde in `zahlen` das **Maximum**, das **Minimum** und die **Summe** – mit einer Schleife, ohne fertige Hilfsmethoden.
+
+```java
+Maximum: 42
+Minimum: -3
+Summe: 83
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        int[] zahlen = {4, 17, -3, 42, 8, 15};
+
+        int max = 0;
+        int min = 0;
+        int summe = 0;
+
+        // TODO: Schleife über alle Zahlen
+
+        System.out.println("Maximum: " + max);
+        System.out.println("Minimum: " + min);
+        System.out.println("Summe: " + summe);
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        int[] zahlen = {4, 17, -3, 42, 8, 15};
+
+        int max = zahlen[0];   // mit erstem Element starten, nicht mit 0!
+        int min = zahlen[0];
+        int summe = 0;
+
+        for (int z : zahlen) {
+            if (z > max) max = z;
+            if (z < min) min = z;
+            summe += z;
+        }
+
+        System.out.println("Maximum: " + max);
+        System.out.println("Minimum: " + min);
+        System.out.println("Summe: " + summe);
+    }
+}
+--- erwartet
+Maximum: 42
+Minimum: -3
+Summe: 83
+
+=== LEKTION
+id: methoden
+kapitel: 1 · Grundlagen
+titel: Methoden
+--- erklaerung
+Eine **Methode** fasst Code zusammen, den man mehrfach aufrufen kann.
+
+```java
+//  Sichtbarkeit  static  Rückgabetyp  Name   (Parameter)
+    public        static  int          summe  (int a, int b) {
+        return a + b;
+    }
+```
+
+```run
+public class Main {
+    static int quadrat(int x) {
+        return x * x;
+    }
+
+    static void gruss(String name) {          // void = kein Rückgabewert
+        System.out.println("Hallo " + name);
+    }
+
+    // Überladen (Overloading): gleicher Name, andere Parameter
+    static double quadrat(double x) {
+        return x * x;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(quadrat(5));       // 25
+        System.out.println(quadrat(1.5));     // 2.25
+        gruss("Anna");
+    }
+}
+```
+
+## Baustein für Baustein: eine Methode schreiben und aufrufen
+```java
+static int quadrat(int x) {
+    return x * x;
+}
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `static` | Die Methode gehört zur Klasse, du brauchst kein Objekt, um sie aufzurufen. Darum kann `main` sie direkt benutzen. |
+| `int` (vor dem Namen) | Der **Rückgabetyp**: Diese Methode liefert eine Ganzzahl zurück. `void` hieße: liefert nichts. |
+| `quadrat` | Der **Name** der Methode. Klein beginnen, am besten ein Verb oder eine Tätigkeit. |
+| `(int x)` | Der **Parameter**: Die Methode erwartet eine Ganzzahl und nennt sie innen `x`. Mehrere Parameter trennt man mit Komma: `(int a, int b)`. |
+| `{ ... }` | Der **Rumpf**: Was die Methode tut. |
+| `return x * x;` | Beendet die Methode und gibt den Wert zurück an die Stelle, wo sie aufgerufen wurde. |
+
+**Aufruf:**
+```java
+int ergebnis = quadrat(5);
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `quadrat` | Welche Methode laufen soll. |
+| `(5)` | Das **Argument**: `5` wird in den Parameter `x` kopiert. |
+| `int ergebnis =` | Der zurückgegebene Wert `25` landet hier. |
+
+## Java ist IMMER "pass-by-value"
+Beim Aufruf wird eine **Kopie** des Werts übergeben. Bei Objekten ist dieser Wert die **Referenz** – die Methode kann also das Objekt verändern, aber nicht die Variable des Aufrufers umbiegen.
+
+```run
+public class Main {
+    static void aendern(int zahl, int[] arr) {
+        zahl = 99;      // ändert nur die Kopie
+        arr[0] = 99;    // ändert das Objekt, auf das beide zeigen
+    }
+
+    public static void main(String[] args) {
+        int z = 1;
+        int[] a = {1};
+        aendern(z, a);
+        System.out.println(z);     // 1
+        System.out.println(a[0]);  // 99
+    }
+}
+```
+> **Interview-Tipp:** "Ist Java pass-by-reference?" – Nein! Java ist immer pass-by-value. Bei Objekten wird der Wert der Referenz kopiert.
+--- aufgabe
+Implementiere `istPrimzahl(int n)`. Eine Primzahl ist größer als 1 und nur durch 1 und sich selbst teilbar. Das Hauptprogramm gibt dann alle Primzahlen bis 30 aus:
+
+```java
+2 3 5 7 11 13 17 19 23 29
+```
+Bonus: Es reicht, Teiler bis zur Wurzel von n zu prüfen (`i * i <= n`).
+--- code
+public class Main {
+
+    static boolean istPrimzahl(int n) {
+        // TODO
+        return false;
+    }
+
+    public static void main(String[] args) {
+        for (int i = 1; i <= 30; i++) {
+            if (istPrimzahl(i)) {
+                System.out.print(i + " ");
+            }
+        }
+        System.out.println();
+    }
+}
+--- loesung
+public class Main {
+
+    static boolean istPrimzahl(int n) {
+        if (n < 2) return false;
+        for (int i = 2; i * i <= n; i++) {
+            if (n % i == 0) return false;
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        for (int i = 1; i <= 30; i++) {
+            if (istPrimzahl(i)) {
+                System.out.print(i + " ");
+            }
+        }
+        System.out.println();
+    }
+}
+--- erwartet
+2 3 5 7 11 13 17 19 23 29
+
+=== LEKTION
+id: klassen
+kapitel: 2 · Objektorientierung
+titel: Klassen & Objekte
+--- erklaerung
+Eine **Klasse** ist ein **Bauplan**, ein **Objekt** ist ein konkretes Exemplar davon (eine **Instanz**).
+- **Felder** (Attribute) speichern den Zustand: `String marke;`
+- **Methoden** beschreiben das Verhalten: `void fahren()`
+- Der **Konstruktor** wird bei `new` aufgerufen und initialisiert das Objekt. Er heißt wie die Klasse und hat keinen Rückgabetyp.
+
+```run
+public class Main {
+    public static void main(String[] args) {
+        Person p1 = new Person("Anna", 30);   // Objekt erzeugen
+        Person p2 = new Person("Ben", 25);
+        p1.vorstellen();
+        p2.vorstellen();
+        p2.alter = 26;                         // Feld ändern (später: private + Setter!)
+        p2.vorstellen();
+    }
+}
+
+class Person {               // weitere Klassen in derselben Datei: OHNE public
+    String name;             // Felder
+    int alter;
+
+    Person(String name, int alter) {   // Konstruktor
+        this.name = name;              // this.name = Feld, name = Parameter
+        this.alter = alter;
+    }
+
+    void vorstellen() {
+        System.out.println("Ich bin " + name + ", " + alter + " Jahre.");
+    }
+}
+```
+
+## Baustein für Baustein: Klasse, Konstruktor und Objekt
+```java
+class Person {
+    String name;
+    Person(String name) {
+        this.name = name;
+    }
+}
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `class Person` | Ein neuer **Bauplan** namens `Person`. Klassennamen beginnen groß. |
+| `String name;` | Ein **Feld**: Jedes Person-Objekt hat seinen eigenen Namen. |
+| `Person(String name)` | Der **Konstruktor**: heißt genau wie die Klasse und hat **keinen** Rückgabetyp. Er läuft bei `new`. |
+| `this.name` | `this` ist „**dieses** Objekt“. `this.name` meint das Feld, `name` allein den Parameter. |
+| `this.name = name;` | „Speichere den übergebenen Namen im Feld des Objekts.“ |
+
+```java
+Person p1 = new Person("Anna", 30);
+p1.vorstellen();
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `Person p1` | Eine Variable vom Typ `Person`. |
+| `new Person("Anna", 30)` | Erzeugt ein Objekt und ruft dabei den Konstruktor mit diesen Werten auf. |
+| `p1.vorstellen()` | Ruft die Methode `vorstellen` **bei diesem Objekt** auf. Darin ist `name` dann „Anna“. |
+
+## Wichtig zu wissen
+- Gibt es keinen Konstruktor, erzeugt Java einen leeren **Default-Konstruktor**.
+- Nicht initialisierte Felder haben Standardwerte: `0`, `false` oder `null`.
+- Objekte liegen auf dem **Heap**, lokale Variablen (und Referenzen) auf dem **Stack**. Der **Garbage Collector** räumt Objekte weg, auf die keine Referenz mehr zeigt.
+--- aufgabe
+Ergänze die Klasse `Auto`: Der Konstruktor soll die Marke speichern und `fahren(km)` den Kilometerstand erhöhen. Aktuell gibt das Programm `null: 0 km` aus – warum? Erwartet:
+
+```java
+VW: 150 km
+BMW: 20 km
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        Auto a = new Auto("VW");
+        a.fahren(100);
+        a.fahren(50);
+
+        Auto b = new Auto("BMW");
+        b.fahren(20);
+
+        a.ausgeben();
+        b.ausgeben();
+    }
+}
+
+class Auto {
+    String marke;
+    int kmStand;
+
+    Auto(String marke) {
+        // TODO: Marke im Feld speichern (Tipp: this)
+    }
+
+    void fahren(int km) {
+        // TODO: kmStand erhöhen
+    }
+
+    void ausgeben() {
+        System.out.println(marke + ": " + kmStand + " km");
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        Auto a = new Auto("VW");
+        a.fahren(100);
+        a.fahren(50);
+
+        Auto b = new Auto("BMW");
+        b.fahren(20);
+
+        a.ausgeben();
+        b.ausgeben();
+    }
+}
+
+class Auto {
+    String marke;
+    int kmStand;
+
+    Auto(String marke) {
+        this.marke = marke;
+    }
+
+    void fahren(int km) {
+        kmStand += km;
+    }
+
+    void ausgeben() {
+        System.out.println(marke + ": " + kmStand + " km");
+    }
+}
+--- erwartet
+VW: 150 km
+BMW: 20 km
+
+=== LEKTION
+id: kapselung
+kapitel: 2 · Objektorientierung
+titel: Kapselung: private, Getter & Setter
+--- erklaerung
+**Kapselung** (Encapsulation) heißt: Die Daten eines Objekts sind **private** und nur über kontrollierte **Methoden** zugänglich. So kann die Klasse sicherstellen, dass ihr Zustand immer gültig ist.
+
+## Zugriffsmodifizierer
+| Modifizierer | Klasse | Package | Unterklasse | Überall |
+|---|---|---|---|---|
+| `private` | ✓ | – | – | – |
+| (keiner) = package-private | ✓ | ✓ | – | – |
+| `protected` | ✓ | ✓ | ✓ | – |
+| `public` | ✓ | ✓ | ✓ | ✓ |
+
+```run
+public class Main {
+    public static void main(String[] args) {
+        Mitarbeiter m = new Mitarbeiter("Lisa", 3000);
+        m.setGehalt(-500);                 // wird abgelehnt
+        System.out.println(m.getName() + ": " + m.getGehalt());
+        // m.gehalt = -500;                // Kompilierfehler: private! Probier's aus.
+    }
+}
+
+class Mitarbeiter {
+    private final String name;   // final: nach dem Konstruktor unveränderlich
+    private int gehalt;
+
+    Mitarbeiter(String name, int gehalt) {
+        this.name = name;
+        setGehalt(gehalt);
+    }
+
+    public String getName() { return name; }
+    public int getGehalt() { return gehalt; }
+
+    public void setGehalt(int gehalt) {
+        if (gehalt < 0) {
+            System.out.println("Ungültiges Gehalt ignoriert: " + gehalt);
+            return;
+        }
+        this.gehalt = gehalt;
+    }
+}
+```
+## Baustein für Baustein: Getter und Setter
+```java
+private int gehalt;
+
+public int getGehalt() { return gehalt; }
+
+public void setGehalt(int gehalt) {
+    if (gehalt < 0) return;
+    this.gehalt = gehalt;
+}
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `private` | Nur Code **in dieser Klasse** darf das Feld direkt lesen oder ändern. |
+| `public int getGehalt()` | Der **Getter**: von überall aufrufbar (`public`), liefert ein `int`, braucht keine Parameter. Name: `get` + Feldname. |
+| `return gehalt;` | Gibt den Wert heraus. |
+| `public void setGehalt(int gehalt)` | Der **Setter**: liefert nichts (`void`), bekommt den neuen Wert als Parameter. |
+| `if (gehalt < 0) return;` | Hier prüft die Klasse selbst, ob der Wert gültig ist. Genau dafür ist Kapselung da. |
+| `private final String name;` | `final` am Feld: wird einmal im Konstruktor gesetzt und danach nie wieder. Dafür gibt es keinen Setter. |
+
+> **Interview-Tipp:** Die **4 Säulen der OOP**: Kapselung, Vererbung, Polymorphie, Abstraktion. Die solltest du jeweils mit einem Satz und Beispiel erklären können.
+--- aufgabe
+Das `Konto` ist kaputt: Man kann negative Beträge einzahlen und das Konto überziehen. Repariere es:
+- `einzahlen`: nur positive Beträge annehmen
+- `abheben`: nur wenn genug Geld da ist – dann `true` zurückgeben, sonst `false` und nichts abbuchen
+
+```java
+true
+false
+Kontostand: 70
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        Konto k = new Konto("Anna");
+        k.einzahlen(100);
+        k.einzahlen(-50);                    // soll ignoriert werden
+        System.out.println(k.abheben(30));   // true
+        System.out.println(k.abheben(500));  // false
+        System.out.println("Kontostand: " + k.getKontostand());
+    }
+}
+
+class Konto {
+    private final String inhaber;
+    private int kontostand;
+
+    Konto(String inhaber) {
+        this.inhaber = inhaber;
+    }
+
+    public void einzahlen(int betrag) {
+        kontostand += betrag;
+    }
+
+    public boolean abheben(int betrag) {
+        kontostand -= betrag;
+        return true;
+    }
+
+    public int getKontostand() {
+        return kontostand;
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        Konto k = new Konto("Anna");
+        k.einzahlen(100);
+        k.einzahlen(-50);                    // soll ignoriert werden
+        System.out.println(k.abheben(30));   // true
+        System.out.println(k.abheben(500));  // false
+        System.out.println("Kontostand: " + k.getKontostand());
+    }
+}
+
+class Konto {
+    private final String inhaber;
+    private int kontostand;
+
+    Konto(String inhaber) {
+        this.inhaber = inhaber;
+    }
+
+    public void einzahlen(int betrag) {
+        if (betrag > 0) {
+            kontostand += betrag;
+        }
+    }
+
+    public boolean abheben(int betrag) {
+        if (betrag <= 0 || betrag > kontostand) {
+            return false;
+        }
+        kontostand -= betrag;
+        return true;
+    }
+
+    public int getKontostand() {
+        return kontostand;
+    }
+}
+--- erwartet
+true
+false
+Kontostand: 70
+
+=== LEKTION
+id: vererbung
+kapitel: 2 · Objektorientierung
+titel: Vererbung
+--- erklaerung
+Mit `extends` erbt eine Klasse Felder und Methoden einer **Oberklasse**. Das beschreibt eine **"ist-ein"-Beziehung**: Ein Hund *ist ein* Tier.
+
+```run
+public class Main {
+    public static void main(String[] args) {
+        Hund h = new Hund("Bello");
+        h.essen();      // geerbt von Tier
+        h.bellen();     // eigene Methode
+        System.out.println(h);   // toString() überschrieben
+    }
+}
+
+class Tier {
+    protected String name;     // protected: sichtbar in Unterklassen
+
+    Tier(String name) {
+        this.name = name;
+    }
+
+    void essen() {
+        System.out.println(name + " isst.");
+    }
+
+    @Override
+    public String toString() {
+        return "Tier " + name;
+    }
+}
+
+class Hund extends Tier {
+    Hund(String name) {
+        super(name);   // Konstruktor der Oberklasse – muss die ERSTE Anweisung sein
+    }
+
+    void bellen() {
+        System.out.println(name + " bellt: Wuff!");
+    }
+
+    @Override                       // überschreibt die Methode der Oberklasse
+    public String toString() {
+        return "Hund " + name + " (" + super.toString() + ")";
+    }
+}
+```
+
+## Baustein für Baustein: extends, super und @Override
+```java
+class Hund extends Tier {
+    Hund(String name) {
+        super(name);
+    }
+}
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `class Hund` | Eine neue Klasse. |
+| `extends Tier` | „... **erweitert** Tier“: Hund bekommt alle Felder und Methoden von Tier. |
+| `super(name)` | Ruft den **Konstruktor der Oberklasse** auf, damit Tier seinen Teil (den Namen) einrichten kann. Muss die erste Zeile im Konstruktor sein. |
+| `protected` | Wie `private`, aber Unterklassen dürfen auch zugreifen. |
+| `@Override` | Ein Hinweis an den Compiler: „Diese Methode **ersetzt** eine Methode der Oberklasse.“ Vertippst du dich im Namen, meldet er einen Fehler. |
+| `super.toString()` | Ruft die **alte** Version der Methode aus der Oberklasse auf. |
+
+## Wichtige Regeln
+- Eine Klasse kann nur von **einer** Klasse erben (keine Mehrfachvererbung von Klassen).
+- Jede Klasse erbt automatisch von `Object` (daher gibt es überall `toString`, `equals`, `hashCode`).
+- `@Override` lässt den Compiler prüfen, dass du wirklich etwas überschreibst – schützt vor Tippfehlern.
+- `final class` kann nicht beerbt, `final`-Methoden nicht überschrieben werden.
+
+> **Interview-Tipp:** "Komposition statt Vererbung" (*favor composition over inheritance*): Vererbung nur bei echter ist-ein-Beziehung. Sonst lieber ein Objekt als Feld halten ("hat-ein"). Das macht Code flexibler.
+--- aufgabe
+Erstelle eine Klasse `Katze`, die von `Tier` erbt und bei `laut()` `"Miau"` zurückgibt. Erzeuge im main eine Katze namens `Minka` und rufe `beschreibe()` auf.
+
+```java
+Bello macht Wuff
+Minka macht Miau
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        Tier hund = new Hund("Bello");
+        hund.beschreibe();
+
+        // TODO: Katze "Minka" erzeugen und beschreiben
+    }
+}
+
+class Tier {
+    protected String name;
+
+    Tier(String name) {
+        this.name = name;
+    }
+
+    String laut() {
+        return "...";
+    }
+
+    void beschreibe() {
+        System.out.println(name + " macht " + laut());
+    }
+}
+
+class Hund extends Tier {
+    Hund(String name) {
+        super(name);
+    }
+
+    @Override
+    String laut() {
+        return "Wuff";
+    }
+}
+
+// TODO: class Katze
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        Tier hund = new Hund("Bello");
+        hund.beschreibe();
+
+        Tier katze = new Katze("Minka");
+        katze.beschreibe();
+    }
+}
+
+class Tier {
+    protected String name;
+
+    Tier(String name) {
+        this.name = name;
+    }
+
+    String laut() {
+        return "...";
+    }
+
+    void beschreibe() {
+        System.out.println(name + " macht " + laut());
+    }
+}
+
+class Hund extends Tier {
+    Hund(String name) {
+        super(name);
+    }
+
+    @Override
+    String laut() {
+        return "Wuff";
+    }
+}
+
+class Katze extends Tier {
+    Katze(String name) {
+        super(name);
+    }
+
+    @Override
+    String laut() {
+        return "Miau";
+    }
+}
+--- erwartet
+Bello macht Wuff
+Minka macht Miau
+--- muss
+extends Tier
+
+=== LEKTION
+id: polymorphie
+kapitel: 2 · Objektorientierung
+titel: Polymorphie & abstrakte Klassen
+--- erklaerung
+**Polymorphie** ("Vielgestaltigkeit"): Eine Variable vom Typ der Oberklasse kann Objekte jeder Unterklasse halten. Welche Methode läuft, entscheidet sich **zur Laufzeit** anhand des echten Objekts (**dynamic dispatch**).
+
+Eine **abstrakte Klasse** ist unvollständig: Man kann sie nicht mit `new` erzeugen. **Abstrakte Methoden** haben keinen Rumpf und müssen von Unterklassen implementiert werden.
+
+```run
+public class Main {
+    public static void main(String[] args) {
+        Mitarbeiter[] team = {
+            new Entwickler("Anna"),
+            new Manager("Ben"),
+            new Entwickler("Chris")
+        };
+        for (Mitarbeiter m : team) {
+            m.arbeiten();   // jeweils die passende Methode!
+        }
+        // Mitarbeiter x = new Mitarbeiter("X");  // Fehler: abstrakt! Probier's aus.
+    }
+}
+
+abstract class Mitarbeiter {
+    protected String name;
+
+    Mitarbeiter(String name) { this.name = name; }
+
+    abstract void arbeiten();          // kein Rumpf
+
+    void pause() {                     // abstrakte Klassen DÜRFEN normale Methoden haben
+        System.out.println(name + " macht Pause");
+    }
+}
+
+class Entwickler extends Mitarbeiter {
+    Entwickler(String name) { super(name); }
+
+    @Override
+    void arbeiten() { System.out.println(name + " schreibt Code"); }
+}
+
+class Manager extends Mitarbeiter {
+    Manager(String name) { super(name); }
+
+    @Override
+    void arbeiten() { System.out.println(name + " plant Meetings"); }
+}
+```
+
+## Baustein für Baustein: abstract
+```java
+abstract class Mitarbeiter {
+    abstract void arbeiten();
+}
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `abstract class` | Eine **unvollständige** Klasse: Von ihr kann man kein Objekt mit `new` erzeugen, nur von ihren Unterklassen. |
+| `abstract void arbeiten();` | Eine Methode **ohne Rumpf**: Statt `{ ... }` steht nur ein `;`. Jede Unterklasse muss sie selbst ausfüllen. |
+| `Mitarbeiter m = new Entwickler("Anna");` | Links der allgemeine Typ, rechts das konkrete Objekt. Ruft man `m.arbeiten()` auf, läuft die Version von `Entwickler`. Das ist Polymorphie. |
+
+## Overloading vs. Overriding
+| | Overloading (Überladen) | Overriding (Überschreiben) |
+|---|---|---|
+| Wo? | in derselben Klasse | in einer Unterklasse |
+| Signatur | gleicher Name, **andere Parameter** | **gleiche** Signatur |
+| Wann entschieden? | beim Kompilieren | zur Laufzeit |
+| Beispiel | `print(int)`, `print(String)` | `toString()` überschreiben |
+--- aufgabe
+`Dreieck` liefert noch 0 als Fläche. Implementiere `flaeche()` (Grundseite × Höhe / 2), sodass herauskommt:
+
+```java
+Rechteck: 12.0
+Dreieck: 6.0
+Gesamt: 18.0
+```
+Bonus: Füge eine Klasse `Kreis` hinzu (`Math.PI * r * r`) – ohne die Schleife in main zu ändern. Das ist die Stärke von Polymorphie! (Für die Prüfung danach wieder entfernen.)
+--- code
+public class Main {
+    public static void main(String[] args) {
+        Form[] formen = { new Rechteck(3, 4), new Dreieck(6, 2) };
+
+        double gesamt = 0;
+        for (Form f : formen) {
+            System.out.println(f.getClass().getSimpleName() + ": " + f.flaeche());
+            gesamt += f.flaeche();
+        }
+        System.out.println("Gesamt: " + gesamt);
+    }
+}
+
+abstract class Form {
+    abstract double flaeche();
+}
+
+class Rechteck extends Form {
+    private final double breite, hoehe;
+
+    Rechteck(double breite, double hoehe) {
+        this.breite = breite;
+        this.hoehe = hoehe;
+    }
+
+    @Override
+    double flaeche() {
+        return breite * hoehe;
+    }
+}
+
+class Dreieck extends Form {
+    private final double grundseite, hoehe;
+
+    Dreieck(double grundseite, double hoehe) {
+        this.grundseite = grundseite;
+        this.hoehe = hoehe;
+    }
+
+    @Override
+    double flaeche() {
+        return 0; // TODO
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        Form[] formen = { new Rechteck(3, 4), new Dreieck(6, 2) };
+
+        double gesamt = 0;
+        for (Form f : formen) {
+            System.out.println(f.getClass().getSimpleName() + ": " + f.flaeche());
+            gesamt += f.flaeche();
+        }
+        System.out.println("Gesamt: " + gesamt);
+    }
+}
+
+abstract class Form {
+    abstract double flaeche();
+}
+
+class Rechteck extends Form {
+    private final double breite, hoehe;
+
+    Rechteck(double breite, double hoehe) {
+        this.breite = breite;
+        this.hoehe = hoehe;
+    }
+
+    @Override
+    double flaeche() {
+        return breite * hoehe;
+    }
+}
+
+class Dreieck extends Form {
+    private final double grundseite, hoehe;
+
+    Dreieck(double grundseite, double hoehe) {
+        this.grundseite = grundseite;
+        this.hoehe = hoehe;
+    }
+
+    @Override
+    double flaeche() {
+        return grundseite * hoehe / 2;
+    }
+}
+--- erwartet
+Rechteck: 12.0
+Dreieck: 6.0
+Gesamt: 18.0
+
+=== LEKTION
+id: interfaces
+kapitel: 2 · Objektorientierung
+titel: Interfaces & Comparable
+--- erklaerung
+Ein **Interface** ist ein **Vertrag**: Es legt fest, *welche* Methoden eine Klasse haben muss – nicht *wie* sie funktionieren. Eine Klasse kann **beliebig viele** Interfaces implementieren.
+
+```run
+public class Main {
+    public static void main(String[] args) {
+        Bezahlbar[] zahlungen = { new Kreditkarte(), new PayPal() };
+        for (Bezahlbar z : zahlungen) {
+            z.bezahlen(25);
+            z.quittung();
+        }
+    }
+}
+
+interface Bezahlbar {
+    void bezahlen(int betrag);         // automatisch public abstract
+
+    default void quittung() {          // default-Methode (seit Java 8)
+        System.out.println("  -> Quittung erstellt");
+    }
+}
+
+class Kreditkarte implements Bezahlbar {
+    @Override
+    public void bezahlen(int betrag) { System.out.println(betrag + " Euro per Kreditkarte"); }
+}
+
+class PayPal implements Bezahlbar {
+    @Override
+    public void bezahlen(int betrag) { System.out.println(betrag + " Euro per PayPal"); }
+}
+```
+
+## Baustein für Baustein: interface und implements
+| Baustein | Was er bedeutet |
+|---|---|
+| `interface Bezahlbar { ... }` | Ein **Vertrag**: eine Liste von Methoden, die jede Klasse haben muss, die ihn unterschreibt. |
+| `void bezahlen(int betrag);` | Nur die **Kopfzeile** der Methode mit `;`, ohne Rumpf. Sie ist automatisch `public` und `abstract`. |
+| `default void quittung() { ... }` | Eine Methode **mit** fertigem Rumpf. Klassen bekommen sie geschenkt, dürfen sie aber überschreiben. |
+| `class PayPal implements Bezahlbar` | „PayPal **erfüllt** den Vertrag Bezahlbar.“ Jetzt muss PayPal `bezahlen` mit Rumpf schreiben, sonst gibt es einen Kompilierfehler. |
+| `public void bezahlen(...)` | In der Klasse muss die Methode `public` sein, weil sie im Interface automatisch `public` ist. |
+
+## Interface vs. abstrakte Klasse – Interview-Klassiker!
+| | Interface | Abstrakte Klasse |
+|---|---|---|
+| Mehrfach? | Klasse kann **viele** implementieren | nur **eine** Oberklasse |
+| Felder | nur Konstanten (`public static final`) | beliebige Felder (Zustand) |
+| Konstruktor | nein | ja |
+| Methoden | abstrakt, `default`, `static`, `private` | abstrakt und konkret |
+| Bedeutung | "kann-etwas" (Fähigkeit) | "ist-ein" (gemeinsame Basis) |
+
+## Comparable – Objekte sortierbar machen
+Das Interface `Comparable<T>` hat eine Methode `compareTo(T other)`: negativ = ich komme zuerst, 0 = gleich, positiv = der andere zuerst. Danach funktionieren `Arrays.sort` und `Collections.sort`.
+## Baustein für Baustein: Comparable
+```java
+class Spieler implements Comparable<Spieler> {
+    @Override
+    public int compareTo(Spieler other) {
+        return Integer.compare(this.punkte, other.punkte);
+    }
+}
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `implements Comparable` | Spieler unterschreibt den Vertrag „ich bin vergleichbar“. |
+| `<Spieler>` | In spitzen Klammern steht, **womit** verglichen wird: mit anderen Spielern. |
+| `public int compareTo(Spieler other)` | Die eine Methode, die der Vertrag verlangt. `other` ist der Spieler, mit dem `this` verglichen wird. |
+| `Integer.compare(a, b)` | Liefert eine negative Zahl, wenn `a < b`, `0` bei Gleichheit und eine positive Zahl, wenn `a > b`. |
+| `this.punkte, other.punkte` | Diese Reihenfolge sortiert **aufsteigend**. Vertauschst du die beiden, wird **absteigend** sortiert. |
+
+--- aufgabe
+Die Spieler sollen **absteigend nach Punkten** sortiert werden. Implementiere `compareTo` in `Spieler` (Tipp: `Integer.compare(a, b)`, und überlege, wer mit wem verglichen wird, damit es absteigend wird).
+
+```java
+Lena 95
+Max 80
+Jan 72
+```
+--- code
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        Spieler[] spieler = {
+            new Spieler("Max", 80),
+            new Spieler("Lena", 95),
+            new Spieler("Jan", 72)
+        };
+        Arrays.sort(spieler);
+        for (Spieler s : spieler) {
+            System.out.println(s.name + " " + s.punkte);
+        }
+    }
+}
+
+class Spieler implements Comparable<Spieler> {
+    String name;
+    int punkte;
+
+    Spieler(String name, int punkte) {
+        this.name = name;
+        this.punkte = punkte;
+    }
+
+    @Override
+    public int compareTo(Spieler other) {
+        return 0; // TODO
+    }
+}
+--- loesung
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        Spieler[] spieler = {
+            new Spieler("Max", 80),
+            new Spieler("Lena", 95),
+            new Spieler("Jan", 72)
+        };
+        Arrays.sort(spieler);
+        for (Spieler s : spieler) {
+            System.out.println(s.name + " " + s.punkte);
+        }
+    }
+}
+
+class Spieler implements Comparable<Spieler> {
+    String name;
+    int punkte;
+
+    Spieler(String name, int punkte) {
+        this.name = name;
+        this.punkte = punkte;
+    }
+
+    @Override
+    public int compareTo(Spieler other) {
+        // other zuerst -> absteigend
+        return Integer.compare(other.punkte, this.punkte);
+    }
+}
+--- erwartet
+Lena 95
+Max 80
+Jan 72
+
+=== LEKTION
+id: static
+kapitel: 2 · Objektorientierung
+titel: static & final
+--- erklaerung
+## static – gehört zur Klasse
+Ein `static`-Feld existiert **einmal pro Klasse** und wird von allen Objekten geteilt. Eine `static`-Methode wird über den Klassennamen aufgerufen und hat **kein** `this` – sie kann daher nicht direkt auf Instanzfelder zugreifen.
+
+```run
+public class Main {
+    public static void main(String[] args) {
+        new Zaehler();
+        new Zaehler();
+        new Zaehler();
+        System.out.println("Objekte: " + Zaehler.anzahl);   // über die Klasse
+        System.out.println(MathUtil.verdoppeln(21));          // static-Methode
+        System.out.println(MathUtil.PI_UNGEFAEHR);
+    }
+}
+
+class Zaehler {
+    static int anzahl = 0;   // EIN Wert für alle Objekte
+    int id;                  // jedes Objekt hat seinen eigenen Wert
+
+    Zaehler() {
+        anzahl++;
+        id = anzahl;
+    }
+}
+
+class MathUtil {
+    static final double PI_UNGEFAEHR = 3.14;   // Konstante: static final + GROSS_SCHREIBEN
+
+    static int verdoppeln(int x) {
+        return x * 2;
+    }
+}
+```
+
+## Baustein für Baustein: static
+| Baustein | Was er bedeutet |
+|---|---|
+| `static int anzahl = 0;` | Ein Feld, das es nur **einmal für die ganze Klasse** gibt. Alle Objekte teilen sich diesen einen Wert. |
+| `int id;` | Ohne `static`: Jedes Objekt hat sein **eigenes** Feld. |
+| `Zaehler.anzahl` | Statisches wird über den **Klassennamen** angesprochen, nicht über ein Objekt. |
+| `static int verdoppeln(int x)` | Eine Methode, die man ohne Objekt aufruft: `MathUtil.verdoppeln(21)`. Darum kennt sie kein `this`. |
+| `static final double PI_UNGEFAEHR` | `static` = einmal pro Klasse, `final` = unveränderlich. Zusammen ergibt das eine **Konstante**. |
+
+## final – "nicht mehr änderbar"
+- `final` **Variable**: nur einmal zuweisbar.
+- `final` **Methode**: kann nicht überschrieben werden.
+- `final` **Klasse**: kann nicht beerbt werden (z. B. `String`).
+
+```run
+final List<String> liste = new ArrayList<>();
+liste.add("geht!");          // das OBJEKT ist veränderbar ...
+// liste = new ArrayList<>(); // ... nur die Referenz nicht (Kompilierfehler)
+System.out.println(liste);
+```
+> **Interview-Tipp:** Unterschied **final / finally / finalize**: `final` = unveränderlich, `finally` = Block nach try/catch, der immer läuft, `finalize()` = veraltete Methode, die der Garbage Collector aufrief (deprecated, nicht benutzen).
+--- aufgabe
+Dieser Code **kompiliert nicht** – führe ihn aus und lies die Fehlermeldung! Repariere dann die Klasse `Ticket`: Jedes Ticket soll eine fortlaufende Nummer bekommen, und `Ticket.anzahl()` soll die Anzahl erstellter Tickets liefern.
+
+```java
+Ticket #1
+Ticket #2
+Ticket #3
+Erstellte Tickets: 3
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        Ticket a = new Ticket();
+        Ticket b = new Ticket();
+        Ticket c = new Ticket();
+        a.drucken();
+        b.drucken();
+        c.drucken();
+        System.out.println("Erstellte Tickets: " + Ticket.anzahl());
+    }
+}
+
+class Ticket {
+    int zaehler = 0;
+    int nummer;
+
+    Ticket() {
+        zaehler++;
+        nummer = zaehler;
+    }
+
+    void drucken() {
+        System.out.println("Ticket #" + nummer);
+    }
+
+    static int anzahl() {
+        return zaehler;
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        Ticket a = new Ticket();
+        Ticket b = new Ticket();
+        Ticket c = new Ticket();
+        a.drucken();
+        b.drucken();
+        c.drucken();
+        System.out.println("Erstellte Tickets: " + Ticket.anzahl());
+    }
+}
+
+class Ticket {
+    static int zaehler = 0;   // gemeinsam für alle Tickets
+    int nummer;               // pro Ticket
+
+    Ticket() {
+        zaehler++;
+        nummer = zaehler;
+    }
+
+    void drucken() {
+        System.out.println("Ticket #" + nummer);
+    }
+
+    static int anzahl() {
+        return zaehler;
+    }
+}
+--- erwartet
+Ticket #1
+Ticket #2
+Ticket #3
+Erstellte Tickets: 3
+
+=== LEKTION
+id: equals
+kapitel: 2 · Objektorientierung
+titel: equals, hashCode, toString & Records
+--- erklaerung
+Jede Klasse erbt von `Object` die Methoden `toString()`, `equals()` und `hashCode()`. Die Standard-Versionen sind meist nutzlos:
+- `toString()` liefert so etwas wie `Punkt@1b6d3586`.
+- `equals()` macht dasselbe wie `==` (gleiches Objekt?).
+
+## Der equals/hashCode-Vertrag (sehr häufige Interviewfrage!)
+- Wenn `a.equals(b)` true ist, **muss** `a.hashCode() == b.hashCode()` sein.
+- Gleicher hashCode heißt aber NICHT automatisch equals (Kollisionen sind erlaubt).
+- **Überschreibe immer beide zusammen!** Sonst funktionieren `HashMap` und `HashSet` nicht richtig: Sie suchen zuerst über den hashCode den "Eimer" (Bucket) und vergleichen dann mit equals.
+
+## Baustein für Baustein: equals und hashCode überschreiben
+```java
+@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Punkt)) return false;
+    Punkt p = (Punkt) o;
+    return x == p.x && y == p.y;
+}
+
+@Override
+public int hashCode() {
+    return Objects.hash(x, y);
+}
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `public boolean equals(Object o)` | Genau diese Kopfzeile muss es sein: liefert `true` oder `false`, und der Parameter hat den Typ `Object`, nicht `Punkt`. |
+| `this == o` | Ist es sogar **dasselbe** Objekt? Dann sind sie sicher gleich. |
+| `o instanceof Punkt` | „Ist `o` überhaupt ein Punkt?“ Bei `null` oder einem anderen Typ ist das `false`. |
+| `!( ... )` | Das `!` dreht das Ergebnis um: „wenn **kein** Punkt“. |
+| `(Punkt) o` | Ein **Cast**: Jetzt, wo sicher ist, dass es ein Punkt ist, behandeln wir `o` auch so, damit wir an `p.x` herankommen. |
+| `x == p.x && y == p.y` | Gleich, wenn **alle** wichtigen Felder gleich sind. |
+| `Objects.hash(x, y)` | Berechnet aus denselben Feldern eine Zahl, den Hashcode. Gleiche Felder ergeben immer dieselbe Zahl. |
+
+## Records (seit Java 16)
+Für reine Datenklassen erzeugt ein `record` Konstruktor, Getter, `equals`, `hashCode` und `toString` automatisch – und ist unveränderlich:
+
+```run
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Person a = new Person("Anna", 30);
+        Person b = new Person("Anna", 30);
+        System.out.println(a);              // Person[name=Anna, alter=30]
+        System.out.println(a.equals(b));    // true
+        System.out.println(a.name());       // Getter heißt wie das Feld
+        Set<Person> set = new HashSet<>(List.of(a, b));
+        System.out.println(set.size());     // 1
+    }
+}
+
+record Person(String name, int alter) {}
+```
+--- aufgabe
+Ergänze in `Punkt` die Methoden `toString()`, `equals()` und `hashCode()`. Aktuell ist die Ausgabe `Punkt@...`, `false` und `2`. Erwartet:
+
+```java
+Punkt(1, 2)
+true
+Größe Set: 1
+```
+Tipp für hashCode: `Objects.hash(x, y)`.
+--- code
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Punkt a = new Punkt(1, 2);
+        Punkt b = new Punkt(1, 2);
+
+        System.out.println(a);
+        System.out.println(a.equals(b));
+
+        Set<Punkt> set = new HashSet<>();
+        set.add(a);
+        set.add(b);
+        System.out.println("Größe Set: " + set.size());
+    }
+}
+
+class Punkt {
+    private final int x;
+    private final int y;
+
+    Punkt(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    // TODO: toString, equals, hashCode
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Punkt a = new Punkt(1, 2);
+        Punkt b = new Punkt(1, 2);
+
+        System.out.println(a);
+        System.out.println(a.equals(b));
+
+        Set<Punkt> set = new HashSet<>();
+        set.add(a);
+        set.add(b);
+        System.out.println("Größe Set: " + set.size());
+    }
+}
+
+class Punkt {
+    private final int x;
+    private final int y;
+
+    Punkt(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public String toString() {
+        return "Punkt(" + x + ", " + y + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;                        // dasselbe Objekt
+        if (!(o instanceof Punkt)) return false;           // falscher Typ oder null
+        Punkt p = (Punkt) o;
+        return x == p.x && y == p.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+}
+--- erwartet
+Punkt(1, 2)
+true
+Größe Set: 1
+
+=== LEKTION
+id: arraylist
+kapitel: 3 · Collections & APIs
+titel: ArrayList & List
+--- erklaerung
+Eine `ArrayList` ist wie ein Array, das **automatisch wächst**. Man programmiert gegen das Interface `List`:
+
+```run
+List<String> namen = new ArrayList<>();   // links Interface, rechts Implementierung
+namen.add("Anna");
+namen.add("Ben");
+namen.add(0, "Zoe");                       // an Position 0 einfügen
+System.out.println(namen);                 // [Zoe, Anna, Ben]
+System.out.println(namen.get(1));          // Anna
+System.out.println(namen.size());          // 3
+System.out.println(namen.contains("Ben")); // true
+namen.set(1, "Alex");                      // ersetzen
+namen.remove("Zoe");                       // nach Wert entfernen
+System.out.println(namen);                 // [Alex, Ben]
+Collections.sort(namen);
+
+for (String n : namen) {
+    System.out.println("Hallo " + n);
+}
+
+List<Integer> zahlen = new ArrayList<>(List.of(10, 20, 30));
+zahlen.remove(1);                          // Achtung: entfernt INDEX 1 (die 20)!
+zahlen.remove(Integer.valueOf(10));        // entfernt den WERT 10
+System.out.println(zahlen);                // [30]
+```
+
+## Baustein für Baustein: eine Liste anlegen
+```java
+List<String> namen = new ArrayList<>();
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `List` | Der Typ der Variable: das **Interface** „Liste“. Es sagt, was eine Liste kann (`add`, `get`, `size` ...). |
+| `<String>` | Die spitzen Klammern sagen, **was** in der Liste liegt: Texte. Das nennt man **Generics**. |
+| `namen` | Der Name der Variable. |
+| `new ArrayList` | Erzeugt eine konkrete Liste, die intern ein Array benutzt. |
+| `<>` | Der „Diamant“: Java übernimmt den Typ `String` von links, du musst ihn nicht wiederholen. |
+| `()` | Der Konstruktor ohne Argumente: eine leere Liste. |
+
+| Aufruf | Was er tut |
+|---|---|
+| `namen.add("Anna")` | hängt hinten an |
+| `namen.add(0, "Zoe")` | fügt an Position 0 ein, der Rest rutscht nach hinten |
+| `namen.get(1)` | liest Position 1 |
+| `namen.set(1, "Alex")` | ersetzt Position 1 |
+| `namen.remove("Zoe")` | entfernt nach Wert |
+| `namen.size()` | Anzahl der Elemente |
+
+## Wichtige Fallen
+- `List.of(...)` ist **unveränderlich** – `add` wirft `UnsupportedOperationException`.
+- Elemente während einer for-each-Schleife entfernen wirft `ConcurrentModificationException`. Lösung: `removeIf` oder `Iterator`.
+- Collections speichern nur Objekte: `List<Integer>`, nicht `List<int>`.
+
+## ArrayList vs. LinkedList
+| | ArrayList | LinkedList |
+|---|---|---|
+| intern | Array | doppelt verkettete Liste |
+| `get(i)` | schnell O(1) | langsam O(n) |
+| Einfügen in der Mitte | O(n) (verschieben) | O(1) wenn Position bekannt |
+| Praxis | **fast immer die richtige Wahl** | selten sinnvoll |
+--- aufgabe
+Entferne alle Namen, die mit `"A"` beginnen, füge `"David"` hinzu und sortiere die Liste. Der aktuelle Code **stürzt ab** – führe ihn aus und lies die Erklärung!
+
+```java
+[Ben, Clara, David]
+```
+--- code
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> namen = new ArrayList<>(List.of("Anna", "Ben", "Alex", "Clara", "Ali"));
+
+        for (String n : namen) {
+            if (n.startsWith("A")) {
+                namen.remove(n);
+            }
+        }
+        // TODO: "David" hinzufügen und sortieren
+
+        System.out.println(namen);
+    }
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> namen = new ArrayList<>(List.of("Anna", "Ben", "Alex", "Clara", "Ali"));
+
+        // Variante 1: removeIf mit Lambda
+        namen.removeIf(n -> n.startsWith("A"));
+
+        // Variante 2 (gleichwertig): Iterator
+        // Iterator<String> it = namen.iterator();
+        // while (it.hasNext()) {
+        //     if (it.next().startsWith("A")) it.remove();
+        // }
+
+        namen.add("David");
+        Collections.sort(namen);
+        System.out.println(namen);
+    }
+}
+--- erwartet
+[Ben, Clara, David]
+
+=== LEKTION
+id: hashmap
+kapitel: 3 · Collections & APIs
+titel: HashMap & Set
+--- erklaerung
+Eine `Map` speichert **Schlüssel → Wert**-Paare. Jeder Schlüssel kommt nur einmal vor.
+
+```run
+Map<String, Integer> alter = new HashMap<>();
+alter.put("Anna", 30);
+alter.put("Ben", 25);
+alter.put("Anna", 31);                          // überschreibt den alten Wert!
+System.out.println(alter.get("Anna"));          // 31
+System.out.println(alter.get("Xaver"));         // null
+System.out.println(alter.getOrDefault("Xaver", 0)); // 0
+System.out.println(alter.containsKey("Ben"));   // true
+
+for (Map.Entry<String, Integer> e : alter.entrySet()) {
+    System.out.println(e.getKey() + " ist " + e.getValue());
+}
+
+Set<String> farben = new HashSet<>();           // Set = keine Duplikate
+farben.add("rot");
+farben.add("blau");
+farben.add("rot");
+System.out.println(farben.size());              // 2
+```
+
+## Baustein für Baustein: Map
+```java
+Map<String, Integer> alter = new HashMap<>();
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `Map` | Ein Wörterbuch: Zu jedem **Schlüssel** gehört ein **Wert**. |
+| `<String, Integer>` | Zwei Typen: erst der Schlüssel (Text), dann der Wert (Ganzzahl). `Integer` statt `int`, weil Collections nur Objekte speichern. |
+| `new HashMap<>()` | Erzeugt eine leere Map, die mit Hashcodes arbeitet. |
+
+| Aufruf | Was er tut |
+|---|---|
+| `alter.put("Anna", 30)` | Speichert den Wert 30 unter dem Schlüssel „Anna“. |
+| `alter.get("Anna")` | Liest den Wert zu „Anna“, `null` wenn es ihn nicht gibt. |
+| `alter.getOrDefault("X", 0)` | Wie `get`, aber mit einem Ersatzwert statt `null`. |
+| `alter.containsKey("Ben")` | Gibt es diesen Schlüssel? |
+
+**Alle Einträge durchgehen:**
+```java
+for (Map.Entry<String, Integer> e : alter.entrySet()) { ... }
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `alter.entrySet()` | Liefert alle **Paare** aus Schlüssel und Wert. |
+| `Map.Entry<String, Integer>` | Der Typ eines solchen Paars. |
+| `e.getKey()` / `e.getValue()` | Schlüssel bzw. Wert des aktuellen Paars. |
+
+## Welche Map / welches Set?
+| Klasse | Reihenfolge | Zugriff |
+|---|---|---|
+| `HashMap` / `HashSet` | keine garantierte | O(1) |
+| `LinkedHashMap` / `LinkedHashSet` | Einfügereihenfolge | O(1) |
+| `TreeMap` / `TreeSet` | sortiert | O(log n) |
+
+## Wie funktioniert eine HashMap? (Interview!)
+1. Aus dem Schlüssel wird mit `hashCode()` ein **Bucket** (Fach in einem internen Array) berechnet.
+2. Landen mehrere Schlüssel im selben Bucket (**Kollision**), werden sie dort als Liste gespeichert (ab 8 Einträgen als Baum, seit Java 8).
+3. Beim `get` wird der Bucket über `hashCode()` gefunden und der richtige Eintrag per `equals()` gesucht.
+4. Wird die Map zu voll (Load Factor 0.75), wird das Array vergrößert (**Rehashing**).
+
+Deshalb müssen Schlüssel-Klassen `equals` UND `hashCode` korrekt überschreiben – und sollten unveränderlich sein (z. B. `String`).
+--- aufgabe
+Zähle, wie oft jedes Wort im Text vorkommt. Benutze eine `TreeMap`, damit die Wörter alphabetisch sortiert ausgegeben werden.
+
+```java
+ist=2
+java=2
+schnell=1
+toll=1
+und=1
+```
+Tipp: `zaehler.put(wort, zaehler.getOrDefault(wort, 0) + 1);` – oder eleganter: `zaehler.merge(wort, 1, Integer::sum);`
+--- code
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        String text = "java ist toll und java ist schnell";
+        String[] woerter = text.split(" ");
+
+        Map<String, Integer> zaehler = new TreeMap<>();
+        // TODO: Wörter zählen
+
+        for (Map.Entry<String, Integer> e : zaehler.entrySet()) {
+            System.out.println(e.getKey() + "=" + e.getValue());
+        }
+    }
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        String text = "java ist toll und java ist schnell";
+        String[] woerter = text.split(" ");
+
+        Map<String, Integer> zaehler = new TreeMap<>();
+        for (String wort : woerter) {
+            zaehler.put(wort, zaehler.getOrDefault(wort, 0) + 1);
+        }
+
+        for (Map.Entry<String, Integer> e : zaehler.entrySet()) {
+            System.out.println(e.getKey() + "=" + e.getValue());
+        }
+    }
+}
+--- erwartet
+ist=2
+java=2
+schnell=1
+toll=1
+und=1
+
+=== LEKTION
+id: exceptions
+kapitel: 3 · Collections & APIs
+titel: Exceptions – Fehlerbehandlung
+--- erklaerung
+Eine **Exception** ist ein Fehler zur Laufzeit. Man kann sie mit `try`/`catch` abfangen:
+
+```run
+try {
+    int[] a = new int[2];
+    a[5] = 1;                                    // wirft Exception
+    System.out.println("wird nicht erreicht");
+} catch (ArrayIndexOutOfBoundsException e) {
+    System.out.println("Gefangen: " + e.getMessage());
+} finally {
+    System.out.println("finally läuft IMMER");
+}
+System.out.println("Programm läuft weiter");
+```
+
+## Baustein für Baustein: try, catch und finally
+| Baustein | Was er bedeutet |
+|---|---|
+| `try { ... }` | „Versuch diesen Code.“ Tritt darin ein Fehler auf, springt Java sofort heraus, der Rest des Blocks wird übersprungen. |
+| `catch (ArrayIndexOutOfBoundsException e)` | „Falls **dieser** Fehlertyp auftritt, mach das hier.“ In der Klammer: der Typ und ein Name (`e`) für das Fehler-Objekt. |
+| `e.getMessage()` | Die Fehlermeldung als Text. |
+| `finally { ... }` | Läuft **immer**, mit oder ohne Fehler. Gut zum Aufräumen. |
+
+## Die Hierarchie
+```java
+Throwable
+ |-- Error                  (schwere JVM-Fehler: OutOfMemoryError, StackOverflowError – nicht abfangen)
+ |-- Exception              (CHECKED: muss behandelt werden, z. B. IOException)
+      |-- RuntimeException  (UNCHECKED: NullPointerException, IllegalArgumentException ...)
+```
+
+## Checked vs. Unchecked (Interview-Klassiker!)
+- **Checked** (`Exception`, aber nicht `RuntimeException`): Der Compiler **zwingt** dich, sie zu behandeln (`try/catch`) oder weiterzugeben (`throws`). Für erwartbare Probleme von außen, z. B. Datei fehlt.
+- **Unchecked** (`RuntimeException`): Muss nicht behandelt werden. Meist Programmierfehler, z. B. null-Zugriff, falscher Index.
+
+## Eigene Exceptions werfen
+```run
+public class Main {
+    static void pruefeAlter(int alter) {
+        if (alter < 0) {
+            throw new IllegalArgumentException("Alter darf nicht negativ sein: " + alter);
+        }
+        System.out.println("Alter ok: " + alter);
+    }
+
+    public static void main(String[] args) {
+        pruefeAlter(20);
+        try {
+            pruefeAlter(-3);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Fehler: " + e.getMessage());
+        }
+    }
+}
+```
+
+| Baustein | Was er bedeutet |
+|---|---|
+| `throw` | „Wirf jetzt einen Fehler.“ Die Methode bricht sofort ab. |
+| `new IllegalArgumentException("...")` | Das Fehler-Objekt wird wie jedes Objekt mit `new` erzeugt. Der Text ist die Fehlermeldung. |
+| `throws IOException` (an der Methode) | Ein Hinweis in der Kopfzeile: „Diese Methode kann diesen Fehler werfen, der Aufrufer muss sich darum kümmern.“ Nötig bei **checked** Exceptions. |
+
+## try-with-resources
+Ressourcen wie Dateien oder DB-Verbindungen werden automatisch geschlossen (sie implementieren `AutoCloseable`):
+```java
+try (BufferedReader r = new BufferedReader(new FileReader("daten.txt"))) {
+    System.out.println(r.readLine());
+} catch (IOException e) {
+    System.out.println("Datei-Problem: " + e.getMessage());
+}   // r.close() passiert automatisch
+```
+--- aufgabe
+Das Programm stürzt bei `"abc"` ab. Fange die Fehler mit `try/catch` ab, sodass alle Eingaben verarbeitet werden:
+
+```java
+Alter: 25
+Fehler: keine Zahl -> abc
+Fehler: Alter darf nicht negativ sein
+Alter: 40
+Fertig!
+```
+Achtung: `NumberFormatException` ist eine **Unterklasse** von `IllegalArgumentException` – die Reihenfolge der catch-Blöcke ist wichtig!
+--- code
+public class Main {
+
+    static int parseAlter(String s) {
+        int alter = Integer.parseInt(s);   // wirft NumberFormatException bei "abc"
+        if (alter < 0) {
+            throw new IllegalArgumentException("Alter darf nicht negativ sein");
+        }
+        return alter;
+    }
+
+    public static void main(String[] args) {
+        String[] eingaben = {"25", "abc", "-5", "40"};
+
+        for (String e : eingaben) {
+            int alter = parseAlter(e);
+            System.out.println("Alter: " + alter);
+        }
+        System.out.println("Fertig!");
+    }
+}
+--- loesung
+public class Main {
+
+    static int parseAlter(String s) {
+        int alter = Integer.parseInt(s);
+        if (alter < 0) {
+            throw new IllegalArgumentException("Alter darf nicht negativ sein");
+        }
+        return alter;
+    }
+
+    public static void main(String[] args) {
+        String[] eingaben = {"25", "abc", "-5", "40"};
+
+        for (String e : eingaben) {
+            try {
+                int alter = parseAlter(e);
+                System.out.println("Alter: " + alter);
+            } catch (NumberFormatException ex) {         // spezieller zuerst!
+                System.out.println("Fehler: keine Zahl -> " + e);
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Fehler: " + ex.getMessage());
+            }
+        }
+        System.out.println("Fertig!");
+    }
+}
+--- erwartet
+Alter: 25
+Fehler: keine Zahl -> abc
+Fehler: Alter darf nicht negativ sein
+Alter: 40
+Fertig!
+--- muss
+catch
+
+=== LEKTION
+id: stringbuilder
+kapitel: 3 · Collections & APIs
+titel: StringBuilder
+--- erklaerung
+Weil `String` unveränderlich ist, erzeugt jedes `+` in einer Schleife ein **neues** String-Objekt. Bei vielen Durchläufen ist das langsam. `StringBuilder` ist ein **veränderbarer** Text-Puffer:
+
+```run
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 5; i++) {
+    sb.append(i).append(", ");
+}
+sb.setLength(sb.length() - 2);      // letztes ", " abschneiden
+System.out.println(sb.toString());  // 0, 1, 2, 3, 4
+
+StringBuilder w = new StringBuilder("Java");
+w.insert(0, "Ich mag ");
+w.reverse();
+System.out.println(w);
+
+// Zeitvergleich
+long t = System.currentTimeMillis();
+String s = "";
+for (int i = 0; i < 20000; i++) s += "x";
+System.out.println("String +=      : " + (System.currentTimeMillis() - t) + " ms");
+
+t = System.currentTimeMillis();
+StringBuilder b = new StringBuilder();
+for (int i = 0; i < 20000; i++) b.append("x");
+System.out.println("StringBuilder  : " + (System.currentTimeMillis() - t) + " ms");
+```
+
+## Baustein für Baustein: Aufrufe verketten
+```java
+sb.append(i).append(", ");
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `sb.append(i)` | Hängt `i` an den Puffer an und liefert **denselben** StringBuilder zurück. |
+| `.append(", ")` | Weil wieder ein StringBuilder zurückkam, kann man direkt den nächsten Aufruf dranhängen. |
+| `sb.toString()` | Macht am Ende einen normalen `String` daraus. |
+| `sb.setLength(n)` | Kürzt den Inhalt auf `n` Zeichen. |
+
+> **Interview-Tipp:** `String` vs. `StringBuilder` vs. `StringBuffer`: String = unveränderlich. StringBuilder = veränderbar, schnell, nicht thread-safe. StringBuffer = wie StringBuilder, aber synchronisiert (thread-safe, langsamer, heute selten nötig).
+--- aufgabe
+1. Drehe das Wort `"Programmieren"` um – **ohne** `reverse()`, mit einer Schleife, die von hinten nach vorn läuft und in einen `StringBuilder` schreibt.
+2. Baue mit einem `StringBuilder` den Text `1-2-3-4-5` (ohne Bindestrich am Ende).
+
+```java
+nereimmargorP
+1-2-3-4-5
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        String wort = "Programmieren";
+
+        // TODO 1: umdrehen
+
+        // TODO 2: 1-2-3-4-5
+    }
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        String wort = "Programmieren";
+
+        StringBuilder umgedreht = new StringBuilder();
+        for (int i = wort.length() - 1; i >= 0; i--) {
+            umgedreht.append(wort.charAt(i));
+        }
+        System.out.println(umgedreht);
+
+        StringBuilder kette = new StringBuilder();
+        for (int i = 1; i <= 5; i++) {
+            if (i > 1) kette.append("-");
+            kette.append(i);
+        }
+        System.out.println(kette);
+    }
+}
+--- erwartet
+nereimmargorP
+1-2-3-4-5
+--- muss
+StringBuilder
+
+=== LEKTION
+id: generics
+kapitel: 3 · Collections & APIs
+titel: Generics
+--- erklaerung
+**Generics** machen Klassen und Methoden **typsicher** und wiederverwendbar. Das `<T>` ist ein Platzhalter für einen Typ.
+
+```run
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Box<String> textBox = new Box<>("Hallo");
+        String s = textBox.get();            // kein Cast nötig
+        Box<Integer> zahlBox = new Box<>(42);
+        System.out.println(s + " " + zahlBox.get());
+
+        System.out.println(erstes(List.of("a", "b")));  // generische Methode
+        System.out.println(summe(List.of(1, 2, 3)));    // bounded type
+    }
+
+    static <T> T erstes(List<T> liste) {
+        return liste.get(0);
+    }
+
+    static double summe(List<? extends Number> zahlen) {   // Wildcard: Number oder Unterklasse
+        double s = 0;
+        for (Number n : zahlen) s += n.doubleValue();
+        return s;
+    }
+}
+
+class Box<T> {
+    private final T inhalt;
+
+    Box(T inhalt) { this.inhalt = inhalt; }
+
+    T get() { return inhalt; }
+}
+```
+
+## Baustein für Baustein: Generics
+| Baustein | Was er bedeutet |
+|---|---|
+| `class Box<T>` | Eine Klasse mit einem **Typ-Platzhalter** `T`. `T` steht für „irgendein Typ, der später festgelegt wird“. |
+| `private final T inhalt;` | Ein Feld vom Typ `T`. In einer `Box<String>` ist es ein String. |
+| `Box<String> textBox = new Box<>("Hallo");` | Hier wird `T` festgelegt: `T` = `String`. |
+| `static <T> T erstes(List<T> liste)` | Eine **generische Methode**. Das erste `<T>` kündigt den Platzhalter an, das zweite `T` ist der Rückgabetyp. |
+| `List<? extends Number>` | `?` heißt „irgendein Typ“, `extends Number`: „aber es muss eine Zahl sein“, also `Integer`, `Double` usw. |
+
+## Wichtig zu wissen
+- Ohne Generics müsste man überall `Object` und Casts nutzen – Fehler fielen erst zur Laufzeit auf (`ClassCastException`).
+- Mit Generics findet der **Compiler** Typfehler.
+- **Type Erasure:** Zur Laufzeit sind die Typparameter gelöscht – `List<String>` und `List<Integer>` sind dann beide nur `List`.
+- Primitive Typen gehen nicht als Typparameter: `List<Integer>` statt `List<int>`.
+--- aufgabe
+Die Klasse `Paar<A, B>` ist noch unvollständig – der Code **kompiliert nicht**. Ergänze die Methoden `getErstes()`, `getZweites()` und `toString()`:
+
+```java
+(Alter, 30)
+35
+```
+--- code
+public class Main {
+    public static void main(String[] args) {
+        Paar<String, Integer> p = new Paar<>("Alter", 30);
+        System.out.println(p);
+        System.out.println(p.getErstes().length() + p.getZweites());
+    }
+}
+
+class Paar<A, B> {
+    private final A erstes;
+    private final B zweites;
+
+    Paar(A erstes, B zweites) {
+        this.erstes = erstes;
+        this.zweites = zweites;
+    }
+
+    // TODO: getErstes, getZweites, toString
+}
+--- loesung
+public class Main {
+    public static void main(String[] args) {
+        Paar<String, Integer> p = new Paar<>("Alter", 30);
+        System.out.println(p);
+        System.out.println(p.getErstes().length() + p.getZweites());
+    }
+}
+
+class Paar<A, B> {
+    private final A erstes;
+    private final B zweites;
+
+    Paar(A erstes, B zweites) {
+        this.erstes = erstes;
+        this.zweites = zweites;
+    }
+
+    A getErstes() {
+        return erstes;
+    }
+
+    B getZweites() {
+        return zweites;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + erstes + ", " + zweites + ")";
+    }
+}
+--- erwartet
+(Alter, 30)
+35
+
+=== LEKTION
+id: streams
+kapitel: 3 · Collections & APIs
+titel: Lambdas & Streams
+--- erklaerung
+Ein **Lambda** ist eine kurze, anonyme Funktion: `(parameter) -> ausdruck`. Lambdas funktionieren überall, wo ein **Functional Interface** erwartet wird (ein Interface mit genau einer abstrakten Methode, z. B. `Comparator`, `Runnable`, `Predicate`).
+
+```run
+List<String> namen = new ArrayList<>(List.of("Clara", "Anna", "Ben"));
+
+namen.sort((a, b) -> a.compareTo(b));           // Lambda als Comparator
+namen.forEach(n -> System.out.println("Hi " + n));
+namen.sort(Comparator.comparing(String::length)); // Methodenreferenz
+System.out.println(namen);
+```
+
+## Baustein für Baustein: Lambda und Methodenreferenz
+```java
+namen.sort((a, b) -> a.compareTo(b));
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `(a, b)` | Die **Parameter** der kleinen Funktion. Typen kann man weglassen, Java leitet sie ab. |
+| `->` | Der Pfeil trennt Parameter und Rumpf. Lies ihn als „wird zu“. |
+| `a.compareTo(b)` | Der **Rumpf**: was die Funktion zurückgibt. Bei einer Zeile ohne `{}` und ohne `return`. |
+| `n -> System.out.println(n)` | Bei genau **einem** Parameter darf man die Klammern weglassen. |
+| `String::length` | Eine **Methodenreferenz**, die Kurzform von `s -> s.length()`. Lies `::` als „nimm die Methode ... von ...“. |
+
+## Streams – Daten deklarativ verarbeiten
+Ein Stream ist eine Pipeline: **Quelle → Zwischenoperationen → Endoperation**.
+
+```run
+List<String> staedte = List.of("Berlin", "Hamburg", "Bonn", "Köln", "Bremen");
+
+List<String> ergebnis = staedte.stream()
+        .filter(s -> s.startsWith("B"))      // nur mit B
+        .map(String::toUpperCase)            // umwandeln
+        .sorted()                            // sortieren
+        .collect(Collectors.toList());       // einsammeln
+System.out.println(ergebnis);                // [BERLIN, BONN, BREMEN]
+
+long anzahl = staedte.stream().filter(s -> s.length() > 4).count();
+int gesamtLaenge = staedte.stream().mapToInt(String::length).sum();
+Optional<String> laengste = staedte.stream().max(Comparator.comparing(String::length));
+System.out.println(anzahl + " " + gesamtLaenge + " " + laengste.orElse("-"));
+
+Map<Integer, List<String>> nachLaenge = staedte.stream()
+        .collect(Collectors.groupingBy(String::length));
+System.out.println(nachLaenge);
+```
+
+## Baustein für Baustein: eine Stream-Kette
+```java
+List<String> ergebnis = staedte.stream()
+        .filter(s -> s.startsWith("B"))
+        .map(String::toUpperCase)
+        .sorted()
+        .collect(Collectors.toList());
+```
+| Baustein | Was er bedeutet |
+|---|---|
+| `staedte.stream()` | Macht aus der Liste einen **Strom** von Elementen, die nacheinander durch die Kette laufen. |
+| `.filter(s -> ...)` | Lässt nur Elemente durch, für die das Lambda `true` liefert. |
+| `.map(...)` | Wandelt jedes Element um, hier in Großbuchstaben. |
+| `.sorted()` | Sortiert. |
+| `.collect(Collectors.toList())` | Die **Endoperation**: sammelt das Ergebnis wieder in einer Liste. Erst jetzt läuft die Kette überhaupt los. |
+
+Jede Zeile beginnt mit einem Punkt, weil jeder Schritt einen neuen Stream liefert, an den der nächste Schritt angehängt wird.
+
+## Wichtig
+- **Zwischenoperationen** (`filter`, `map`, `sorted`) sind **lazy** – sie laufen erst, wenn eine **Endoperation** (`collect`, `count`, `forEach`, `sum`) kommt.
+- Ein Stream kann nur **einmal** benutzt werden.
+- Streams verändern die Quelle nicht.
+--- aufgabe
+Löse mit **Streams** (keine for-Schleife):
+1. alle geraden Zahlen, sortiert
+2. alle Zahlen quadriert (Reihenfolge beibehalten)
+3. die Summe aller Zahlen größer als 10
+
+```java
+Gerade: [8, 12, 14, 20]
+Quadrate: [25, 144, 64, 9, 400, 49, 196]
+Summe > 10: 46
+```
+--- code
+import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> zahlen = List.of(5, 12, 8, 3, 20, 7, 14);
+
+        List<Integer> gerade = zahlen; // TODO
+        List<Integer> quadrate = zahlen; // TODO
+        int summe = 0; // TODO
+
+        System.out.println("Gerade: " + gerade);
+        System.out.println("Quadrate: " + quadrate);
+        System.out.println("Summe > 10: " + summe);
+    }
+}
+--- loesung
+import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> zahlen = List.of(5, 12, 8, 3, 20, 7, 14);
+
+        List<Integer> gerade = zahlen.stream()
+                .filter(z -> z % 2 == 0)
+                .sorted()
+                .collect(Collectors.toList());
+
+        List<Integer> quadrate = zahlen.stream()
+                .map(z -> z * z)
+                .collect(Collectors.toList());
+
+        int summe = zahlen.stream()
+                .filter(z -> z > 10)
+                .mapToInt(Integer::intValue)
+                .sum();
+
+        System.out.println("Gerade: " + gerade);
+        System.out.println("Quadrate: " + quadrate);
+        System.out.println("Summe > 10: " + summe);
+    }
+}
+--- erwartet
+Gerade: [8, 12, 14, 20]
+Quadrate: [25, 144, 64, 9, 400, 49, 196]
+Summe > 10: 46
+--- muss
+stream()
+filter
+map
+
+=== LEKTION
+id: enums
+kapitel: 3 · Collections & APIs
+titel: Enums & moderner switch
+--- erklaerung
+Ein `enum` ist ein Typ mit einer **festen Menge von Konstanten**. Viel sicherer als Strings oder int-Codes, weil Tippfehler vom Compiler erkannt werden.
+
+```run
+public class Main {
+    public static void main(String[] args) {
+        Wochentag t = Wochentag.SAMSTAG;
+        System.out.println(t);                      // SAMSTAG
+        System.out.println(t.istWochenende());      // true
+        System.out.println(t.ordinal());            // 5 (Position)
+        System.out.println(Wochentag.valueOf("MONTAG"));
+
+        for (Wochentag w : Wochentag.values()) {
+            System.out.print(w.kurz + " ");
+        }
+        System.out.println();
+    }
+}
+
+enum Wochentag {
+    MONTAG("Mo"), DIENSTAG("Di"), MITTWOCH("Mi"), DONNERSTAG("Do"),
+    FREITAG("Fr"), SAMSTAG("Sa"), SONNTAG("So");
+
+    final String kurz;                   // Enums können Felder haben ...
+
+    Wochentag(String kurz) {             // ... und Konstruktoren (immer private)
+        this.kurz = kurz;
+    }
+
+    boolean istWochenende() {            // ... und Methoden
+        return this == SAMSTAG || this == SONNTAG;
+    }
+}
+```
+## Baustein für Baustein: enum
+| Baustein | Was er bedeutet |
+|---|---|
+| `enum Wochentag { ... }` | Ein eigener Typ mit einer **festen Liste** von Werten. |
+| `MONTAG("Mo"), DIENSTAG("Di"), ...;` | Die erlaubten Werte, durch Komma getrennt. Die Klammer übergibt einen Wert an den Konstruktor. Nach dem letzten Wert kommt ein `;`, wenn danach noch Felder oder Methoden folgen. |
+| `Wochentag t = Wochentag.SAMSTAG;` | Einen Wert benutzt man über den Typnamen. |
+| `Wochentag.values()` | Liefert alle Werte als Array, praktisch für eine for-each-Schleife. |
+| `Wochentag.valueOf("MONTAG")` | Macht aus einem Text den passenden Wert. |
+| `t.ordinal()` | Die Position in der Liste, beginnend bei 0. |
+
+> Enums vergleicht man mit `==` – jede Konstante existiert genau einmal. Ein Enum mit nur einer Konstante ist übrigens die einfachste thread-sichere Singleton-Implementierung.
+--- aufgabe
+Ergänze die Methode `aktion` mit einem **switch-Ausdruck** (`case ROT -> ...`):
+
+```java
+ROT -> Stehen bleiben
+GELB -> Achtung
+GRUEN -> Fahren
+```
+--- code
+public class Main {
+
+    static String aktion(Ampel a) {
+        // TODO: switch-Ausdruck
+        return "?";
+    }
+
+    public static void main(String[] args) {
+        for (Ampel a : Ampel.values()) {
+            System.out.println(a + " -> " + aktion(a));
+        }
+    }
+}
+
+enum Ampel { ROT, GELB, GRUEN }
+--- loesung
+public class Main {
+
+    static String aktion(Ampel a) {
+        return switch (a) {
+            case ROT -> "Stehen bleiben";
+            case GELB -> "Achtung";
+            case GRUEN -> "Fahren";
+        };   // kein default nötig: der Compiler weiß, dass alle Fälle abgedeckt sind
+    }
+
+    public static void main(String[] args) {
+        for (Ampel a : Ampel.values()) {
+            System.out.println(a + " -> " + aktion(a));
+        }
+    }
+}
+
+enum Ampel { ROT, GELB, GRUEN }
+--- erwartet
+ROT -> Stehen bleiben
+GELB -> Achtung
+GRUEN -> Fahren
+--- muss
+switch
+
+=== LEKTION
+id: palindrom
+kapitel: 4 · Interview-Coding-Aufgaben
+titel: Palindrom prüfen
+--- erklaerung
+Ein **Palindrom** liest sich vorwärts und rückwärts gleich: *Anna*, *Rentner*, *Ein Esel lese nie*.
+
+## So gehst du im Interview vor
+1. **Fragen klären:** Groß-/Kleinschreibung egal? Leerzeichen ignorieren? Was ist mit leerem String?
+2. **Laut denken:** Ansatz erklären, bevor du tippst.
+3. **Einfache Lösung zuerst**, dann optimieren.
+4. **Testfälle** durchgehen, auch Randfälle.
+
+## Ansatz: Zwei Zeiger (Two Pointers)
+Ein Index startet links, einer rechts. Solange sie sich nicht treffen: Zeichen vergleichen, dann beide nach innen bewegen. Laufzeit **O(n)**, zusätzlicher Speicher **O(1)**.
+
+```java
+int links = 0, rechts = s.length() - 1;
+while (links < rechts) {
+    if (s.charAt(links) != s.charAt(rechts)) return false;
+    links++;
+    rechts--;
+}
+return true;
+```
+Alternative in einer Zeile: `new StringBuilder(s).reverse().toString().equals(s)` – kurz, aber braucht O(n) extra Speicher. Beide Varianten nennen zu können wirkt im Interview gut!
+--- aufgabe
+Implementiere `istPalindrom` mit dem Zwei-Zeiger-Ansatz. Groß-/Kleinschreibung und Leerzeichen sollen ignoriert werden (Tipp: vorher `toLowerCase()` und `replace(" ", "")`).
+
+```java
+Anna: true
+Java: false
+Ein Esel lese nie: true
+Rentner: true
+```
+--- code
+public class Main {
+
+    static boolean istPalindrom(String text) {
+        // TODO
+        return false;
+    }
+
+    public static void main(String[] args) {
+        String[] tests = {"Anna", "Java", "Ein Esel lese nie", "Rentner"};
+        for (String t : tests) {
+            System.out.println(t + ": " + istPalindrom(t));
+        }
+    }
+}
+--- loesung
+public class Main {
+
+    static boolean istPalindrom(String text) {
+        String s = text.toLowerCase().replace(" ", "");
+        int links = 0;
+        int rechts = s.length() - 1;
+        while (links < rechts) {
+            if (s.charAt(links) != s.charAt(rechts)) {
+                return false;
+            }
+            links++;
+            rechts--;
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        String[] tests = {"Anna", "Java", "Ein Esel lese nie", "Rentner"};
+        for (String t : tests) {
+            System.out.println(t + ": " + istPalindrom(t));
+        }
+    }
+}
+--- erwartet
+Anna: true
+Java: false
+Ein Esel lese nie: true
+Rentner: true
+
+=== LEKTION
+id: fibonacci
+kapitel: 4 · Interview-Coding-Aufgaben
+titel: Fibonacci – Rekursion vs. Schleife
+--- erklaerung
+Fibonacci: Jede Zahl ist die Summe der beiden vorherigen: 0, 1, 1, 2, 3, 5, 8, 13 ...
+
+## Rekursiv – elegant, aber langsam
+Eine **rekursive** Methode ruft sich selbst auf. Sie braucht immer eine **Abbruchbedingung** (Basisfall), sonst gibt es einen `StackOverflowError`.
+
+```run
+public class Main {
+    static long aufrufe = 0;
+
+    static long fibRekursiv(int n) {
+        aufrufe++;
+        if (n <= 1) return n;                          // Basisfall
+        return fibRekursiv(n - 1) + fibRekursiv(n - 2); // rekursiver Aufruf
+    }
+
+    public static void main(String[] args) {
+        System.out.println(fibRekursiv(30));
+        System.out.println("Aufrufe: " + aufrufe);      // über 2,6 Millionen!
+    }
+}
+```
+Diese Version rechnet dieselben Werte immer wieder neu aus: Laufzeit **O(2^n)** – exponentiell!
+
+## Laufzeit-Klassen (Big-O) – solltest du kennen
+| Big-O | Name | Beispiel |
+|---|---|---|
+| O(1) | konstant | Array-Zugriff, HashMap.get |
+| O(log n) | logarithmisch | binäre Suche, TreeMap |
+| O(n) | linear | eine Schleife über alle Elemente |
+| O(n log n) | | gutes Sortieren (Arrays.sort) |
+| O(n²) | quadratisch | zwei verschachtelte Schleifen |
+| O(2^n) | exponentiell | naive Fibonacci-Rekursion |
+
+> **Experiment:** Entferne im Beispiel die Zeile mit dem Basisfall und führe den Code aus – dann siehst du einen `StackOverflowError`.
+--- aufgabe
+Schreibe `fib(int n)` **iterativ** mit einer Schleife (zwei Variablen für die letzten beiden Werte) – Laufzeit O(n). Gib die ersten 10 Fibonacci-Zahlen und `fib(40)` aus:
+
+```java
+0 1 1 2 3 5 8 13 21 34
+fib(40) = 102334155
+```
+--- code
+public class Main {
+
+    static long fib(int n) {
+        // TODO: iterativ
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        for (int i = 0; i < 10; i++) {
+            System.out.print(fib(i) + " ");
+        }
+        System.out.println();
+        System.out.println("fib(40) = " + fib(40));
+    }
+}
+--- loesung
+public class Main {
+
+    static long fib(int n) {
+        long a = 0, b = 1;              // fib(0), fib(1)
+        for (int i = 0; i < n; i++) {
+            long naechste = a + b;
+            a = b;
+            b = naechste;
+        }
+        return a;
+    }
+
+    public static void main(String[] args) {
+        for (int i = 0; i < 10; i++) {
+            System.out.print(fib(i) + " ");
+        }
+        System.out.println();
+        System.out.println("fib(40) = " + fib(40));
+    }
+}
+--- erwartet
+0 1 1 2 3 5 8 13 21 34
+fib(40) = 102334155
+
+=== LEKTION
+id: duplikate
+kapitel: 4 · Interview-Coding-Aufgaben
+titel: Duplikate finden
+--- erklaerung
+Klassische Aufgabe: *"Finde alle Zahlen, die mehrfach in einem Array vorkommen."*
+
+## Ansatz 1: Zwei Schleifen – O(n²)
+Jedes Element mit jedem anderen vergleichen. Funktioniert, ist aber bei großen Datenmengen langsam.
+
+## Ansatz 2: HashSet – O(n)
+Merke dir in einem Set, was du schon gesehen hast. `Set.add()` gibt `false` zurück, wenn das Element schon drin war – genau dann hast du ein Duplikat!
+
+```run
+Set<String> gesehen = new HashSet<>();
+System.out.println(gesehen.add("a"));   // true  – neu
+System.out.println(gesehen.add("a"));   // false – war schon drin!
+```
+
+> **Interview-Tipp:** Nenne erst die einfache O(n²)-Lösung, dann die bessere mit HashSet und erkläre den **Trade-off**: schneller, aber mehr Speicher (O(n)). Genau dieses Abwägen wollen Interviewer hören.
+--- aufgabe
+Finde die Duplikate mit einem `HashSet` (für "gesehen") und einem `LinkedHashSet` (für die Duplikate, damit die Reihenfolge erhalten bleibt). Gib außerdem die Zahlen ohne Duplikate aus:
+
+```java
+Duplikate: [3, 7]
+Ohne Duplikate: [3, 7, 1, 9, 5]
+```
+--- code
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] zahlen = {3, 7, 1, 3, 9, 7, 3, 5};
+
+        Set<Integer> gesehen = new HashSet<>();
+        Set<Integer> duplikate = new LinkedHashSet<>();
+
+        // TODO
+
+        System.out.println("Duplikate: " + duplikate);
+        System.out.println("Ohne Duplikate: " + "?");
+    }
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] zahlen = {3, 7, 1, 3, 9, 7, 3, 5};
+
+        Set<Integer> gesehen = new HashSet<>();
+        Set<Integer> duplikate = new LinkedHashSet<>();
+        Set<Integer> eindeutig = new LinkedHashSet<>();
+
+        for (int z : zahlen) {
+            if (!gesehen.add(z)) {
+                duplikate.add(z);
+            }
+            eindeutig.add(z);
+        }
+
+        System.out.println("Duplikate: " + duplikate);
+        System.out.println("Ohne Duplikate: " + eindeutig);
+    }
+}
+--- erwartet
+Duplikate: [3, 7]
+Ohne Duplikate: [3, 7, 1, 9, 5]
+--- muss
+Set
+
+=== LEKTION
+id: anagramm
+kapitel: 4 · Interview-Coding-Aufgaben
+titel: Anagramme erkennen
+--- erklaerung
+Zwei Wörter sind **Anagramme**, wenn sie aus denselben Buchstaben bestehen: *listen / silent*, *Regal / Lager*.
+
+## Ansatz 1: Sortieren – O(n log n)
+Beide Wörter in Kleinbuchstaben umwandeln, die Zeichen sortieren und vergleichen:
+
+```run
+char[] a = "regal".toCharArray();
+Arrays.sort(a);
+System.out.println(new String(a));   // aeglr
+System.out.println(Arrays.equals(a, "lager".toCharArray()));  // false – erst sortieren!
+```
+
+## Ansatz 2: Zählen – O(n)
+Mit einer `Map<Character, Integer>` (oder einem `int[26]`-Array) zählen, wie oft jeder Buchstabe vorkommt: beim ersten Wort +1, beim zweiten −1. Am Ende muss alles 0 sein.
+--- aufgabe
+Implementiere `istAnagramm` (Groß-/Kleinschreibung egal) – mit dem Sortier-Ansatz oder dem Zähl-Ansatz.
+
+```java
+listen / silent: true
+Regal / Lager: true
+Java / Kaffee: false
+abc / abcd: false
+```
+--- code
+import java.util.*;
+
+public class Main {
+
+    static boolean istAnagramm(String a, String b) {
+        // TODO
+        return false;
+    }
+
+    public static void main(String[] args) {
+        String[][] paare = {{"listen", "silent"}, {"Regal", "Lager"}, {"Java", "Kaffee"}, {"abc", "abcd"}};
+        for (String[] p : paare) {
+            System.out.println(p[0] + " / " + p[1] + ": " + istAnagramm(p[0], p[1]));
+        }
+    }
+}
+--- loesung
+import java.util.*;
+
+public class Main {
+
+    static boolean istAnagramm(String a, String b) {
+        if (a.length() != b.length()) return false;   // schneller Ausstieg
+        char[] x = a.toLowerCase().toCharArray();
+        char[] y = b.toLowerCase().toCharArray();
+        Arrays.sort(x);
+        Arrays.sort(y);
+        return Arrays.equals(x, y);
+    }
+
+    public static void main(String[] args) {
+        String[][] paare = {{"listen", "silent"}, {"Regal", "Lager"}, {"Java", "Kaffee"}, {"abc", "abcd"}};
+        for (String[] p : paare) {
+            System.out.println(p[0] + " / " + p[1] + ": " + istAnagramm(p[0], p[1]));
+        }
+    }
+}
+--- erwartet
+listen / silent: true
+Regal / Lager: true
+Java / Kaffee: false
+abc / abcd: false

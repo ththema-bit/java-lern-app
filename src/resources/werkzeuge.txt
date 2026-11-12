@@ -1,0 +1,131 @@
+Kapitel 10: Wissen ausserhalb der Sandbox.
+
+=== LEKTION
+id: t_werkzeuge
+kapitel: 10 · Raus aus der Sandbox
+titel: javac, IntelliJ, Maven & Git
+--- erklaerung
+Im Job arbeitest du nicht in dieser Sandbox. Diese Werkzeuge solltest du zumindest erklären können.
+
+## Ohne IDE kompilieren
+Mit dem Knopf **Als .java speichern** nimmst du deinen Code aus der App mit. Danach geht es im Terminal so weiter:
+```java
+javac Main.java     // erzeugt Main.class (Bytecode)
+java Main           // startet das Programm
+```
+
+## IDE
+**IntelliJ IDEA** ist die verbreitetste Java-IDE. Sie bietet Autovervollständigung, Debugger und Refactoring. Die kostenlose Community Edition reicht für den Einstieg.
+
+## Maven
+Maven lädt Bibliotheken und baut dein Projekt. Die Konfiguration steht in `pom.xml`.
+| Befehl | Was passiert |
+|---|---|
+| `mvn test` | Tests ausführen |
+| `mvn package` | JAR-Datei bauen |
+| `mvn clean install` | Neu bauen und lokal installieren |
+
+## Git
+| Befehl | Was passiert |
+|---|---|
+| `git status` | Zeigt geänderte Dateien |
+| `git add .` | Merkt Änderungen für den Commit vor |
+| `git commit -m "Text"` | Speichert einen Stand |
+| `git pull` / `git push` | Holt Änderungen / lädt sie hoch |
+| `git switch -c name` | Erstellt einen neuen Branch |
+
+Typischer Ablauf: Branch erstellen, Änderungen committen, pushen, Pull Request öffnen, Code-Review.
+--- aufgabe
+Mach diese Schritte außerhalb der App:
+1. Speichere deine Banking-App mit **Als .java speichern** in einem neuen Ordner.
+2. Kompiliere und starte sie im Terminal mit `javac` und `java`.
+3. Öffne sie in IntelliJ und setze einen Breakpoint.
+
+Markiere die Aufgabe danach als erledigt.
+--- tipps
+Die Datei muss genauso heißen wie die public-Klasse, also `Main.java`.
+Öffne das Terminal im Ordner mit der Datei.
+In IntelliJ klickst du für einen Breakpoint links neben die Zeilennummer und startest mit „Debug“.
+--- notizen
+Schreib den Weg vom Quellcode zum laufenden Programm auf.
+Notiere die 5 wichtigsten Git-Befehle aus dem Kopf.
+--- code
+public class Main {
+    public static void main(String[] args) {
+        // Freier Platz, um Befehle und Beispiele auszuprobieren
+        System.out.println("Bereit für die echte Entwicklungsumgebung!");
+    }
+}
+
+=== LEKTION
+id: t_job
+kapitel: 10 · Raus aus der Sandbox
+titel: SQL, REST & Spring Boot im Überblick
+--- erklaerung
+Viele Java-Stellen arbeiten mit Datenbanken und Web-APIs. Dieser Überblick gibt dir die Begriffe. Prüfe in der Stellenanzeige, was davon gefragt ist.
+
+## SQL
+```java
+SELECT name, gehalt FROM mitarbeiter WHERE gehalt > 4000 ORDER BY gehalt DESC;
+INSERT INTO mitarbeiter (name, gehalt) VALUES ('Anna', 5000);
+UPDATE mitarbeiter SET gehalt = 5500 WHERE id = 1;
+DELETE FROM mitarbeiter WHERE id = 1;
+
+SELECT m.name, a.titel
+FROM mitarbeiter m
+JOIN abteilung a ON m.abteilung_id = a.id;
+```
+- **Primary Key:** eindeutige ID einer Zeile
+- **Foreign Key:** Verweis auf eine Zeile in einer anderen Tabelle
+- **JOIN:** Verbindet Tabellen über solche Schlüssel
+- **Index:** Macht Suchen schneller, kostet aber Speicher und Schreibzeit
+
+## REST & HTTP
+| Methode | Bedeutung | Beispiel |
+|---|---|---|
+| `GET` | lesen | `GET /konten/1` |
+| `POST` | anlegen | `POST /konten` |
+| `PUT` | ersetzen | `PUT /konten/1` |
+| `DELETE` | löschen | `DELETE /konten/1` |
+
+Wichtige Statuscodes: **200** OK, **201** erstellt, **400** ungültige Anfrage, **404** nicht gefunden, **500** Serverfehler.
+
+## Spring Boot
+```java
+@RestController
+public class KontoController {
+    private final KontoService service;
+
+    public KontoController(KontoService service) {   // Dependency Injection
+        this.service = service;
+    }
+
+    @GetMapping("/konten/{id}")
+    public Konto finde(@PathVariable long id) {
+        return service.finde(id);
+    }
+}
+```
+Die typischen Schichten heißen **Controller**, **Service** und **Repository**. Spring erzeugt die Objekte und reicht sie an die Konstruktoren weiter. Das nennt man **Dependency Injection**.
+--- aufgabe
+Übertrage dein Banking-Projekt gedanklich in diese Welt, am besten auf Papier:
+1. Entwirf zwei Tabellen, `kunde` und `konto`, mit Primary und Foreign Key.
+2. Schreib ein SQL-`SELECT`, das alle Konten eines Kunden mit Namen zeigt.
+3. Schreib 4 REST-Endpunkte für deine Bank auf.
+
+Markiere die Aufgabe danach als erledigt.
+--- tipps
+`konto` braucht eine Spalte `kunde_id`, die auf `kunde.id` zeigt.
+Verbinde beide Tabellen mit `JOIN konto ON konto.kunde_id = kunde.id`.
+Zum Beispiel: `POST /konten`, `GET /konten/{id}`, `POST /konten/{id}/einzahlung`.
+--- notizen
+Schreib die 4 SQL-Grundbefehle und einen JOIN aus dem Kopf.
+Notiere HTTP-Methoden und die 5 Statuscodes.
+Erkläre Dependency Injection in zwei Sätzen.
+--- code
+public class Main {
+    public static void main(String[] args) {
+        // Diese Aufgabe löst du am besten auf Papier.
+        System.out.println("Stift raus: Tabellen und Endpunkte entwerfen!");
+    }
+}
